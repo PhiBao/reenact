@@ -173,6 +173,55 @@ pub struct RunOpts<'a> {
     pub author: bool,
 }
 
+/// Chrome processes Kane started and left behind. Kane launches its browser in a new
+/// session, so killing our process group does not reach it, and after Kane exits the
+/// browser is re-parented to init (or WSL's /init). A run in progress still has Kane as
+/// its parent, so only orphans are returned: safe while other runs are active.
+pub fn orphaned_kane_chrome(ps_output: &str) -> Vec<u32> {
+    let mut rows: Vec<(u32, u32, &str)> = Vec::new();
+    for line in ps_output.lines() {
+        let l = line.trim_start();
+        let Some((pid, rest)) = l.split_once(char::is_whitespace) else {
+            continue;
+        };
+        let Some((ppid, args)) = rest.trim_start().split_once(char::is_whitespace) else {
+            continue;
+        };
+        if let (Ok(pid), Ok(ppid)) = (pid.parse::<u32>(), ppid.parse::<u32>()) {
+            rows.push((pid, ppid, args.trim_start()));
+        }
+    }
+    let args_of = |pid: u32| rows.iter().find(|r| r.0 == pid).map(|r| r.2);
+    rows.iter()
+        .filter(|(_, _, a)| {
+            a.contains("--remote-debugging-port=")
+                && a.contains("--user-data-dir=/tmp/kane-clean-")
+                && !a.contains("--type=")
+        })
+        .filter(|(_, ppid, _)| {
+            *ppid <= 1
+                || args_of(*ppid).is_some_and(|a| a.starts_with("/init") || a.contains("systemd"))
+        })
+        .map(|(pid, _, _)| *pid)
+        .collect()
+}
+
+/// Kill leftover Kane browsers (see `orphaned_kane_chrome`). Best effort.
+pub fn reap_orphan_chrome() {
+    let Ok(out) = std::process::Command::new("ps")
+        .args(["-eo", "pid,ppid,args"])
+        .output()
+    else {
+        return;
+    };
+    for pid in orphaned_kane_chrome(&String::from_utf8_lossy(&out.stdout)) {
+        kill_group(pid);
+        unsafe {
+            libc::kill(pid as i32, libc::SIGKILL);
+        }
+    }
+}
+
 pub type OnEvent<'a> = &'a (dyn Fn(&Value) + Send + Sync);
 
 /// SIGKILL a whole process group. Safe to call on a dead group.
@@ -264,6 +313,7 @@ pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Re
         kill_group(pid);
     }
     let status = child.wait().await.ok();
+    reap_orphan_chrome();
     let stderr_text = stderr_task.await.unwrap_or_default();
     drop(var_file);
 
@@ -311,6 +361,20 @@ fn newest_evidence(dir: &Path) -> Option<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn finds_only_orphaned_kane_browsers() {
+        let ps = "\
+   10     1 /init
+   57    10 node kane-runner
+  100    10 /x/chrome --remote-debugging-port=9222 --user-data-dir=/tmp/kane-clean-AAA --no-first-run
+  101   100 /x/chrome --type=zygote --user-data-dir=/tmp/kane-clean-AAA
+  200    57 /x/chrome --remote-debugging-port=9223 --user-data-dir=/tmp/kane-clean-BBB --no-first-run
+  300     1 /usr/bin/google-chrome --remote-debugging-port=9333 --user-data-dir=/home/me/profile
+  400     1 /x/chrome --remote-debugging-port=9224 --user-data-dir=/tmp/kane-clean-CCC
+";
+        assert_eq!(orphaned_kane_chrome(ps), vec![100, 400]);
+    }
 
     #[test]
     fn folds_recorded_failing_run() {

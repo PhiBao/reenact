@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Reenact fixes a REAL bug in a REAL open-source app, and checks itself against the maintainers' fix.
 #
-#   ./run.sh <case>            case: search-filter | memo-detail-stale | default-visibility
+#   ./run.sh <case>            case: search-filter  | memo-detail-stale
 #
 # What it does
 #   1. Checks out Memos at the release the bug was filed on (v0.26.2) and serves its web UI from source
@@ -33,10 +33,6 @@ case "$CASE" in
   memo-detail-stale)
     ISSUE=5659; ID=memo-detail-stale-after-edit
     TITLE="Memo detail page not refresh after editing and saving the content"
-    ;;
-  default-visibility)
-    ISSUE=5622; ID=default-visibility-resets; TAG=v0.26.1
-    TITLE="Visibility selection in the submission form becomes Private after the post"
     ;;
   *) echo "unknown case $CASE"; exit 2 ;;
 esac

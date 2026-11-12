@@ -701,7 +701,12 @@ pub async fn run(a: FixArgs) -> Result<()> {
     let mut confirmed = true;
     if !a.no_confirm {
         say("Confirming the bug on a second, independent run");
-        let rec = pipeline::verify_as(&ctx, &a.case, "confirm", RunKind::Confirm).await?;
+        let mut rec = pipeline::verify_as(&ctx, &a.case, "confirm", RunKind::Confirm).await?;
+        if rec.verdict.kind == VerdictKind::Inconclusive {
+            // Infrastructure trouble (sign-in, slow start) says nothing about the bug: retry once.
+            say("The confirmation run was inconclusive; trying once more");
+            rec = pipeline::verify_as(&ctx, &a.case, "confirm (retry)", RunKind::Confirm).await?;
+        }
         confirmed = rec.verdict.kind == VerdictKind::Reproduced;
         if !confirmed {
             eprintln!(
