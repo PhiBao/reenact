@@ -27,7 +27,7 @@ export function Home() {
   const [bench, setBench] = useState<BenchSet[] | null>(null);
 
   useEffect(() => {
-    listCases().then(setCases).catch(() => setCases([]));
+    listCases().then((c) => setCases([...c].sort((a, b) => Number(b.has_fix) - Number(a.has_fix)))).catch(() => setCases([]));
     getBenchmark().then(setBench).catch(() => setBench(null));
   }, []);
 
