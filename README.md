@@ -178,7 +178,7 @@ These are the findings that changed the design. They are useful to anyone wiring
 
 ## Kane in the build loop
 
-`scripts/verify-ui.sh` builds the web UI, serves fixture cases, and has Kane check two pages in plain English (`tests/ui/*_test.md`). A Kiro hook (`.kiro/hooks/kane-verify-ui.json`) runs it when a file under `web/src/` is saved. Kane failed this suite once during the build: a stale server from an earlier run was answering on the test port with the wrong data, so the Benchmark page showed its error state and Kane reported the table missing. The script now refuses to run if the port is busy.
+`scripts/verify-ui.sh` builds the web UI, serves fixture cases, and has Kane check two pages in plain English (`tests/ui/*_test.md`), live with `--author` because cached replays would not notice a change (our own finding above; the first version of the script made that mistake and reported `replay completed`). A Kiro hook (`.kiro/hooks/kane-verify-ui.json`) runs it when a file under `web/src/` is saved. Kane failed this suite once during the build: a stale server from an earlier run was answering on the test port with the wrong data, so the Benchmark page showed its error state and Kane reported the table missing. The script now refuses to run if the port is busy.
 
 ## Security and reliability
 

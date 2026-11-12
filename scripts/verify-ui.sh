@@ -21,7 +21,7 @@ for _ in $(seq 1 30); do curl -fs -o /dev/null "http://localhost:$PORT/healthz" 
 status=0
 cd tests/ui
 for t in *_test.md; do
-  out=$(kane-cli testmd run "$t" --agent --headless --bug-detection stop 2>/dev/null)
+  out=$(kane-cli testmd run "$t" --agent --headless --bug-detection stop --author 2>/dev/null)
   line=$(echo "$out" | grep '"type":"run_end"' | tail -1)
   verdict=$(echo "$line" | python3 -c 'import sys,json
 l=sys.stdin.read().strip()
