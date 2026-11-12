@@ -53,6 +53,9 @@ struct Side {
     duration_s: f64,
     case_id: String,
     correct: bool,
+    /// What the very first run said, before any retry (for single-run statistics).
+    #[serde(default)]
+    first_run: String,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -184,10 +187,16 @@ async fn run_side(
         tag: tag.to_string(),
         verdict: rec.verdict.kind.label().to_string(),
         headline: rec.verdict.headline.clone(),
-        credits: rec.run.credits,
+        credits: case.runs.iter().map(|r| r.run.credits).sum(),
         duration_s: rec.run.duration_s,
         case_id: case.id.clone(),
         correct: rec.verdict.kind == want,
+        first_run: case
+            .runs
+            .iter()
+            .find(|r| r.label == "reenact")
+            .map(|r| r.verdict.kind.label().to_string())
+            .unwrap_or_default(),
     })
 }
 
