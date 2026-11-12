@@ -1,6 +1,6 @@
 ---
 mode: testing
-url: http://localhost:8091/benchmark
+url: http://localhost:8092/benchmark
 headless: true
 max_steps: 20
 tags: [reenact-ui]

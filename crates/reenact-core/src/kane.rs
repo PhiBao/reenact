@@ -131,12 +131,11 @@ impl Acc {
                     self.out.share_url = Some(u.to_string());
                 }
             }
-            t if t.contains("error") || t.contains("fatal") => {
-                if self.out.error.is_none() {
+            t if (t.contains("error") || t.contains("fatal"))
+                && self.out.error.is_none() => {
                     let msg = ev["message"].as_str().or_else(|| ev["error"].as_str()).unwrap_or(t);
                     self.out.error = Some(msg.chars().take(300).collect());
                 }
-            }
             _ => {}
         }
     }
@@ -285,7 +284,7 @@ fn newest_evidence(dir: &Path) -> Option<PathBuf> {
             continue;
         }
         let m = e.metadata().ok()?.modified().ok()?;
-        if best.as_ref().map_or(true, |(t, _)| m > *t) {
+        if best.as_ref().is_none_or(|(t, _)| m > *t) {
             best = Some((m, p));
         }
     }

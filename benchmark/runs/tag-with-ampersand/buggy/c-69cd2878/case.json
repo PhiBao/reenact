@@ -1,0 +1,256 @@
+{
+  "id": "c-69cd2878",
+  "created_at": "2026-11-12T13:12:01.629700771Z",
+  "report": {
+    "title": "Tags with & in them are now broken (won't display correctly) and can no longher be created",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nI can't test it on the demo site because it is now the new version.\n\nI don't know when this broke/changed - it might not be the most recent version, on mobile which I use normally  it is less obvious, I noticed it today as I used the desktop version and it stood out far more!\n\nIn previous versions it was possible to have tags / labels with & in them (maybe other characters, but I only used &), making a new tag by typing (without quotes) \"#science&tech\" would make a tag that included the whole string. I have that label in my Memos instance, and can add it still via the drop-down menu.\n\nHowever, since the recent release, any post that contains that label is rendered as \"#science\"&tech - where the parts in quotes are the tag, and the &tech is just adjacent text.\n\nIf I try and add a new tag with an &,. it won't let me - it will just create a new tag \"#science\" which I don;t want/need.\n\nIn short, it seems that a) new version doesn't allow & in labels and b)backwards compatibility is broken\n\n### Steps to Reproduce\n\nOn older version make a label containing an &.\nIt works fine, and as any other label.\n\n\nUpgrade to new version, repeat the steps and it wont let you make such a label.\n\nOn new version, look at posts with that label - they display incorrectly\n\n### Expected Behavior\n\nI expect to be able to make labels with & in them like I used to be able to. The label name should end on white-space. OR tell me this limitation in the UI.\n\n### Screenshots & Additional Context\n\n<img width=\"211\" height=\"207\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/287d3ac5-6bba-47ba-91cd-b32f019c4002\" />\n\n<img width=\"319\" height=\"88\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/18801397-ba82-4c71-993b-985dfa7e7886\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5620",
+    "repo": null,
+    "number": 5620
+  },
+  "app_url": "http://localhost:15314",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the app is running version v0.26.1 or similar recent version",
+      "no memos exist yet"
+    ],
+    "steps": [
+      "Click on the memo editor input at the top of the home page",
+      "Type \"#science&tech\" into the memo editor",
+      "Click the Save button to create the memo",
+      "Look at the newly created memo in the memo list"
+    ],
+    "expected": "the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by plain text \"&tech\"",
+    "reported_actual": "The memo renders \"#science\" as the tag and \"&tech\" as adjacent plain text; a new tag with & cannot be created and only \"#science\" is created as a tag.",
+    "missing": [
+      "assumed: typing the tag text alone into the memo editor and saving is enough to reproduce the issue",
+      "Which exact version introduced the regression?",
+      "Does the tag list/sidebar show \"science\" instead of \"science&tech\" after saving?",
+      "Are other special characters besides & also affected?"
+    ],
+    "confidence": 0.8,
+    "summary": "Tags containing & are truncated at the & when rendered and created in memos v0.26.1",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15314/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5620]\n---\n\n# Tags with & in them are now broken (won't display correctly) and can no longher be created\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15314/.\nStay on localhost:15314 for the whole run and do not open any other website.\nDo these in order:\n1. Click on the memo editor input at the top of the home page\n2. Type \"#science&tech\" into the memo editor\n3. Click the Save button to create the memo\n4. Look at the newly created memo in the memo list\nThe reporter says the correct behavior is that the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by plain text \"&tech\". Verify that the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by plain text \"&tech\".\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T13:12:01.629974293Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "A memo containing #science&tech is saved with only #science treated as a tag and &tech left as ordinary text.",
+        "stuck_at": null,
+        "root_cause": "The memo tag parser stops the tag when it reaches an ampersand, even though the required tag name includes that character.",
+        "suggested_fix": "Update tag recognition so an ampersand is accepted within a tag name, then add a save-and-render test for #science&tech.",
+        "severity": "minor",
+        "confidence": 0.98
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by plain text \"&tech\"\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo tag parser stops the tag when it reaches an ampersand, even though the required tag name includes that character.\nUpdate tag recognition so an ampersand is accepted within a tag name, then add a save-and-render test for #science&tech.\nevidence: objective_contradiction: the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by",
+        "credits": 29.198610000000002,
+        "duration_s": 185.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77Y624ST97KXF4DJH6YGFHJ/dashboard/share/US_CUL7DOFB4GQUZZUKZX6LJLQRWMMK4EB8QJLXCXYRWVPZ7JIZY6VD2EG9ZBRRARO3?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Ampersand truncates memo tag parsing",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15314/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Signing in with username and password",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15314/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Typing #science&tech in the memo editor input at the top of the home page",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking Save to create the memo",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "assert",
+            "label": "the saved memo shows the entire string \"#science&tech\" as a single tag, rather t",
+            "status": "failed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15314/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15314/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The memo tag parser stops the tag when it reaches an ampersand, even though the required tag name includes that character.",
+        "suggested_fix": "Update tag recognition so an ampersand is accepted within a tag name, then add a save-and-render test for #science&tech.",
+        "severity": "minor",
+        "bug_confidence": 0.98
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

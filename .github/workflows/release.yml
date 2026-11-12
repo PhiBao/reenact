@@ -1,0 +1,18 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release -p reenact-cli
+      - run: cp target/release/reenact reenact-linux-x86_64
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" reenact-linux-x86_64 --clobber || gh release create "$GITHUB_REF_NAME" reenact-linux-x86_64 --title "$GITHUB_REF_NAME" --notes "Reenact $GITHUB_REF_NAME"

@@ -24,7 +24,7 @@ pub async fn run(a: SuiteArgs) -> Result<()> {
     let mut tests: Vec<PathBuf> = std::fs::read_dir(&a.dir)?
         .flatten()
         .map(|e| e.path())
-        .filter(|p| p.file_name().and_then(|n| n.to_str()).map_or(false, |n| n.ends_with("_test.md")))
+        .filter(|p| p.file_name().and_then(|n| n.to_str()).is_some_and(|n| n.ends_with("_test.md")))
         .collect();
     tests.sort();
     anyhow::ensure!(!tests.is_empty(), "no *_test.md files in {}", a.dir.display());

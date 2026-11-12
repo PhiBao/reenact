@@ -1,0 +1,775 @@
+{
+  "id": "c-8e6bf21c",
+  "created_at": "2026-11-12T13:18:30.348549468Z",
+  "report": {
+    "title": "Comment reactions and comment deletion don’t update the UI until page refresh",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\n- Demo site (demo.usememos.com)\n- Self-hosted instance\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nOn the memo detail page, comment-related actions (adding/removing a reaction on a comment, or deleting a comment) succeed on the server but the UI does not update until the page is refreshed.\nThe comments list and individual comment cards are driven by a React Query cache that is not invalidated when these actions run, so the client shows stale data.\n\n### Steps to Reproduce\n\n1. Open a memo that has at least one comment (or add a comment).\n1. **Reaction:** On one of the comments, add a reaction (e.g. via the reaction selector in the comment header).\n    - **Observe:** The new reaction does not appear on the comment until you refresh the page.\n1. **Delete:** Open the action menu (⋮) on a comment and choose “Delete”, then confirm.\n    - **Observe:** The comment remains visible in the list until you refresh the page.\n\n### Expected Behavior\n\nAfter adding or removing a reaction on a comment, the comment’s reactions update immediately.\nAfter deleting a comment, the comment disappears from the list immediately.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5640",
+    "repo": null,
+    "number": 5640
+  },
+  "app_url": "http://localhost:15318",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the test user is signed in",
+      "no memos exist initially, so a memo and a comment must be created"
+    ],
+    "steps": [
+      "Create a new memo with the text \"Test memo\" and save it",
+      "Click the new memo to open its detail page",
+      "In the comment input on the memo detail page, type \"Test comment\"",
+      "Click the button to submit the comment",
+      "On the comment, open the reaction selector in the comment header",
+      "Select a reaction emoji (for example 👍)",
+      "Observe the comment without refreshing the page",
+      "Click the action menu (⋮) on the comment",
+      "Click \"Delete\"",
+      "Click the confirm button in the confirmation dialog",
+      "Observe the comments list without refreshing the page"
+    ],
+    "expected": "After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh.",
+    "reported_actual": "Reactions added to a comment do not appear and a deleted comment remains visible in the list until the page is refreshed, even though the server processed the actions.",
+    "missing": [
+      "assumed: the memo content \"Test memo\" and comment text \"Test comment\" are placeholders since the reporter gave none",
+      "assumed: 👍 is used as the reaction since the reporter did not specify which one",
+      "Does removing a reaction (clicking it again) also fail to update, and is this reproducible in a specific browser?",
+      "Is the problem only visible on the memo detail page, or also in other views showing comments?"
+    ],
+    "confidence": 0.7,
+    "summary": "Comment reactions and comment deletion don't update the memo detail UI until page refresh",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15318/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5640]\n---\n\n# Comment reactions and comment deletion don’t update the UI until page refresh\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15318/.\nStay on localhost:15318 for the whole run and do not open any other website.\nDo these in order:\n1. Create a new memo with the text \"Test memo\" and save it\n2. Click the new memo to open its detail page\n3. In the comment input on the memo detail page, type \"Test comment\"\n4. Click the button to submit the comment\n5. On the comment, open the reaction selector in the comment header\n6. Select a reaction emoji (for example 👍)\n7. Observe the comment without refreshing the page\n8. Click the action menu (⋮) on the comment\n9. Click \"Delete\"\n10. Click the confirm button in the confirmation dialog\n11. Observe the comments list without refreshing the page\nThe reporter says the correct behavior is that After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh. Verify that After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T13:24:02.553772847Z",
+      "verdict": {
+        "kind": "inconclusive",
+        "headline": "The browser run hit the time limit before it reached a result.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": true,
+        "status": "unknown",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 7.712441500000001,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15318/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15318/",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Type \"Test memo\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "confirm the new memo was saved",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Open the new memo's detail page",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking the new memo detail page button",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": "frames/retry-frame-15-annotated.png",
+            "rect": [
+              817.0,
+              151.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking Write a comment and submitting the comment",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": "frames/retry-frame-16-annotated.png",
+            "rect": [
+              795.0,
+              179.0,
+              152.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 17,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Add your comment here...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": "frames/retry-frame-17-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"Test comment\" into \"Add your comment here...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": "frames/retry-frame-18-annotated.png",
+            "rect": [
+              521.0,
+              172.0,
+              702.0,
+              24.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": "frames/retry-frame-19-annotated.png",
+            "rect": [
+              1176.0,
+              216.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 20,
+            "kind": "wait",
+            "label": "confirm the submitted comment is displayed",
+            "status": "passed",
+            "file": "frames/retry-frame-20.jpg",
+            "annotated_file": "frames/retry-frame-20-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 21,
+            "kind": "",
+            "label": "Clicking Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/retry-frame-21.jpg",
+            "annotated_file": "frames/retry-frame-21-annotated.png",
+            "rect": [
+              1207.0,
+              220.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 22,
+            "kind": "click",
+            "label": "Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/retry-frame-22.jpg",
+            "annotated_file": "frames/retry-frame-22-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 23,
+            "kind": "press_key",
+            "label": "close the comment action menu",
+            "status": "passed",
+            "file": "frames/retry-frame-23.jpg",
+            "annotated_file": "frames/retry-frame-23-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 24,
+            "kind": "click",
+            "label": "Clicking the reaction selector in the comment header under Admin",
+            "status": "passed",
+            "file": "frames/retry-frame-24.jpg",
+            "annotated_file": "frames/retry-frame-24-annotated.png",
+            "rect": [
+              561.0,
+              230.0,
+              79.0,
+              15.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 25,
+            "kind": "click",
+            "label": "Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/retry-frame-25.jpg",
+            "annotated_file": "frames/retry-frame-25-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/UwMkoDmqfcuRUNdwY4BYnV"
+          },
+          {
+            "ordinal": 26,
+            "kind": "",
+            "label": "Waiting after checking the comment header controls",
+            "status": "failed",
+            "file": "frames/retry-frame-26.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/memos/UwMkoDmqfcuRUNdwY4BYnV"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15318/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15318/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T13:18:30.348810784Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "The comment header menu exposes only Edit, Copy, and Delete; no reaction selector or emoji option exists.",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The comment header menu exposes only Edit, Copy, and Delete; no reaction selector or emoji option exists.",
+        "reason_code": "assertion_error.step_not_achievable",
+        "summary": "You asked to create a memo titled with “Test memo,” add the comment “Test comment,” react to it, and then delete the comment while observing the changes without refreshing the page.\nThe run reached the memo detail page at http://localhost:15318/memos/UwMkoDmqfcuRUNdwY4BYnV.\nIt could not complete the reaction step: the comment header menu only showed Edit, Copy, and Delete, and did not provide a reaction selector or any emoji choices.\nBecause no reaction could be selected, the required immediate reaction display and the subsequent deletion outcome could not be verified.",
+        "credits": 45.5515125,
+        "duration_s": 303.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77YHXYBKBVK310WBBBCY4MK/dashboard/share/US_33XW1EWFJUKZ2YM8ZRG9CCBPO58KBWBCHCO6L6X0MOZIF0VXDEL2D83RHO5T3I8U?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15318/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15318/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15318/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Type \"Test memo\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "confirm the new memo was saved",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Open the new memo's detail page",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking the new memo detail page button",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              817.0,
+              151.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15318/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking Write a comment and submitting the comment",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              795.0,
+              179.0,
+              152.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 17,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Add your comment here...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"Test comment\" into \"Add your comment here...\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              521.0,
+              172.0,
+              702.0,
+              24.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              1176.0,
+              216.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 20,
+            "kind": "wait",
+            "label": "confirm the submitted comment is displayed",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": "frames/frame-20-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 21,
+            "kind": "",
+            "label": "Clicking Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": "frames/frame-21-annotated.png",
+            "rect": [
+              1207.0,
+              220.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 22,
+            "kind": "click",
+            "label": "Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": "frames/frame-22-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 23,
+            "kind": "press_key",
+            "label": "close the comment action menu",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": "frames/frame-23-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 24,
+            "kind": "click",
+            "label": "Clicking the reaction selector in the comment header under Admin",
+            "status": "passed",
+            "file": "frames/frame-24.jpg",
+            "annotated_file": "frames/frame-24-annotated.png",
+            "rect": [
+              561.0,
+              230.0,
+              79.0,
+              15.0
+            ],
+            "url": "http://localhost:15318/memos/HZxffBJfPh2TuYbkTZqKxp"
+          },
+          {
+            "ordinal": 25,
+            "kind": "click",
+            "label": "Open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/frame-25.jpg",
+            "annotated_file": "frames/frame-25-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15318/memos/UwMkoDmqfcuRUNdwY4BYnV"
+          },
+          {
+            "ordinal": 26,
+            "kind": "",
+            "label": "Waiting after checking the comment header controls",
+            "status": "failed",
+            "file": "frames/frame-26.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15318/memos/UwMkoDmqfcuRUNdwY4BYnV"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15318/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15318/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info"
+}

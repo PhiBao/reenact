@@ -1,1 +1,1 @@
-[]
+[{"id": "tag-with-ampersand", "kind": "bug", "issue_url": "https://github.com/usememos/memos/issues/5620", "title": "Tags with & in them are now broken", "buggy": {"tag": "0.26.1", "verdict": "Reproduced", "headline": "", "credits": 30, "duration_s": 90, "case_id": "c-x", "correct": true}, "fixed": {"tag": "0.26.2", "verdict": "Not reproduced", "headline": "", "credits": 30, "duration_s": 90, "case_id": "c-y", "correct": true}, "error": null}]

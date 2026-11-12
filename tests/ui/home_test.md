@@ -1,6 +1,6 @@
 ---
 mode: testing
-url: http://localhost:8091/
+url: http://localhost:8092/
 headless: true
 max_steps: 25
 tags: [reenact-ui, smoke]

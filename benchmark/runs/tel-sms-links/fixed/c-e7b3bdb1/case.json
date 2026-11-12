@@ -1,0 +1,279 @@
+{
+  "id": "c-e7b3bdb1",
+  "created_at": "2026-11-12T13:08:16.428442340Z",
+  "report": {
+    "title": "tel: and sms: URI schemes not supported in links.",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nMarkdown links using the `tel:` and `sms:` URI schemes do not render correctly.\n\n### Steps to reproduce\n\nWrite the following markdown in a memo:\n\n```\n[phone me](tel:+440000000000)\n```\n\nI'd expect this to render as something like:\n\n```\n<a href=\"tel:+440000000000\">phone me</a>\n```\n\nBut it renders as\n\n```\n<a>phone me</a>\n```\n\nThe same bug also affects the `sms:` URI scheme.\n\n### Memos version\n\nv0.31.0-rc.1\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6340",
+    "repo": null,
+    "number": 6340
+  },
+  "app_url": "http://localhost:15311",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Open the memo editor on the home page",
+      "Type [phone me](tel:+440000000000) into the memo editor",
+      "Click the Save button to create the memo",
+      "Look at the rendered memo in the memo list"
+    ],
+    "expected": "the rendered memo shows the text 'phone me' as a clickable link (styled as a hyperlink) that opens a dialer/tel prompt when clicked, rather than as plain unlinked text",
+    "reported_actual": "the link renders as an anchor without an href (<a>phone me</a>), so the tel: link is not functional; the same happens with sms: links",
+    "missing": [
+      "assumed: the memo is saved and viewed in the normal rendered memo list on the home page",
+      "assumed: 'renders correctly' means the text 'phone me' appears as a clickable hyperlink",
+      "Does the sms: scheme need a separate check, and with what example number?"
+    ],
+    "confidence": 0.7,
+    "summary": "Markdown links with tel: and sms: URI schemes render as anchors without href",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15311/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6340]\n---\n\n# tel: and sms: URI schemes not supported in links.\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15311/.\nStay on localhost:15311 for the whole run and do not open any other website.\nDo these in order:\n1. Open the memo editor on the home page\n2. Type [phone me](tel:+440000000000) into the memo editor\n3. Click the Save button to create the memo\n4. Look at the rendered memo in the memo list\nThe reporter says the correct behavior is that the rendered memo shows the text 'phone me' as a clickable link (styled as a hyperlink) that opens a dialer/tel prompt when clicked, rather than as plain unlinked text. Verify that the rendered memo shows the text 'phone me' as a clickable link (styled as a hyperlink) that opens a dialer/tel prompt when clicked, rather than as plain unlinked text.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T13:08:16.428677957Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Opened the memo editor on the local home page.\nEntered `[phone me](tel:+440000000000)` and saved the memo.\nVerified that the saved memo displays “phone me” as an underlined, clickable phone link rather than plain text.\nConfirmed that the link uses a telephone destination, so selecting it opens a dialer or phone prompt.",
+        "credits": 29.1817275,
+        "duration_s": 188.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77XZ619ST8YX5Z2A4YFKFC2/dashboard/share/US_KPVVRLGP0VDOYF4TBBUFPJDHWRT5H4IEI2JDM4GDJY73LCCIL02DXJDM983ABTFI?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15311/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              822.0,
+              499.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              822.0,
+              567.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              821.0,
+              610.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:15311/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15311/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking New memo in the left sidebar",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              216.0,
+              13.0,
+              26.0,
+              26.0
+            ],
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing phone me into the memo editor",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              465.0,
+              81.0,
+              990.0,
+              910.0
+            ],
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the Save button to create the memo",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1370.0,
+              1007.0,
+              76.0,
+              28.0
+            ],
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking the memo link \"phone me\"",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              769.0,
+              173.0,
+              80.0,
+              19.0
+            ],
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "Checked: phone me",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "the rendered memo shows the text 'phone me' as a clickable link (styled as a hyp",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15311/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15311/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Kane verifies the Reenact UI on save",
+      "trigger": "PostFileSave",
+      "description": "After saving a web UI source file, rebuild and have Kane CLI check the home and benchmark pages in a real browser.",
+      "matcher": "web/src/.*\\.(tsx|ts|css)$",
+      "action": {
+        "type": "command",
+        "command": "cd \"$(git rev-parse --show-toplevel)\" && ./scripts/verify-ui.sh",
+        "timeout": 600
+      }
+    }
+  ]
+}

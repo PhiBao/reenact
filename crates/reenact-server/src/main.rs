@@ -84,7 +84,7 @@ async fn list_cases(State(s): State<AppState>) -> Json<Vec<Summary>> {
             }
         }
     }
-    out.sort_by(|a, b| b.created_at.cmp(&a.created_at));
+    out.sort_by_key(|s| std::cmp::Reverse(s.created_at));
     Json(out)
 }
 
@@ -122,6 +122,27 @@ async fn benchmark(State(s): State<AppState>) -> Response {
     }
 }
 
+/// `PUT /api/benchmark` with the results JSON array (CI or a maintainer, bearer token).
+async fn put_benchmark(State(s): State<AppState>, headers: HeaderMap, body: Bytes) -> Response {
+    let Some(token) = &s.upload_token else { return (StatusCode::FORBIDDEN, "uploads are disabled").into_response() };
+    let given = headers.get(header::AUTHORIZATION).and_then(|h| h.to_str().ok()).and_then(|h| h.strip_prefix("Bearer ")).unwrap_or("");
+    if !constant_time_eq(given.as_bytes(), token.as_bytes()) {
+        return StatusCode::UNAUTHORIZED.into_response();
+    }
+    match serde_json::from_slice::<serde_json::Value>(&body) {
+        Ok(v) if v.is_array() => {
+            if let Some(p) = s.benchmark_file.parent() {
+                let _ = std::fs::create_dir_all(p);
+            }
+            match std::fs::write(&*s.benchmark_file, &body) {
+                Ok(()) => StatusCode::NO_CONTENT.into_response(),
+                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+            }
+        }
+        _ => (StatusCode::BAD_REQUEST, "expected a JSON array").into_response(),
+    }
+}
+
 fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
     if a.len() != b.len() {
         return false;
@@ -141,7 +162,7 @@ async fn upload_bundle(State(s): State<AppState>, AxPath(id): AxPath<String>, he
     }
     match unpack(&s.cases_dir, &id, &body) {
         Ok(n) => (StatusCode::CREATED, format!("{n} files")).into_response(),
-        Err(e) => (StatusCode::BAD_REQUEST, format!("{e}")).into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
     }
 }
 
@@ -241,7 +262,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/cases/{id}", get(get_case))
         .route("/cases/{id}/files/{*rel}", get(case_file))
         .route("/cases/{id}/bundle", post(upload_bundle).layer(DefaultBodyLimit::max(MAX_BUNDLE)))
-        .route("/benchmark", get(benchmark));
+        .route("/benchmark", get(benchmark).put(put_benchmark).layer(DefaultBodyLimit::max(2 * 1024 * 1024)));
 
     let spa = Router::new().fallback(get(|s: State<AppState>| index(s, None))).with_state(state.clone());
     let app = Router::new()

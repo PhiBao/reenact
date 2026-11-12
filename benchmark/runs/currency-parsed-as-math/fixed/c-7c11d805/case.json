@@ -1,0 +1,242 @@
+{
+  "id": "c-7c11d805",
+  "created_at": "2026-11-12T13:13:56.978581857Z",
+  "report": {
+    "title": "Using dollar sign causes improper formatting",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nSee image. Not sure which is causing this.\n\n<img width=\"527\" height=\"140\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/188cf525-da4d-42c8-86f6-a786f22ae3d6\" />\n\nThe problematic text should read:\n\n`with the local markets... $22 for the smallest bit of rice and fried chicken.`\n\n### Steps to reproduce\n\nTry and write any kind of amount of money or use ellipsis. \n\n### Memos version\n\n0.30.0\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6325",
+    "repo": null,
+    "number": 6325
+  },
+  "app_url": "http://localhost:15313",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type \"with the local markets... $22 for the smallest bit of rice and fried chicken.\"",
+      "Click the Save button to create the memo",
+      "Look at the rendered memo in the memo list"
+    ],
+    "expected": "the rendered memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\" with the dollar amount and ellipsis displayed as plain text and no broken or math-style formatting",
+    "reported_actual": "the text containing a dollar amount and/or an ellipsis is rendered with improper formatting (shown in a screenshot that is not visible); the reporter is unsure whether the dollar sign or the ellipsis causes it",
+    "missing": [
+      "What exactly does the improper formatting look like (the screenshot is not available)?",
+      "Is the problem caused by the dollar sign, the ellipsis, or the combination of both?",
+      "Is there other text before or after the quoted sentence in the memo that is needed to trigger it?",
+      "Does the issue appear in the editor preview, the memo list, or the memo detail page?",
+      "assumed: the quoted sentence is typed as a single line in a new memo and saved",
+      "assumed: the problem appears in the rendered memo after saving"
+    ],
+    "confidence": 0.5,
+    "summary": "Memo text with a dollar amount and ellipsis renders with improper formatting",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15313/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6325]\n---\n\n# Using dollar sign causes improper formatting\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15313/.\nStay on localhost:15313 for the whole run and do not open any other website.\nDo these in order:\n1. Click the memo editor input on the home page\n2. Type \"with the local markets... $22 for the smallest bit of rice and fried chicken.\"\n3. Click the Save button to create the memo\n4. Look at the rendered memo in the memo list\nThe reporter says the correct behavior is that the rendered memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\" with the dollar amount and ellipsis displayed as plain text and no broken or math-style formatting. Verify that the rendered memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\" with the dollar amount and ellipsis displayed as plain text and no broken or math-style formatting.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T13:13:56.978824564Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created a memo on the local site using the requested text.\nSaved the memo and confirmed it appeared in the memo list exactly as entered.\nVerified that the ellipsis and \"$22\" were displayed as normal plain text.",
+        "credits": 24.8195175,
+        "duration_s": 93.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77Y9HX5FGM4YEZC96XS6WAP/dashboard/share/US_YCYFZ3BLOXNELI3JKFLCRQ2JSDECK68IYN70PKVJZNNEOXBUTUJTFYKH1KY2ZJPL?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15313/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Username\"; type \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              822.0,
+              499.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15313/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              822.0,
+              567.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15313/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "click",
+            "label": "Clicking Sign in with username and password",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": "frames/frame-05-annotated.png",
+            "rect": [
+              821.0,
+              610.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:15313/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15313/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing the memo editor with the provided text about local markets and $22 rice a",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              769.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking the Save button to create the memo and view it in the list",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1322.0,
+              77.0,
+              76.0,
+              28.0
+            ],
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "assert",
+            "label": "the rendered memo shows the text exactly as typed: \"with the local markets... $2",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15313/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15313/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

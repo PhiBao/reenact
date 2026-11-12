@@ -59,7 +59,7 @@ pub fn upsert_comment(repo: &str, number: u64, case_id: &str, body: &str) -> Res
     for page in de.flatten() {
         if let Some(arr) = page.as_array() {
             for c in arr {
-                if c["body"].as_str().map_or(false, |b| b.contains(&marker)) {
+                if c["body"].as_str().is_some_and(|b| b.contains(&marker)) {
                     existing = c["id"].as_u64();
                 }
             }

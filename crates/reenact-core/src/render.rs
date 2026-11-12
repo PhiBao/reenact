@@ -11,7 +11,7 @@ pub const LOGIN_HEADING: &str = "Sign in";
 
 fn no_md_structure(s: &str) -> String {
     // A step line must not be able to start a new heading, fence or front matter.
-    s.trim_start_matches(|c: char| matches!(c, '#' | '`' | '-' | '>' | '@' | '|'))
+    s.trim_start_matches(['#', '`', '-', '>', '@', '|'])
         .trim()
         .to_string()
 }

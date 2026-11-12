@@ -109,15 +109,27 @@ pub fn compose_strip(
     Ok(())
 }
 
-/// One full-size frame with an optional ring around `rect`, for the before/after slider.
+/// Load a frame, crop to the neighbourhood of `rect` (where the user acted and
+/// where the result shows), and ring the element. Without a rect the whole
+/// frame is returned.
+fn framed(dir: &Path, frame: &Frame, rect: Option<[f64; 4]>, color: Rgba<u8>, viewport: (u32, u32)) -> Result<RgbaImage> {
+    let img = load(dir, &frame.file)?;
+    let Some(r) = rect else { return Ok(img) };
+    let sx = img.width() as f64 / viewport.0 as f64;
+    let sy = img.height() as f64 / viewport.1 as f64;
+    let (rx, ry, rw, rh) = (r[0] * sx, r[1] * sy, r[2] * sx, r[3] * sy);
+    // A window that favours the area below the element, where totals and messages appear.
+    let (cw, ch) = (((img.width() as f64) * 0.5).max(720.0).min(img.width() as f64), ((img.height() as f64) * 0.46).max(420.0).min(img.height() as f64));
+    let cx = (rx + rw / 2.0 - cw / 2.0).clamp(0.0, img.width() as f64 - cw);
+    let cy = (ry - ch * 0.22).clamp(0.0, img.height() as f64 - ch);
+    let mut crop = image::imageops::crop_imm(&img, cx as u32, cy as u32, cw as u32, ch as u32).to_image();
+    border(&mut crop, (rx - cx - 8.0) as i64, (ry - cy - 8.0) as i64, (rw + 16.0) as i64, (rh + 16.0) as i64, 4, color);
+    Ok(crop)
+}
+
+/// One cropped frame with a ring around `rect`, for the before/after slider.
 pub fn compose_single(dir: &Path, frame: &Frame, rect: Option<[f64; 4]>, color: Rgba<u8>, viewport: (u32, u32), out: &Path) -> Result<()> {
-    let mut img = load(dir, &frame.file)?;
-    if let Some(r) = rect {
-        let sx = img.width() as f64 / viewport.0 as f64;
-        let sy = img.height() as f64 / viewport.1 as f64;
-        border(&mut img, (r[0] * sx - 8.0) as i64, (r[1] * sy - 8.0) as i64, (r[2] * sx + 16.0) as i64, (r[3] * sy + 16.0) as i64, 4, color);
-    }
-    img.save(out).with_context(|| format!("writing {}", out.display()))?;
+    framed(dir, frame, rect, color, viewport)?.save(out).with_context(|| format!("writing {}", out.display()))?;
     Ok(())
 }
 
@@ -128,7 +140,7 @@ pub fn green() -> Rgba<u8> {
     GREEN
 }
 
-/// Before/after panel: two final frames side by side, red vs green.
+/// Before/after panel: two cropped frames side by side, red vs green.
 pub fn compose_compare(
     before_dir: &Path,
     before: &Frame,
@@ -141,19 +153,12 @@ pub fn compose_compare(
     let thumb_w: u32 = 760;
     let gutter: u32 = 24;
     let margin: u32 = 28;
-    let mk = |dir: &Path, f: &Frame, rect: Option<[f64; 4]>, c: Rgba<u8>| -> Result<RgbaImage> {
-        let img = load(dir, &f.file)?;
+    let scale = |img: RgbaImage| {
         let th = (img.height() as f64 * thumb_w as f64 / img.width() as f64).round() as u32;
-        let mut t = image::imageops::resize(&img, thumb_w, th.max(1), FilterType::Triangle);
-        if let Some(r) = rect {
-            let sx = t.width() as f64 / viewport.0 as f64;
-            let sy = t.height() as f64 / viewport.1 as f64;
-            border(&mut t, (r[0] * sx - 6.0) as i64, (r[1] * sy - 6.0) as i64, (r[2] * sx + 12.0) as i64, (r[3] * sy + 12.0) as i64, 3, c);
-        }
-        Ok(t)
+        image::imageops::resize(&img, thumb_w, th.max(1), FilterType::Triangle)
     };
-    let a = mk(before_dir, before, before_rect, RED)?;
-    let b = mk(after_dir, after, before_rect, GREEN)?;
+    let a = scale(framed(before_dir, before, before_rect, RED, viewport)?);
+    let b = scale(framed(after_dir, after, before_rect, GREEN, viewport)?);
     let h = a.height().max(b.height());
     let mut canvas = RgbaImage::from_pixel(margin * 2 + thumb_w * 2 + gutter, margin * 2 + h, PAPER);
     image::imageops::overlay(&mut canvas, &a, margin as i64, margin as i64);
@@ -179,6 +184,20 @@ mod tests {
         let img = image::open(&out).unwrap();
         assert!(img.width() > 1500 && img.height() > 200);
         assert!(trigger_rect(&ex.frames).is_some());
+    }
+
+    #[test]
+    fn compare_crops_to_the_evidence() {
+        let pack = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/coupon-bug.evidence");
+        let dir = tempfile::tempdir().unwrap();
+        let ex = evidence::extract(&pack, dir.path(), "").unwrap();
+        let last = ex.frames.last().unwrap();
+        let rect = trigger_rect(&ex.frames);
+        let out = std::env::temp_dir().join("reenact-compare-preview.png");
+        compose_compare(dir.path(), last, rect, dir.path(), last, (1920, 1080), &out).unwrap();
+        let img = image::open(&out).unwrap();
+        // two cropped panels, much shorter than two full 16:9 frames
+        assert!(img.height() < 600, "height {}", img.height());
     }
 
     #[test]

@@ -1,0 +1,50 @@
+{
+  "id": "c-dabce90c",
+  "created_at": "2026-11-12T15:21:57.668660583Z",
+  "report": {
+    "title": "Comment reactions and comment deletion don’t update the UI until page refresh",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\n- Demo site (demo.usememos.com)\n- Self-hosted instance\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nOn the memo detail page, comment-related actions (adding/removing a reaction on a comment, or deleting a comment) succeed on the server but the UI does not update until the page is refreshed.\nThe comments list and individual comment cards are driven by a React Query cache that is not invalidated when these actions run, so the client shows stale data.\n\n### Steps to Reproduce\n\n1. Open a memo that has at least one comment (or add a comment).\n1. **Reaction:** On one of the comments, add a reaction (e.g. via the reaction selector in the comment header).\n    - **Observe:** The new reaction does not appear on the comment until you refresh the page.\n1. **Delete:** Open the action menu (⋮) on a comment and choose “Delete”, then confirm.\n    - **Observe:** The comment remains visible in the list until you refresh the page.\n\n### Expected Behavior\n\nAfter adding or removing a reaction on a comment, the comment’s reactions update immediately.\nAfter deleting a comment, the comment disappears from the list immediately.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5640",
+    "repo": null,
+    "number": 5640
+  },
+  "app_url": "http://localhost:15319",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the test user is signed in",
+      "no memos exist initially, so a memo and a comment must be created"
+    ],
+    "steps": [
+      "Create a new memo with the text \"Test memo\" and save it",
+      "Click the new memo to open its detail page",
+      "In the comment input on the memo detail page, type \"Test comment\"",
+      "Click the button to submit the comment",
+      "On the comment, open the reaction selector in the comment header",
+      "Select a reaction emoji (for example 👍)",
+      "Observe the comment without refreshing the page",
+      "Click the action menu (⋮) on the comment",
+      "Click \"Delete\"",
+      "Click the confirm button in the confirmation dialog",
+      "Observe the comments list without refreshing the page"
+    ],
+    "expected": "After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh.",
+    "reported_actual": "Reactions added to a comment do not appear and a deleted comment remains visible in the list until the page is refreshed, even though the server processed the actions.",
+    "missing": [
+      "assumed: the memo content \"Test memo\" and comment text \"Test comment\" are placeholders since the reporter gave none",
+      "assumed: 👍 is used as the reaction since the reporter did not specify which one",
+      "Does removing a reaction (clicking it again) also fail to update, and is this reproducible in a specific browser?",
+      "Is the problem only visible on the memo detail page, or also in other views showing comments?"
+    ],
+    "confidence": 0.7,
+    "summary": "Comment reactions and comment deletion don't update the memo detail UI until page refresh",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15319/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5640]\n---\n\n# Comment reactions and comment deletion don’t update the UI until page refresh\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15319/.\nStay on localhost:15319 for the whole run and do not open any other website.\nDo these in order:\n1. Create a new memo with the text \"Test memo\" and save it\n2. Click the new memo to open its detail page\n3. In the comment input on the memo detail page, type \"Test comment\"\n4. Click the button to submit the comment\n5. On the comment, open the reaction selector in the comment header\n6. Select a reaction emoji (for example 👍)\n7. Observe the comment without refreshing the page\n8. Click the action menu (⋮) on the comment\n9. Click \"Delete\"\n10. Click the confirm button in the confirmation dialog\n11. Observe the comments list without refreshing the page\nThe reporter says the correct behavior is that After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh. Verify that After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

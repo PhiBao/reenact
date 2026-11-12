@@ -138,6 +138,7 @@ fn expected_kind(bug: bool, buggy_side: bool) -> VerdictKind {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn run_side(ctx: &Ctx, image: &str, tag: &str, port: u16, label: &str, report: &Report, plan: &Plan, out: &Path, want: VerdictKind) -> Result<Side> {
     let _c = start_memos(image, tag, port, label).await?;
     let mut ctx = ctx.clone();

@@ -1,0 +1,443 @@
+{
+  "id": "c-be3ef31f",
+  "created_at": "2026-11-12T13:13:29.580087856Z",
+  "report": {
+    "title": "Click shortcut edit button is not pop a edit dialog",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\nJust see in this image:\n\n![Image](https://github.com/user-attachments/assets/a145f714-85e2-4b29-a476-cf26c53e9518)\n\n### Steps to Reproduce\n\n1. Add a item in shortcut\n2. Click the menu of this item, and choose edit option\n3. Pop a create dialog, Not a edit dialog\n\n### Expected Behavior\n\nClick edit button and then just pop a edit dialog.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5576",
+    "repo": null,
+    "number": 5576
+  },
+  "app_url": "http://localhost:15309",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the app is a fresh install with no shortcuts",
+      "the shortcuts section is visible in the sidebar of the home page"
+    ],
+    "steps": [
+      "Click the add (+) button next to the Shortcuts section in the sidebar",
+      "In the create shortcut dialog, type a title for the shortcut",
+      "Enter a filter for the shortcut if the dialog requires one",
+      "Click the save/create button to add the shortcut",
+      "Click the menu (three dots) button of the newly created shortcut item in the sidebar",
+      "Choose the 'Edit' option from the menu"
+    ],
+    "expected": "after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter",
+    "reported_actual": "Choosing Edit on a shortcut's menu opens a create-shortcut dialog instead of an edit-shortcut dialog",
+    "missing": [
+      "What title and filter should be used when creating the shortcut?",
+      "Where exactly is the shortcut list (sidebar, mobile menu)?",
+      "What exact text does the dialog show (title and button label)? The screenshot was not readable",
+      "assumed: the shortcut is created via the '+' button next to Shortcuts in the sidebar",
+      "assumed: a shortcut needs a title and a filter expression, and any simple values are acceptable"
+    ],
+    "confidence": 0.7,
+    "summary": "Choosing Edit from a shortcut's menu opens a create dialog instead of an edit dialog",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15309/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5576]\n---\n\n# Click shortcut edit button is not pop a edit dialog\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15309/.\nStay on localhost:15309 for the whole run and do not open any other website.\nDo these in order:\n1. Click the add (+) button next to the Shortcuts section in the sidebar\n2. In the create shortcut dialog, type a title for the shortcut\n3. Enter a filter for the shortcut if the dialog requires one\n4. Click the save/create button to add the shortcut\n5. Click the menu (three dots) button of the newly created shortcut item in the sidebar\n6. Choose the 'Edit' option from the menu\nThe reporter says the correct behavior is that after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter. Verify that after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T13:13:29.580426812Z",
+      "verdict": {
+        "kind": "inconclusive",
+        "headline": "The browser run hit the time limit before it reached a result.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": true,
+        "status": "unknown",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 11.732167500000005,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T13:20:29.598254514Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "AP(text) failed: ",
+        "reason_code": "success.complete",
+        "summary": "You asked to create a sidebar shortcut and then open its editing screen.\nOpened the shortcut creation dialog from the Shortcuts section, entered a title, and saved the new shortcut.\nOpened the new shortcut’s menu, selected Edit, and reached the Edit Shortcuts dialog.\nThe edit dialog showed the shortcut’s existing title and filter.",
+        "credits": 51.70160399999999,
+        "duration_s": 341.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77YNJ41YEYZ10TTTC99SS2K/dashboard/share/US_5SBG9SDNSYCTMYSEMFH2W0E31FW0EWEWZ5QUC2RY4HDP33F2R7FW2XQL2UJ9LG4Z?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15309/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in in the sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15309/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15309/",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "",
+            "label": "Clicking Click the add (+) button next to the Shortcuts section in the sidebar",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              315.0,
+              317.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Click the add (+) button next to the Shortcuts section in the sidebar;",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Typing a shortcut title in the create shortcut dialog",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": "frames/retry-frame-13-annotated.png",
+            "rect": [
+              774.0,
+              450.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "the dialog requires a filter for the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "the dialog requires a filter for the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking Save to add the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": "frames/retry-frame-16-annotated.png",
+            "rect": [
+              1112.0,
+              659.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "type",
+            "label": "Typing #shortcut in filter box",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": "frames/retry-frame-17-annotated.png",
+            "rect": [
+              774.0,
+              524.0,
+              372.0,
+              46.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Clicking the Save button to add the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": "frames/retry-frame-18-annotated.png",
+            "rect": [
+              1112.0,
+              659.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Clicking the Save button to add the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": "frames/retry-frame-19-annotated.png",
+            "rect": [
+              1112.0,
+              659.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "type",
+            "label": "Typing into the Filter field",
+            "status": "passed",
+            "file": "frames/retry-frame-20.jpg",
+            "annotated_file": "frames/retry-frame-20-annotated.png",
+            "rect": [
+              774.0,
+              524.0,
+              372.0,
+              46.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "click",
+            "label": "Clicking the Save button to add the shortcut",
+            "status": "passed",
+            "file": "frames/retry-frame-21.jpg",
+            "annotated_file": "frames/retry-frame-21-annotated.png",
+            "rect": [
+              1112.0,
+              659.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "click",
+            "label": "Click the menu (three dots) button of the newly created shortcut item i",
+            "status": "passed",
+            "file": "frames/retry-frame-22.jpg",
+            "annotated_file": "frames/retry-frame-22-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "click",
+            "label": "Clicking the Edit option in the menu above Delete",
+            "status": "passed",
+            "file": "frames/retry-frame-23.jpg",
+            "annotated_file": "frames/retry-frame-23-annotated.png",
+            "rect": [
+              228.0,
+              405.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 24,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/retry-frame-24.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          },
+          {
+            "ordinal": 25,
+            "kind": "assert",
+            "label": "After choosing Edit, a dialog titled for editing a shortcut (not creating one) i",
+            "status": "passed",
+            "file": "frames/retry-frame-25.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15309/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15309/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15309/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

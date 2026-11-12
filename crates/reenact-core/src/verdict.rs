@@ -39,8 +39,7 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
                 out.stderr_tail
                     .lines()
                     .map(str::trim)
-                    .filter(|l| !l.is_empty() && !l.contains("Skill update available"))
-                    .last()
+                    .rfind(|l| !l.is_empty() && !l.contains("Skill update available"))
                     .map(str::to_string)
             })
             .unwrap_or_else(|| "Kane produced no result.".into());
@@ -76,8 +75,8 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
             v
         }
         "failed" => {
-            let confirmed = repro.bug.as_ref().map_or(false, |b| b.confirmed)
-                || repro.reason_code.as_deref().map_or(false, |c| c.contains("confirmed_product_bug"));
+            let confirmed = repro.bug.as_ref().is_some_and(|b| b.confirmed)
+                || repro.reason_code.as_deref().is_some_and(|c| c.contains("confirmed_product_bug"));
             if confirmed {
                 let bug = repro.bug.clone().unwrap_or_default();
                 let headline = bug

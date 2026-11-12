@@ -1,0 +1,125 @@
+{
+  "id": "c-662968c9",
+  "created_at": "2026-11-12T12:59:27.648536762Z",
+  "report": {
+    "title": "Click shortcut edit button is not pop a edit dialog",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\nJust see in this image:\n\n![Image](https://github.com/user-attachments/assets/a145f714-85e2-4b29-a476-cf26c53e9518)\n\n### Steps to Reproduce\n\n1. Add a item in shortcut\n2. Click the menu of this item, and choose edit option\n3. Pop a create dialog, Not a edit dialog\n\n### Expected Behavior\n\nClick edit button and then just pop a edit dialog.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5576",
+    "repo": null,
+    "number": 5576
+  },
+  "app_url": "http://localhost:15308",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the app is a fresh install with no shortcuts",
+      "the shortcuts section is visible in the sidebar of the home page"
+    ],
+    "steps": [
+      "Click the add (+) button next to the Shortcuts section in the sidebar",
+      "In the create shortcut dialog, type a title for the shortcut",
+      "Enter a filter for the shortcut if the dialog requires one",
+      "Click the save/create button to add the shortcut",
+      "Click the menu (three dots) button of the newly created shortcut item in the sidebar",
+      "Choose the 'Edit' option from the menu"
+    ],
+    "expected": "after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter",
+    "reported_actual": "Choosing Edit on a shortcut's menu opens a create-shortcut dialog instead of an edit-shortcut dialog",
+    "missing": [
+      "What title and filter should be used when creating the shortcut?",
+      "Where exactly is the shortcut list (sidebar, mobile menu)?",
+      "What exact text does the dialog show (title and button label)? The screenshot was not readable",
+      "assumed: the shortcut is created via the '+' button next to Shortcuts in the sidebar",
+      "assumed: a shortcut needs a title and a filter expression, and any simple values are acceptable"
+    ],
+    "confidence": 0.7,
+    "summary": "Choosing Edit from a shortcut's menu opens a create dialog instead of an edit dialog",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15308/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5576]\n---\n\n# Click shortcut edit button is not pop a edit dialog\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15308/.\nStay on localhost:15308 for the whole run and do not open any other website.\nDo these in order:\n1. Click the add (+) button next to the Shortcuts section in the sidebar\n2. In the create shortcut dialog, type a title for the shortcut\n3. Enter a filter for the shortcut if the dialog requires one\n4. Click the save/create button to add the shortcut\n5. Click the menu (three dots) button of the newly created shortcut item in the sidebar\n6. Choose the 'Edit' option from the menu\nThe reporter says the correct behavior is that after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter. Verify that after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T12:59:27.648767460Z",
+      "verdict": {
+        "kind": "inconclusive",
+        "headline": "The browser run hit the time limit before it reached a result.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": true,
+        "status": "unknown",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 13.566827500000002,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T13:06:27.662377314Z",
+      "verdict": {
+        "kind": "inconclusive",
+        "headline": "The browser run hit the time limit before it reached a result.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": true,
+        "status": "unknown",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 6.46238,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "inconclusive"
+}

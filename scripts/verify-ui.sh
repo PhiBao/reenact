@@ -5,13 +5,14 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-PORT=8091
+PORT=8092
 export REENACT_CASES_DIR="${REENACT_CASES_DIR:-web/fixtures/cases}"
 export REENACT_BENCHMARK_FILE="${REENACT_BENCHMARK_FILE:-web/fixtures/benchmark.json}"
 
 (cd web && pnpm build >/dev/null) || { echo "UI BUILD FAILED"; exit 1; }
 cargo build -q -p reenact-server || { echo "SERVER BUILD FAILED"; exit 1; }
 
+if curl -fs -o /dev/null "http://localhost:$PORT/healthz"; then echo "PORT $PORT IS BUSY: a stale server would be tested instead"; exit 1; fi
 PORT=$PORT ./target/debug/reenact-server >/tmp/reenact-ui-server.log 2>&1 &
 SERVER=$!
 trap 'kill $SERVER 2>/dev/null' EXIT

@@ -1,0 +1,369 @@
+{
+  "id": "c-fca9c1e0",
+  "created_at": "2026-11-12T12:53:37.751051827Z",
+  "report": {
+    "title": "The nested checklist cannot display levels correctly",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\nThe nested checklist cannot display levels correctly; all items appear on the same level. Furthermore, clicking the checkbox of a sub-checklist incorrectly marks the item above it. The syntax for nested checklists was correctly supported in previous versions.\n\n<img width=\"1072\" height=\"370\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/d7f688e8-a11d-46de-a1fe-1600100f971e\" />\n\n### Steps to Reproduce\n\nThe testing markdown is\n```markdown\n- [ ] task1\n    - [ ] task1.1\n        - [ ] task 1.1.1\n    - [ ] task1.2 \n- [ ] task2\n```\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5575",
+    "repo": null,
+    "number": 5575
+  },
+  "app_url": "http://localhost:15302",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "no memos exist yet in the fresh install"
+    ],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type the line '- [ ] task1' and press Enter",
+      "Type the line ' - [ ] task1.1' (indented by 4 spaces) and press Enter",
+      "Type the line ' - [ ] task 1.1.1' (indented by 8 spaces) and press Enter",
+      "Type the line ' - [ ] task1.2 ' (indented by 4 spaces) and press Enter",
+      "Type the line '- [ ] task2'",
+      "Click the Save button to create the memo",
+      "View the rendered memo in the memo list"
+    ],
+    "expected": "The rendered memo shows the checklist items nested by level: task1.1 and task1.2 are indented under task1, task 1.1.1 is indented further under task1.1, and task2 is at the top level.",
+    "reported_actual": "All checklist items are rendered on the same level (no nesting), and clicking the checkbox of a sub-item incorrectly toggles the item above it.",
+    "missing": [
+      "What behavior does the reporter expect exactly? (Expected Behavior was left empty)",
+      "assumed: the expected behavior is that nesting levels are shown with indentation as in earlier versions",
+      "assumed: the editor preserves the leading spaces when typing lines (auto-indent or list continuation might alter indentation)",
+      "assumed: the memo is created via the home page editor with default visibility"
+    ],
+    "confidence": 0.6,
+    "summary": "Nested markdown checklists render flat and sub-item checkbox toggles the wrong item (v0.26.0)",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15302/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5575]\n---\n\n# The nested checklist cannot display levels correctly\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15302/.\nStay on localhost:15302 for the whole run and do not open any other website.\nDo these in order:\n1. Click the memo editor input on the home page\n2. Type the line '- [ ] task1' and press Enter\n3. Type the line ' - [ ] task1.1' (indented by 4 spaces) and press Enter\n4. Type the line ' - [ ] task 1.1.1' (indented by 8 spaces) and press Enter\n5. Type the line ' - [ ] task1.2 ' (indented by 4 spaces) and press Enter\n6. Type the line '- [ ] task2'\n7. Click the Save button to create the memo\n8. View the rendered memo in the memo list\nThe reporter says the correct behavior is that The rendered memo shows the checklist items nested by level: task1.1 and task1.2 are indented under task1, task 1.1.1 is indented further under task1.1, and task2 is at the top level. Verify that The rendered memo shows the checklist items nested by level: task1.1 and task1.2 are indented under task1, task 1.1.1 is indented further under task1.1, and task2 is at the top level.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T12:53:37.751340986Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created a memo on the home page with the requested five checklist items and their specified indentation levels.\nSaved the memo and viewed it in the memo list.\nConfirmed the rendered checklist hierarchy: task1.1 and task1.2 appear under task1, task 1.1.1 appears under task1.1, and task2 appears at the top level.",
+        "credits": 36.15002,
+        "duration_s": 174.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77X4CKE3ZEHJ4HB18T2KZJW/dashboard/share/US_AHHHURIXWIAE52AC84L6XO5XF4PVPZFEKKOXKFQRXAEMBT8QKWY88BOEDPKBRH18?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15302/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15302/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15302/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (8 steps): type \"Any thoughts...\"; press_key \"Any thoughts...\"; type",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"- [ ] task1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"    - [ ] task1.1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "type",
+            "label": "Type \"        - [ ] task 1.1.1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"    - [ ] task1.2 \" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "type",
+            "label": "Typing checklist into the memo editor input",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": "frames/frame-20-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "click",
+            "label": "Clicking the Save button",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": "frames/frame-21-annotated.png",
+            "rect": [
+              1408.0,
+              181.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "analyze",
+            "label": "task2 is at the top level in the rendered memo.",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "assert",
+            "label": "The rendered memo shows the checklist items nested by level: task1.1 and task1.2",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15302/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15302/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15302/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

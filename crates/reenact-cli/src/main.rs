@@ -60,6 +60,13 @@ enum Cmd {
         #[arg(long)]
         case_url: Option<String>,
     },
+    /// Publish images, upload to the case-file server and comment, for an existing case folder.
+    Ship {
+        #[arg(long)]
+        case: PathBuf,
+        #[command(flatten)]
+        ship: ship::ShipArgs,
+    },
     /// Attempt a fix with an agent, verified by the case's own test.
     Fix(fix::FixArgs),
     /// Re-run every saved reproduction live; fail if a fixed bug is back.
@@ -68,7 +75,7 @@ enum Cmd {
     Bench(bench::BenchArgs),
 }
 
-pub fn make_ctx(config: &PathBuf) -> Result<Ctx> {
+pub fn make_ctx(config: &std::path::Path) -> Result<Ctx> {
     let cfg = Config::load(config)?;
     let llm = Llm::from_env().ok();
     let progress: pipeline::Progress = Arc::new(|stage, msg| eprintln!("[{stage}] {msg}"));
@@ -127,6 +134,7 @@ async fn main() -> Result<()> {
             let c = pipeline::load_case(&case)?;
             println!("{}", render_comment(&c, &Links { strip_url: strip_url.as_deref(), compare_url: compare_url.as_deref(), case_url: case_url.as_deref() }));
         }
+        Cmd::Ship { case, ship } => ship::ship(&case, &ship).await?,
         Cmd::Fix(a) => fix::run(a).await?,
         Cmd::Suite(a) => suite::run(a).await?,
         Cmd::Bench(a) => bench::run(a).await?,

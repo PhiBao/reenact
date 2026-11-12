@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="t d">
+  <title id="t">Reenact trust boundaries</title>
+  <desc id="d">Issue text is untrusted. It passes through a fixed JSON schema and a sanitizer before a Rust renderer writes the test. Kane runs in a fresh browser with a test account. Fixes are gated by who commented and by what files may be edited.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#141414"/></marker>
+    <style>
+      text { font-family: 'Geist Mono', ui-monospace, Menlo, monospace; fill: #141414; }
+      .serif { font-family: 'Instrument Serif', Georgia, serif; }
+      .k { font-size: 11px; letter-spacing: 1.4px; fill: #5b5851; }
+      .t { font-size: 20px; }
+      .s { font-size: 12px; fill: #5b5851; }
+      .zone { fill: none; stroke: #141414; stroke-width: 1.5; }
+      .ln { fill: none; stroke: #141414; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="1200" height="520" fill="#F4F1EA"/>
+  <text x="40" y="52" class="k">TRUST MODEL</text>
+  <text x="40" y="92" class="serif" style="font-size:40px">Where the text stops being trusted.</text>
+
+  <!-- zones -->
+  <rect x="40" y="130" width="220" height="250" fill="#D7301F" fill-opacity="0.07" stroke="#D7301F" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="56" y="158" class="k" style="fill:#D7301F">UNTRUSTED</text>
+  <text x="56" y="196" class="serif t">Issue title</text>
+  <text x="56" y="224" class="serif t">Issue body</text>
+  <text x="56" y="262" class="s">anyone can write this,</text>
+  <text x="56" y="280" class="s">including instructions</text>
+  <text x="56" y="298" class="s">aimed at the agent</text>
+
+  <rect class="zone" x="320" y="130" width="250" height="250"/>
+  <text x="336" y="158" class="k">CONSTRAINED</text>
+  <text x="336" y="196" class="serif t">Compiler + sanitizer</text>
+  <text x="336" y="232" class="s">· only a fixed JSON shape</text>
+  <text x="336" y="252" class="s">· URLs stripped, caps on size</text>
+  <text x="336" y="272" class="s">· no {{variables}}, no @import</text>
+  <text x="336" y="292" class="s">· bidi / zero-width removed</text>
+  <text x="336" y="312" class="s">· start path checked</text>
+
+  <rect class="zone" x="630" y="130" width="250" height="250"/>
+  <text x="646" y="158" class="k">TRUSTED CODE</text>
+  <text x="646" y="196" class="serif t">Rust renderer</text>
+  <text x="646" y="232" class="s">· fixed test scaffold</text>
+  <text x="646" y="252" class="s">· app URL from .reenact.yml</text>
+  <text x="646" y="272" class="s">· "stay on this host"</text>
+  <text x="646" y="292" class="s">· credentials via 0600 file,</text>
+  <text x="646" y="312" class="s">&#160;&#160;as secret variables</text>
+
+  <rect class="zone" x="940" y="130" width="220" height="250"/>
+  <text x="956" y="158" class="k">DISPOSABLE</text>
+  <text x="956" y="196" class="serif t">Kane + test app</text>
+  <text x="956" y="232" class="s">· fresh Chrome profile</text>
+  <text x="956" y="252" class="s">· throwaway test account</text>
+  <text x="956" y="272" class="s">· process group killed</text>
+  <text x="956" y="292" class="s">&#160;&#160;after every run</text>
+  <text x="956" y="312" class="s">· verdict from events,</text>
+  <text x="956" y="330" class="s">&#160;&#160;not the exit code</text>
+
+  <g marker-end="url(#a)">
+    <path class="ln" d="M260 255H318"/><path class="ln" d="M570 255H628"/><path class="ln" d="M880 255H938"/>
+  </g>
+
+  <!-- fix gate -->
+  <rect x="40" y="420" width="1120" height="72" fill="none" stroke="#141414" stroke-width="1.5"/>
+  <text x="56" y="444" class="k">FIX GATE</text>
+  <text x="56" y="464" class="s">Only OWNER / MEMBER / COLLABORATOR can run /reenact fix. Edits are exact, unique search/replace in existing source files,</text>
+  <text x="56" y="481" class="s">never tests, CI or config. The test is re-rendered from the case file each attempt. Only a live Kane run counts as proof.</text>
+  <path class="ln" d="M755 380V418" marker-end="url(#a)"/>
+</svg>
