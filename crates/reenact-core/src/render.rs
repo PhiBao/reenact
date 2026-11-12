@@ -17,7 +17,8 @@ fn no_md_structure(s: &str) -> String {
 }
 
 pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> String {
-    let first_url = match &cfg.login {
+    let login = cfg.login.as_ref().filter(|_| plan.signed_in);
+    let first_url = match login {
         Some(l) => cfg.join(&l.path),
         None => cfg.join(&plan.start_path),
     };
@@ -34,7 +35,7 @@ pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> 
     out.push_str("---\n\n");
     out.push_str(&format!("# {title}\n\n"));
 
-    if let Some(login) = &cfg.login {
+    if let Some(login) = login {
         out.push_str(&format!("## {LOGIN_HEADING}\n"));
         out.push_str(&format!("{}\n", login.instruction.trim()));
         out.push_str(&format!("Verify {}.\n\n", login.signed_in_check.trim_end_matches('.')));
@@ -46,12 +47,8 @@ pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> 
         "Stay on {} for the whole run and do not open any other website.\n",
         cfg.app_host()
     ));
-    if !plan.preconditions.is_empty() {
-        out.push_str(&format!(
-            "Before the main steps, make sure of this: {}.\n",
-            plan.preconditions.iter().map(|s| s.trim_end_matches('.')).collect::<Vec<_>>().join("; ")
-        ));
-    }
+    // Preconditions are deliberately NOT rendered: Kane turns them into checkpoints
+    // that run before the steps that create the state, and fail the run.
     out.push_str("Do these in order:\n");
     for (i, s) in plan.steps.iter().enumerate() {
         out.push_str(&format!("{}. {}\n", i + 1, no_md_structure(s)));
@@ -93,6 +90,7 @@ mod tests {
     fn renders_login_then_repro() {
         let plan = Plan {
             in_browser: true,
+            signed_in: true,
             start_path: "/".into(),
             steps: vec!["- click Save".into(), "# not a heading".into()],
             expected: "the toast says Saved.".into(),
@@ -112,7 +110,7 @@ mod tests {
 
     #[test]
     fn no_login_starts_on_start_path() {
-        let plan = Plan { in_browser: true, start_path: "/settings".into(), steps: vec!["x".into()], expected: "y".into(), ..Default::default() };
+        let plan = Plan { in_browser: true, signed_in: true, start_path: "/settings".into(), steps: vec!["x".into()], expected: "y".into(), ..Default::default() };
         let md = render_test_md(&cfg(false), &report(), &plan, "t");
         assert!(md.contains("url: http://localhost:5230/settings\n"));
         assert!(!md.contains("## Sign in"));

@@ -42,6 +42,7 @@ struct Summary {
     headline: String,
     created_at: chrono::DateTime<chrono::Utc>,
     has_fix: bool,
+    strip: String,
     source_url: Option<String>,
 }
 
@@ -67,6 +68,7 @@ fn summarize(c: &Case) -> Summary {
         headline: last.map(|r| r.verdict.headline.clone()).unwrap_or_default(),
         created_at: c.created_at,
         has_fix: c.runs.iter().any(|r| r.kind == reenact_core::model::RunKind::VerifyFix),
+        strip: last.and_then(|r| r.run.strip_file.clone()).unwrap_or_else(|| "strip.png".into()),
         source_url: c.report.source_url.clone(),
     }
 }

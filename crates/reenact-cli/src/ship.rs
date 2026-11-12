@@ -152,7 +152,14 @@ pub async fn ship(case_dir: &Path, a: &ShipArgs) -> Result<()> {
             bail!("--post needs a case created with --issue");
         };
         let img = |name: &str| asset_base.as_ref().filter(|_| case_dir.join(name).exists()).map(|b| format!("{b}/{name}"));
-        let strip = img("strip.png");
+        let strip_name = case
+            .runs
+            .iter()
+            .rev()
+            .find(|r| r.kind == reenact_core::model::RunKind::Reenact)
+            .and_then(|r| r.run.strip_file.clone())
+            .unwrap_or_else(|| "strip.png".into());
+        let strip = img(&strip_name);
         let compare = img("compare.png");
         let body = render_comment(&case, &Links { strip_url: strip.as_deref(), compare_url: compare.as_deref(), case_url: case_url.as_deref() });
         let url = github::upsert_comment(&repo, n, &case.id, &body)?;

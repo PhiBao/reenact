@@ -115,6 +115,7 @@ pub fn sanitize_plan(plan: &Plan, allowed_hosts: &[String]) -> Plan {
         missing: take(&plan.missing, 6),
         confidence: plan.confidence.clamp(0.0, 1.0),
         summary: clean_line(&plan.summary, allowed_hosts).chars().take(140).collect(),
+        signed_in: plan.signed_in,
     }
 }
 

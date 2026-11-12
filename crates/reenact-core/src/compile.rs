@@ -14,7 +14,8 @@ Output exactly one JSON object and nothing else, with these fields:
 {
   "in_browser": boolean,        // false if the bug cannot be seen in a desktop web browser UI (backend-only, crash of a native/mobile app, feature request, question, performance, needs email/OAuth/external services)
   "start_path": string,         // path on the app where the steps begin, "/" if unknown
-  "preconditions": string[],    // state that must exist first, phrased as facts ("a memo containing a fenced code block exists")
+  "signed_in": boolean,         // false ONLY if the bug is on a signed-out page (sign-in, sign-up, password reset, logged-out state); otherwise true
+  "preconditions": string[],    // informational only, phrased as facts ("a memo containing a fenced code block exists"). The steps themselves must still create that state.
   "steps": string[],            // imperative, ONE browser action each (click, type, open, select, press). Copy exact strings the reporter typed. At most 12.
   "expected": string,           // what the reporter says SHOULD happen, as a claim about what is visible on the page, TRUE when the app is correct and FALSE when the bug is present. Empty string if the report gives no observable expectation.
   "reported_actual": string,    // what the reporter says actually happens
@@ -25,7 +26,8 @@ Output exactly one JSON object and nothing else, with these fields:
 
 Rules:
 - The app instance is a fresh install with ONE already signed-in test user and no data. Include steps that create any data the bug needs, using the reporter's content verbatim.
-- Do not include sign-in steps; sign-in is handled separately.
+- Do not include sign-in steps; sign-in is handled separately (unless signed_in is false, in which case the browser starts signed out).
+- `expected` must be something a person could confirm by LOOKING at the page: visible text, a visible count, whether something appears or not. Do not require inspecting link targets, HTML attributes or colors unless the report is only about those; describe them by what is visible (for example, the link text becomes clickable and opens a dialer prompt).
 - Follow the reporter's steps faithfully. If a string is an obvious typo of valid syntax for the very feature being described, use the corrected form and add "assumed: ..." to missing.
 - Write `expected` as the CORRECT behavior, never as the bug. Example: report says "total goes up after coupon"; expected = "the total shows $10 after applying the coupon".
 - If the report is only a screenshot, a question, or too vague to produce at least two concrete steps and an observable expectation, set in_browser accordingly or leave steps/expected empty and fill `missing`.

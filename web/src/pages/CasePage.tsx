@@ -76,7 +76,7 @@ export function CasePage() {
         <h2 id="re-h">The reenactment</h2>
         {hasStrip && (
           <div className="strip-wrap">
-            <img src={caseFile(c.id, 'strip.png')} alt="Screenshots from Kane's run, left to right. The last one is the result." />
+            <img src={caseFile(c.id, repro.run.strip_file ?? 'strip.png')} alt="Screenshots from Kane's run, left to right. The last one is the result." />
           </div>
         )}
         <Steps run={repro} />

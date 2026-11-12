@@ -5,6 +5,7 @@ use crate::model::*;
 pub const MARKER_PREFIX: &str = "<!-- reenact:case:";
 
 pub struct Links<'a> {
+    /// Base URL of the case folder; image names come from the run records.
     pub strip_url: Option<&'a str>,
     pub compare_url: Option<&'a str>,
     pub case_url: Option<&'a str>,

@@ -124,7 +124,8 @@ pub async fn run_and_record(
         None => None,
     };
     let viewport = extracted.as_ref().and_then(|e| e.viewport);
-    let verdict = judge(&outcome, extracted.as_ref(), ctx.cfg.login.is_some());
+    let expects_login = test_md.contains(&format!("## {}\n", crate::render::LOGIN_HEADING));
+    let verdict = judge(&outcome, extracted.as_ref(), expects_login);
     let mut run = summarize(&outcome, extracted.as_ref(), None);
     // Frame files are relative to `frames/`; store them with that prefix so a
     // case directory is self-describing.
@@ -152,8 +153,9 @@ pub async fn run_and_record(
         if shown.len() < 2 {
             shown = run.frames.clone();
         }
-        if let Err(e) = strip::compose_strip(dir, &shown, verdict.kind, viewport.unwrap_or((1920, 1080)), &dir.join(&strip_name)) {
-            tracing::warn!("strip failed: {e:#}");
+        match strip::compose_strip(dir, &shown, verdict.kind, viewport.unwrap_or((1920, 1080)), &dir.join(&strip_name)) {
+            Ok(()) => run.strip_file = Some(strip_name),
+            Err(e) => tracing::warn!("strip failed: {e:#}"),
         }
     }
     ctx.say("verdict", &format!("{}: {}", verdict.kind.label(), verdict.headline));
@@ -226,11 +228,30 @@ pub async fn reenact_with_plan(ctx: &Ctx, base: &Path, report: Report, plan: Pla
     case.state = CaseState::Reenacting;
     save_case(&dir, &case)?;
 
-    let (rec, _) = run_and_record(ctx, &dir, &test_md, RunKind::Reenact, "reenact", "").await?;
-    case.state = rec.verdict.kind.into();
-    case.runs.push(rec);
+    let (first, _) = run_and_record(ctx, &dir, &test_md, RunKind::Reenact, "reenact", "").await?;
+    let mut records = vec![first];
+    // Browser agents are not perfectly repeatable. One retry for results that
+    // say little (infrastructure trouble, or Kane could not finish the steps).
+    if matches!(records[0].verdict.kind, VerdictKind::Inconclusive | VerdictKind::NeedsInfo) {
+        ctx.say("retry", "Result was not conclusive; running once more");
+        let (second, _) = run_and_record(ctx, &dir, &test_md, RunKind::Reenact, "reenact (retry)", "retry-").await?;
+        records.push(second);
+        // Keep the more conclusive run last: everything downstream reads the last Reenact run.
+        records.sort_by_key(|r| conclusiveness(r.verdict.kind));
+    }
+    case.state = records.last().map(|r| r.verdict.kind.into()).unwrap_or(CaseState::Inconclusive);
+    case.runs.extend(records);
     save_case(&dir, &case)?;
     Ok((case, dir))
+}
+
+fn conclusiveness(k: VerdictKind) -> u8 {
+    match k {
+        VerdictKind::Inconclusive => 0,
+        VerdictKind::NeedsInfo => 1,
+        VerdictKind::NotReproduced => 2,
+        VerdictKind::Reproduced => 3,
+    }
 }
 
 /// Re-run a case's saved test against the current app (after a fix).
@@ -261,6 +282,7 @@ pub fn empty_run() -> RunSummary {
         bug_family: None,
         bug_title: None,
         frames: vec![],
+        strip_file: None,
         signals: Signals::default(),
         root_cause: None,
         suggested_fix: None,

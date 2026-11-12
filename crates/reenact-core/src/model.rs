@@ -42,6 +42,13 @@ pub struct Plan {
     /// One-line restatement used as a case title.
     #[serde(default)]
     pub summary: String,
+    /// False when the bug lives on a signed-out page (sign-in, sign-up, logged-out state).
+    #[serde(default = "yes")]
+    pub signed_in: bool,
+}
+
+fn yes() -> bool {
+    true
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -120,6 +127,9 @@ pub struct RunSummary {
     pub bug_family: Option<String>,
     pub bug_title: Option<String>,
     pub frames: Vec<Frame>,
+    /// Evidence strip image for this run, relative to the case folder.
+    #[serde(default)]
+    pub strip_file: Option<String>,
     pub signals: Signals,
     pub root_cause: Option<String>,
     pub suggested_fix: Option<String>,

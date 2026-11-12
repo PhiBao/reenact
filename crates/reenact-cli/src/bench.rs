@@ -121,7 +121,7 @@ fn cfg_for(port: u16) -> Config {
         login: Some(Login {
             path: "/auth".into(),
             instruction: "Sign in with username {{username}} and password {{password}}.".into(),
-            signed_in_check: "the user is signed in and the main memo page is visible".into(),
+            signed_in_check: "the sign-in form is gone and the memo app's main page is shown".into(),
             username_env: "REENACT_USERNAME".into(),
             password_env: "REENACT_PASSWORD".into(),
         }),

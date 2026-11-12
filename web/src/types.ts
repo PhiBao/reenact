@@ -27,6 +27,7 @@ export interface RunSummary {
   duration_s: number;
   share_url: string | null;
   frames: Frame[];
+  strip_file: string | null;
   signals: { console_errors: string[]; failed_requests: string[] };
   root_cause: string | null;
 }
@@ -80,6 +81,7 @@ export interface CaseSummary {
   headline: string;
   created_at: string;
   has_fix: boolean;
+  strip: string;
   source_url: string | null;
 }
 

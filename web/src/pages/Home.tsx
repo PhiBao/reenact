@@ -52,7 +52,7 @@ export function Home() {
               {featured.has_fix ? (
                 <Compare before={caseFile(featured.id, 'before.png')} after={caseFile(featured.id, 'after.png')} />
               ) : (
-                <img src={caseFile(featured.id, 'strip.png')} alt={`Kane's run for: ${featured.title}`} />
+                <img src={caseFile(featured.id, featured.strip)} alt={`Kane's run for: ${featured.title}`} />
               )}
               <span className="proof-cap">
                 <Stamp kind={kindFromLabel(featured.verdict)} />

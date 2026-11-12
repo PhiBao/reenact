@@ -137,6 +137,7 @@ pub fn summarize(out: &KaneOutcome, ex: Option<&Extracted>, share_fallback: Opti
         bug_family: bug.as_ref().and_then(|b| b.family.clone()),
         bug_title: bug.as_ref().and_then(|b| b.title.clone()).or(tri.title.clone()),
         frames: ex.map(|e| e.frames.clone()).unwrap_or_default(),
+        strip_file: None,
         signals: ex.map(|e| e.signals.clone()).unwrap_or_default(),
         root_cause: tri.root_cause,
         suggested_fix: tri.suggested_fix,
