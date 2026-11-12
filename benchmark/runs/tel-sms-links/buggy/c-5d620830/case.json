@@ -1,0 +1,38 @@
+{
+  "id": "c-5d620830",
+  "created_at": "2026-11-12T12:40:42.291558933Z",
+  "report": {
+    "title": "tel: and sms: URI schemes not supported in links.",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nMarkdown links using the `tel:` and `sms:` URI schemes do not render correctly.\n\n### Steps to reproduce\n\nWrite the following markdown in a memo:\n\n```\n[phone me](tel:+440000000000)\n```\n\nI'd expect this to render as something like:\n\n```\n<a href=\"tel:+440000000000\">phone me</a>\n```\n\nBut it renders as\n\n```\n<a>phone me</a>\n```\n\nThe same bug also affects the `sms:` URI scheme.\n\n### Memos version\n\nv0.31.0-rc.1\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6340",
+    "repo": null,
+    "number": 6340
+  },
+  "app_url": "http://localhost:15310",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Open the memo editor to create a new memo",
+      "Type `[phone me](tel:+440000000000)` into the memo editor",
+      "Click the Save button to create the memo",
+      "Locate the saved memo in the memo list and look at the rendered 'phone me' link"
+    ],
+    "expected": "the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'",
+    "reported_actual": "The link renders as an anchor without an href (<a>phone me</a>), so the tel: link is not functional. The same happens with the sms: scheme.",
+    "missing": [
+      "assumed: the markdown is entered as the memo body in the standard memo editor on the home page and saved as a new memo",
+      "The exact sms: link example was not given, so only the tel: example is reproduced",
+      "assumed: inspecting the rendered link's href attribute is possible to verify the bug"
+    ],
+    "confidence": 0.85,
+    "summary": "Markdown links with tel: and sms: URI schemes render as anchors without href in memos"
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15310/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6340]\n---\n\n# tel: and sms: URI schemes not supported in links.\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the user is signed in and the main memo page is visible.\n\n## Reproduce the report\nOpen http://localhost:15310/.\nStay on localhost:15310 for the whole run and do not open any other website.\nDo these in order:\n1. Open the memo editor to create a new memo\n2. Type `[phone me](tel:+440000000000)` into the memo editor\n3. Click the Save button to create the memo\n4. Locate the saved memo in the memo list and look at the rendered 'phone me' link\nThe reporter says the correct behavior is that the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'. Verify that the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

@@ -34,7 +34,15 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
         let why = out
             .error
             .clone()
-            .or_else(|| (!out.stderr_tail.trim().is_empty()).then(|| first_line(out.stderr_tail.trim())))
+            .or_else(|| {
+                // Kane prints a skill-update nag on stderr; skip it to find the real message.
+                out.stderr_tail
+                    .lines()
+                    .map(str::trim)
+                    .filter(|l| !l.is_empty() && !l.contains("Skill update available"))
+                    .last()
+                    .map(str::to_string)
+            })
             .unwrap_or_else(|| "Kane produced no result.".into());
         return verdict(VerdictKind::Inconclusive, format!("Kane did not run: {why}"));
     }

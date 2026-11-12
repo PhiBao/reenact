@@ -1,0 +1,193 @@
+{
+  "id": "c-e53d7a0d",
+  "created_at": "2026-11-12T12:34:35.272549643Z",
+  "report": {
+    "title": "Search is not case-idependent in non-EN locale",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26\n\n### Bug Description\n\nSeems like the search is not case-independent when memos content is not in English.\n\n### Steps to Reproduce\n\n1. Create a memo:\n ```\n**Рецепты**\n\n**Сырники**:\n\n\n**Блины**\n**Выход** 12-13 шт (большая сковородка), 12\n- молоко 400 (500) мл\n```\n2. Search for \"блины\" -> no results found. Searching for \"Блины\" (note capital Б) works fine though.\n\n### Expected Behavior\n\nI expect search to be case-independent by default (and it seems to be working like this for English)\n\n### Screenshots & Additional Context\n\n<img width=\"855\" height=\"877\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/a3aa2369-2946-4548-a2ca-c3eebb9ccbf3\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5559",
+    "repo": null,
+    "number": 5559
+  },
+  "app_url": "http://localhost:15304",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Create a new memo with the content: \"**Рецепты** **Сырники**: **Блины** **Выход** 12-13 шт (большая сковородка), 12 - молоко 400 (500) мл\"",
+      "Save the memo",
+      "Click the search box",
+      "Type \"блины\" into the search box",
+      "Press Enter to run the search"
+    ],
+    "expected": "the memo containing \"**Блины**\" appears in the search results when searching for \"блины\"",
+    "reported_actual": "Searching for \"блины\" (lowercase) returns no results, while searching for \"Блины\" (capital Б) finds the memo.",
+    "missing": [
+      "assumed: the memo content is entered as multi-line text exactly as shown in the report's code block",
+      "assumed: the memo is saved with default visibility",
+      "assumed: search is done through the main search box on the memo list page",
+      "Which database backend is used (SQLite, MySQL, Postgres)? Case-insensitivity for non-ASCII may depend on it.",
+      "Does the issue also occur in the other locale settings or only with Cyrillic content?"
+    ],
+    "confidence": 0.7,
+    "summary": "Search for lowercase Cyrillic text doesn't match memo containing capitalized word"
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15304/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5559]\n---\n\n# Search is not case-idependent in non-EN locale\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the user is signed in and the main memo page is visible.\n\n## Reproduce the report\nOpen http://localhost:15304/.\nStay on localhost:15304 for the whole run and do not open any other website.\nDo these in order:\n1. Create a new memo with the content: \"**Рецепты** **Сырники**: **Блины** **Выход** 12-13 шт (большая сковородка), 12 - молоко 400 (500) мл\"\n2. Save the memo\n3. Click the search box\n4. Type \"блины\" into the search box\n5. Press Enter to run the search\nThe reporter says the correct behavior is that the memo containing \"**Блины**\" appears in the search results when searching for \"блины\". Verify that the memo containing \"**Блины**\" appears in the search results when searching for \"блины\".\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T12:34:35.272768904Z",
+      "verdict": {
+        "kind": "inconclusive",
+        "headline": "Could not sign in to the test instance: Final verification failed: \"the user is signed in and the main memo page is visible\"",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"the user is signed in and the main memo page is visible\"",
+        "reason_code": "assertion_error.final_verification",
+        "summary": "The verification expected a different page signal than the normal signed-in memo screen. The screen shown after sign-in contains the memo editor, navigation sidebar, and empty-state message, which is a valid main memo page.\nUpdate the final check to recognize stable memo-page elements, such as the memo editor or sidebar, after successful sign-in.",
+        "credits": 12.53776,
+        "duration_s": 68.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77W1G96JBNNAW6ZA97R39HQ/dashboard/share/US_AQW1UJ8QKAYWPKM8QPDYRRLRTF5SVLM81D5D17SPSIE9SR5MDQG34UVWDLHHKHXI?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Sign in",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Signed-in memo page rejected by final verification",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "navigate: Navigate to http://localhost:15304/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "wait: queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "type: Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "type: Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "click: Clicking Sign in with username and password",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15304/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait: PRIMARY: wait for the main memo page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "analyze: the user is signed in",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "assert: the user is signed in and the main memo page is visible",
+            "status": "failed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15304/"
+          }
+        ],
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15304/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15304/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The verification expected a different page signal than the normal signed-in memo screen. The screen shown after sign-in contains the memo editor, navigation sidebar, and empty-state message, which is a valid main memo page.",
+        "suggested_fix": "Update the final check to recognize stable memo-page elements, such as the memo editor or sidebar, after successful sign-in.",
+        "severity": "minor",
+        "bug_confidence": 0.97
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "inconclusive"
+}

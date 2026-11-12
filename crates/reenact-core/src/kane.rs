@@ -166,6 +166,10 @@ pub struct RunOpts<'a> {
     pub timeout: Duration,
     /// Secret variables, e.g. username/password. Written to a 0600 temp file.
     pub variables: Vec<(String, String, bool)>,
+    /// Re-author every step with the live agent instead of replaying the cache.
+    /// Cached replays reuse recorded check results, so they cannot catch a
+    /// regression; anything that must be judged against the live app uses this.
+    pub author: bool,
 }
 
 pub type OnEvent<'a> = &'a (dyn Fn(&Value) + Send + Sync);
@@ -178,6 +182,7 @@ pub fn kill_group(pid: u32) {
 }
 
 pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Result<KaneOutcome> {
+    anyhow::ensure!(opts.dir.is_absolute() && opts.test_file.is_absolute(), "kane paths must be absolute");
     let mut args: Vec<String> = vec![
         "testmd".into(),
         "run".into(),
@@ -187,6 +192,10 @@ pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Re
         "--bug-detection".into(),
         "stop".into(),
     ];
+
+    if opts.author {
+        args.push("--author".into());
+    }
 
     // Credentials: 0600 file, removed when dropped.
     let var_file = if opts.variables.is_empty() {

@@ -109,6 +109,25 @@ pub fn compose_strip(
     Ok(())
 }
 
+/// One full-size frame with an optional ring around `rect`, for the before/after slider.
+pub fn compose_single(dir: &Path, frame: &Frame, rect: Option<[f64; 4]>, color: Rgba<u8>, viewport: (u32, u32), out: &Path) -> Result<()> {
+    let mut img = load(dir, &frame.file)?;
+    if let Some(r) = rect {
+        let sx = img.width() as f64 / viewport.0 as f64;
+        let sy = img.height() as f64 / viewport.1 as f64;
+        border(&mut img, (r[0] * sx - 8.0) as i64, (r[1] * sy - 8.0) as i64, (r[2] * sx + 16.0) as i64, (r[3] * sy + 16.0) as i64, 4, color);
+    }
+    img.save(out).with_context(|| format!("writing {}", out.display()))?;
+    Ok(())
+}
+
+pub fn red() -> Rgba<u8> {
+    RED
+}
+pub fn green() -> Rgba<u8> {
+    GREEN
+}
+
 /// Before/after panel: two final frames side by side, red vs green.
 pub fn compose_compare(
     before_dir: &Path,

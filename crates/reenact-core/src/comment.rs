@@ -46,7 +46,7 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
     }
 
     // What Kane did, from the action frames.
-    let steps: Vec<&Frame> = rec.run.frames.iter().filter(|f| f.kind != "navigate" && !f.label.is_empty()).collect();
+    let steps: Vec<&Frame> = rec.run.frames.iter().filter(|f| f.kind != "navigate" && f.kind != "wait" && !f.label.is_empty()).collect();
     if !steps.is_empty() {
         out.push_str("| # | What Kane did | Result |\n|---|---|---|\n");
         for (i, f) in steps.iter().enumerate().take(14) {

@@ -29,3 +29,6 @@ clap = { version = "4", features = ["derive", "env"] }
 libc = "0.2"
 tempfile = "3"
 uuid = { version = "1", features = ["v4", "serde"] }
+axum = { version = "0.8", features = ["macros"] }
+tower-http = { version = "0.6", features = ["fs", "trace", "limit", "compression-gzip"] }
+base64 = "0.22"

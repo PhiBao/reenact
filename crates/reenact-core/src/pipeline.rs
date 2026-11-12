@@ -28,6 +28,8 @@ pub struct Ctx {
     pub llm: Option<Llm>,
     pub kane_bin: String,
     pub progress: Progress,
+    /// Fixed case id (CI uses `issue-<n>` so a case is addressable from the issue).
+    pub case_id: Option<String>,
 }
 
 impl Ctx {
@@ -91,6 +93,8 @@ pub async fn run_and_record(
     prefix: &str,
 ) -> Result<(RunRecord, Option<(u32, u32)>)> {
     std::fs::create_dir_all(dir)?;
+    // Kane runs with this directory as its cwd, so everything must be absolute.
+    let dir = &std::fs::canonicalize(dir)?;
     let test_file = dir.join("reenact_test.md");
     std::fs::write(&test_file, test_md)?;
     let started_at = chrono::Utc::now();
@@ -102,6 +106,7 @@ pub async fn run_and_record(
         test_file: &test_file,
         timeout: Duration::from_secs(ctx.cfg.timeout_s),
         variables: creds,
+        author: true,
     };
     ctx.say("running", "Kane is driving a real browser");
     let cb = |ev: &Value| kane_event_to_progress(ctx, ev);
@@ -133,7 +138,21 @@ pub async fn run_and_record(
     // Strip for this run.
     if !run.frames.is_empty() {
         let strip_name = format!("{prefix}strip.png");
-        if let Err(e) = strip::compose_strip(dir, &run.frames, verdict.kind, viewport.unwrap_or((1920, 1080)), &dir.join(&strip_name)) {
+        // Leave the sign-in screens out of the strip: they say nothing about the bug.
+        let login_path = ctx.cfg.login.as_ref().map(|l| l.path.clone());
+        let mut shown: Vec<Frame> = run
+            .frames
+            .iter()
+            .filter(|f| match (&login_path, &f.url) {
+                (Some(lp), Some(u)) => !url::Url::parse(u).map(|u| u.path() == lp).unwrap_or(false),
+                _ => true,
+            })
+            .cloned()
+            .collect();
+        if shown.len() < 2 {
+            shown = run.frames.clone();
+        }
+        if let Err(e) = strip::compose_strip(dir, &shown, verdict.kind, viewport.unwrap_or((1920, 1080)), &dir.join(&strip_name)) {
             tracing::warn!("strip failed: {e:#}");
         }
     }
@@ -159,8 +178,9 @@ pub async fn reenact(ctx: &Ctx, base: &Path, report: Report) -> Result<(Case, Pa
 /// Run an already-compiled plan. The benchmark uses this to run the SAME plan
 /// against the buggy and the fixed version of an app.
 pub async fn reenact_with_plan(ctx: &Ctx, base: &Path, report: Report, plan: Plan) -> Result<(Case, PathBuf)> {
-    let id = new_case_id();
+    let id = ctx.case_id.clone().unwrap_or_else(new_case_id);
     let dir = case_dir(base, &id);
+    let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir)?;
     let mut case = Case {
         id: id.clone(),

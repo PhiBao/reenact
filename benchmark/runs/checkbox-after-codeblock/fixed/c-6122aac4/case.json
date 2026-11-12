@@ -1,0 +1,300 @@
+{
+  "id": "c-6122aac4",
+  "created_at": "2026-11-12T12:36:26.804417918Z",
+  "report": {
+    "title": "Wrong checkbox checked when it's preceded by checkbox in a codeblock",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nWrong checkbox checked when it's preceded by checkbox in a codeblock\n\n### Steps to Reproduce\n\n1. Create a note:\n    ````\n    ```\n    -[ ] foo\n    ```\n    - [ ] bar\n    ````\n    I.e. the first checkbox is in a codeblock.\n2. In view mode click `bar` checkbox\n\n### Expected\n\n```\n-[ ] foo\n```\n- [x] bar\n\n### Actual\n\n```\n-[x] foo\n```\n- [ ] bar\n\n### Screenshots & Additional Context\n\n**Client env**:\n- Linux Mint 22.2, Chrome 142.0.7444.175 / Brave\n- Android 15, Chrome 142.0.7444.171\n\n**Deployment**:\n- Container from official docker image\n- Official demo site",
+    "source_url": "https://github.com/usememos/memos/issues/5319",
+    "repo": null,
+    "number": 5319
+  },
+  "app_url": "http://localhost:15301",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo exists whose content is a fenced code block containing the line \"-[ ] foo\" followed by a task list item \"- [ ] bar\" after the code block"
+    ],
+    "steps": [
+      "Open the new memo editor on the home page",
+      "Type the line ``` (opening code fence)",
+      "Press Enter and type \"-[ ] foo\"",
+      "Press Enter and type ``` (closing code fence)",
+      "Press Enter and type \"- [ ] bar\"",
+      "Click the Save button to create the memo",
+      "In the saved memo in view mode, click the checkbox next to \"bar\""
+    ],
+    "expected": "the checkbox next to \"bar\" is checked, and the code block still shows \"-[ ] foo\" unchanged",
+    "reported_actual": "The code block text changes to \"-[x] foo\" and the \"bar\" checkbox remains unchecked",
+    "missing": [
+      "assumed: the memo content is the code fence, \"-[ ] foo\", closing code fence, then \"- [ ] bar\" on separate lines, as shown in the report",
+      "assumed: the editor may auto-insert list markers or closing fences while typing, so the saved content should match the report exactly",
+      "assumed: the code fence has no language specified"
+    ],
+    "confidence": 0.8,
+    "summary": "Clicking a task checkbox after a code block containing '-[ ] foo' toggles the code block text instead"
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15301/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5319]\n---\n\n# Wrong checkbox checked when it's preceded by checkbox in a codeblock\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the user is signed in and the main memo page is visible.\n\n## Reproduce the report\nOpen http://localhost:15301/.\nStay on localhost:15301 for the whole run and do not open any other website.\nBefore the main steps, make sure of this: a memo exists whose content is a fenced code block containing the line \"-[ ] foo\" followed by a task list item \"- [ ] bar\" after the code block.\nDo these in order:\n1. Open the new memo editor on the home page\n2. Type the line ``` (opening code fence)\n3. Press Enter and type \"-[ ] foo\"\n4. Press Enter and type ``` (closing code fence)\n5. Press Enter and type \"- [ ] bar\"\n6. Click the Save button to create the memo\n7. In the saved memo in view mode, click the checkbox next to \"bar\"\nThe reporter says the correct behavior is that the checkbox next to \"bar\" is checked, and the code block still shows \"-[ ] foo\" unchanged. Verify that the checkbox next to \"bar\" is checked, and the code block still shows \"-[ ] foo\" unchanged.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T12:36:26.804685298Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created a memo on the local home page containing a fenced code block with the text \"-[ ] foo\" and a separate \"bar\" task below it.\nSaved the memo and opened it in view mode.\nChecked the checkbox next to \"bar\"; the code block text remained unchanged.",
+        "credits": 40.103415,
+        "duration_s": 213.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77W4WN6VHAMBBCPNCBFM20N/dashboard/share/US_SNT7XCPWKPK2823TH7FPDW5SS2O0L93SRIX7I5ZSR8ERUYDAFDTBOLSRBDIUI54A?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "navigate: Navigate to http://localhost:15301/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "wait: queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "type: Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "type: Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "click: Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15301/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait: PRIMARY: wait for the main memo page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "analyze: the main memo page is visible",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "assert: the user is signed in and the main memo page is visible",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "navigate: Navigate to http://localhost:15301/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "wait: PRIMARY: new memo editor on the home page; role=textbox; text=\"Any thoughts...\" ",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "type: Typing memo content with the code fence and task list",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "click: Clicking Save to create the memo",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              157.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "click: Clicking the checkbox next to bar in the saved memo",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              818.0,
+              271.0,
+              14.0,
+              14.0
+            ],
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "analyze: ANALYZE(textual_visual, 'the memo content has a task list item \"- [ ] bar\" after",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "assert: a memo exists whose content is a fenced code block containing the line \"-[ ] foo",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "analyze",
+            "label": "analyze: the checkbox next to \"bar\" is checked",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "assert",
+            "label": "assert: the checkbox next to \"bar\" is checked, and the code block still shows \"-[ ] foo\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15301/"
+          }
+        ],
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15301/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15301/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

@@ -11,6 +11,8 @@ use std::sync::Arc;
 
 mod bench;
 mod fix;
+mod ship;
+mod suite;
 
 #[derive(Parser)]
 #[command(name = "reenact", version, about = "Bug report in, browser reproduction and proof out.")]
@@ -34,14 +36,11 @@ enum Cmd {
         body_file: Option<PathBuf>,
         #[arg(long, default_value = ".reenact/cases")]
         out: PathBuf,
-        /// Post (or update) the result as a comment on the issue.
+        /// Use this case id (CI uses `issue-<n>`). Letters, digits, `-`, `_`.
         #[arg(long)]
-        post: bool,
-        /// Public base URL where `<case>/strip.png` will be served, for the comment image.
-        #[arg(long, env = "REENACT_ASSET_BASE_URL")]
-        asset_base_url: Option<String>,
-        #[arg(long, env = "REENACT_CASE_BASE_URL")]
-        case_base_url: Option<String>,
+        case_id: Option<String>,
+        #[command(flatten)]
+        ship: ship::ShipArgs,
     },
     /// Re-run a case's saved test against the app as it is now.
     Verify {
@@ -63,6 +62,8 @@ enum Cmd {
     },
     /// Attempt a fix with an agent, verified by the case's own test.
     Fix(fix::FixArgs),
+    /// Re-run every saved reproduction live; fail if a fixed bug is back.
+    Suite(suite::SuiteArgs),
     /// Run the historical benchmark (buggy and fixed versions of a real app).
     Bench(bench::BenchArgs),
 }
@@ -71,7 +72,7 @@ pub fn make_ctx(config: &PathBuf) -> Result<Ctx> {
     let cfg = Config::load(config)?;
     let llm = Llm::from_env().ok();
     let progress: pipeline::Progress = Arc::new(|stage, msg| eprintln!("[{stage}] {msg}"));
-    Ok(Ctx { cfg, llm, kane_bin: std::env::var("KANE_CLI_BIN").unwrap_or_else(|_| "kane-cli".into()), progress })
+    Ok(Ctx { cfg, llm, kane_bin: std::env::var("KANE_CLI_BIN").unwrap_or_else(|_| "kane-cli".into()), progress, case_id: None })
 }
 
 fn short_summary(case: &Case) -> serde_json::Value {
@@ -93,8 +94,12 @@ async fn main() -> Result<()> {
         .init();
     let cli = Cli::parse();
     match cli.cmd {
-        Cmd::Repro { config, issue, title, body_file, out, post, asset_base_url, case_base_url } => {
-            let ctx = make_ctx(&config)?;
+        Cmd::Repro { config, issue, title, body_file, out, case_id, ship } => {
+            let mut ctx = make_ctx(&config)?;
+            if let Some(id) = case_id {
+                anyhow::ensure!(!id.is_empty() && id.len() <= 64 && id.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_'), "bad --case-id");
+                ctx.case_id = Some(id);
+            }
             let report = match (issue, title, body_file) {
                 (Some(url), _, _) => github::fetch_issue(&url)?,
                 (None, Some(t), Some(f)) => Report {
@@ -109,16 +114,7 @@ async fn main() -> Result<()> {
             let (case, dir) = pipeline::reenact(&ctx, &out, report).await?;
             println!("{}", serde_json::to_string_pretty(&short_summary(&case))?);
             eprintln!("case directory: {}", dir.display());
-            if post {
-                let (Some(repo), Some(n)) = (case.report.repo.clone(), case.report.number) else {
-                    anyhow::bail!("--post needs --issue");
-                };
-                let strip = asset_base_url.as_ref().map(|b| format!("{}/{}/strip.png", b.trim_end_matches('/'), case.id));
-                let case_url = case_base_url.as_ref().map(|b| format!("{}/{}", b.trim_end_matches('/'), case.id));
-                let body = render_comment(&case, &Links { strip_url: strip.as_deref(), compare_url: None, case_url: case_url.as_deref() });
-                let url = github::upsert_comment(&repo, n, &case.id, &body)?;
-                eprintln!("comment: {url}");
-            }
+            ship::ship(&dir, &ship).await?;
         }
         Cmd::Verify { config, case } => {
             let ctx = make_ctx(&config)?;
@@ -132,6 +128,7 @@ async fn main() -> Result<()> {
             println!("{}", render_comment(&c, &Links { strip_url: strip_url.as_deref(), compare_url: compare_url.as_deref(), case_url: case_url.as_deref() }));
         }
         Cmd::Fix(a) => fix::run(a).await?,
+        Cmd::Suite(a) => suite::run(a).await?,
         Cmd::Bench(a) => bench::run(a).await?,
     }
     Ok(())

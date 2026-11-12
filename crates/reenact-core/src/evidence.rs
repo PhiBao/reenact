@@ -47,6 +47,26 @@ struct Rect {
     height: f64,
 }
 
+/// Kane's step summaries carry planner scaffolding ("PRIMARY: ... | HINTS: ...",
+/// "ANALYZE(textual_visual, '...')"). Reduce them to something a person would say.
+pub fn clean_label(kind: &str, raw: &str) -> String {
+    let text = raw.split_once(": ").map(|(_, r)| r).unwrap_or(raw);
+    let text = text.strip_prefix("PRIMARY: ").unwrap_or(text);
+    let text = text.split(" | HINTS").next().unwrap_or(text);
+    let text = text.split("; role=").next().unwrap_or(text);
+    if let Some(inner) = text.strip_prefix("ANALYZE(") {
+        // ANALYZE(method, 'claim', key='...')
+        if let Some(a) = inner.find('\'') {
+            if let Some(b) = inner[a + 1..].find('\'') {
+                return format!("Checked: {}", &inner[a + 1..a + 1 + b]);
+            }
+        }
+        return "Checked the page".to_string();
+    }
+    let _ = kind;
+    text.trim().chars().take(140).collect()
+}
+
 fn read_entry(z: &mut zip::ZipArchive<std::fs::File>, name: &str) -> Option<Vec<u8>> {
     let mut f = z.by_name(name).ok()?;
     let mut buf = Vec::with_capacity(f.size() as usize);
@@ -126,7 +146,7 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
         out.frames.push(Frame {
             ordinal,
             kind: step.kind.clone().unwrap_or_default(),
-            label: step.summary.clone().unwrap_or_default(),
+            label: clean_label(step.kind.as_deref().unwrap_or(""), &step.summary.clone().unwrap_or_default()),
             status,
             file,
             annotated_file,
@@ -194,6 +214,13 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cleans_planner_labels() {
+        assert_eq!(clean_label("click", "click: PRIMARY: Open the cart; role=button | HINTS: x"), "Open the cart");
+        assert_eq!(clean_label("analyze", "analyze: ANALYZE(textual_visual, 'the total shows $20', key='t')"), "Checked: the total shows $20");
+        assert_eq!(clean_label("click", "click: Clicking Save"), "Clicking Save");
+    }
 
     #[test]
     fn parses_real_kane_pack() {

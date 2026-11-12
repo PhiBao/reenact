@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Corner Shop</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header><h1>Corner Shop</h1><p>Small-batch coffee gear</p></header>
+  <main>
+    <section aria-labelledby="products-h">
+      <h2 id="products-h">Products</h2>
+      <ul id="products"></ul>
+    </section>
+    <section aria-labelledby="cart-h">
+      <h2 id="cart-h">Your cart</h2>
+      <p id="empty">Your cart is empty.</p>
+      <ul id="cart"></ul>
+      <form id="coupon-form">
+        <label for="coupon">Coupon code</label>
+        <input id="coupon" name="coupon" autocomplete="off">
+        <button type="submit">Apply coupon</button>
+      </form>
+      <p id="coupon-msg" role="status"></p>
+      <dl>
+        <dt>Subtotal</dt><dd id="subtotal">$0.00</dd>
+        <dt>Discount</dt><dd id="discount">$0.00</dd>
+        <dt>Total</dt><dd id="total">$0.00</dd>
+      </dl>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
