@@ -1,0 +1,124 @@
+name: Reenact
+description: Reproduce bug reports in a real browser with Kane CLI, and prove fixes with the same test.
+author: Reenact
+branding:
+  icon: aperture
+  color: red
+
+inputs:
+  mode:
+    description: "`repro` to reproduce the issue that triggered the workflow, `fix` to attempt a verified fix, `suite` to re-run saved tests."
+    required: true
+  config:
+    description: Path to .reenact.yml
+    default: .reenact.yml
+  start-command:
+    description: Command that starts the app under test (it receives PORT from app_url).
+    required: true
+  github-token:
+    description: Token with issues, pull-requests and contents write access.
+    required: true
+  testmu-username:
+    required: true
+  testmu-access-key:
+    required: true
+  llm-api-key:
+    required: true
+  llm-base-url:
+    default: https://api.openai.com/v1
+  llm-model:
+    default: gpt-5.4-mini
+  test-username:
+    description: Username of the disposable test account on the app (only if .reenact.yml has `login`).
+    default: ""
+  test-password:
+    default: ""
+  evidence-branch:
+    default: reenact-evidence
+  server-url:
+    description: Optional case-file server to upload bundles to.
+    default: ""
+  upload-token:
+    default: ""
+  version:
+    description: Release tag of Reenact to download.
+    default: v0.1.0
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Install Kane CLI and sign in
+      shell: bash
+      env:
+        TM_USER: ${{ inputs.testmu-username }}
+        TM_KEY: ${{ inputs.testmu-access-key }}
+      run: |
+        npm install -g @testmuai/kane-cli
+        kane-cli login --username "$TM_USER" --access-key "$TM_KEY" >/dev/null
+        kane-cli whoami | grep -i authenticated
+
+    - name: Install Reenact
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        VERSION: ${{ inputs.version }}
+      run: |
+        mkdir -p "$HOME/.local/bin"
+        gh release download "$VERSION" --repo PhiBao/reenact --pattern reenact-linux-x86_64 --output "$HOME/.local/bin/reenact"
+        chmod +x "$HOME/.local/bin/reenact"
+        echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+    - name: Start the app under test
+      shell: bash
+      env:
+        START: ${{ inputs.start-command }}
+        CONFIG: ${{ inputs.config }}
+      run: |
+        APP_URL=$(grep -E '^app_url:' "$CONFIG" | awk '{print $2}')
+        PORT=$(echo "$APP_URL" | sed -E 's#.*:([0-9]+)/?.*#\1#')
+        (PORT="$PORT" nohup bash -c "$START" > "$RUNNER_TEMP/app.log" 2>&1 &)
+        for i in $(seq 1 60); do curl -fs -o /dev/null "$APP_URL" && exit 0; sleep 1; done
+        echo "app did not start"; cat "$RUNNER_TEMP/app.log"; exit 1
+
+    - name: Reenact
+      shell: bash
+      env:
+        MODE: ${{ inputs.mode }}
+        CONFIG: ${{ inputs.config }}
+        START: ${{ inputs.start-command }}
+        BRANCH: ${{ inputs.evidence-branch }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        REENACT_LLM_API_KEY: ${{ inputs.llm-api-key }}
+        REENACT_LLM_BASE_URL: ${{ inputs.llm-base-url }}
+        REENACT_LLM_MODEL: ${{ inputs.llm-model }}
+        REENACT_USERNAME: ${{ inputs.test-username }}
+        REENACT_PASSWORD: ${{ inputs.test-password }}
+        REENACT_SERVER_URL: ${{ inputs.server-url }}
+        REENACT_UPLOAD_TOKEN: ${{ inputs.upload-token }}
+        ISSUE_URL: ${{ github.event.issue.html_url }}
+        ISSUE_NUMBER: ${{ github.event.issue.number }}
+        REPO: ${{ github.repository }}
+      run: |
+        set -euo pipefail
+        case "$MODE" in
+          repro)
+            reenact repro --config "$CONFIG" --issue "$ISSUE_URL" --case-id "issue-$ISSUE_NUMBER" \
+              --out .reenact/cases --publish-branch "$BRANCH" --post
+            ;;
+          fix)
+            # The reproduction lives on the evidence branch under issue-<n>/.
+            git clone --quiet --depth 1 --branch "$BRANCH" "https://github.com/$REPO.git" "$RUNNER_TEMP/evidence"
+            mkdir -p .reenact/cases
+            cp -r "$RUNNER_TEMP/evidence/issue-$ISSUE_NUMBER" .reenact/cases/
+            reenact fix --config "$CONFIG" --case ".reenact/cases/issue-$ISSUE_NUMBER" --repo . \
+              --start-cmd "$START" --pr --publish-branch "$BRANCH" --post
+            ;;
+          suite)
+            reenact suite --config "$CONFIG"
+            ;;
+          *) echo "unknown mode $MODE"; exit 2 ;;
+        esac

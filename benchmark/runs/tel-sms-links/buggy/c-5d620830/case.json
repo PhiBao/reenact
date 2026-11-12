@@ -31,8 +31,237 @@
     "summary": "Markdown links with tel: and sms: URI schemes render as anchors without href in memos"
   },
   "test_md": "---\nmode: testing\nurl: http://localhost:15310/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6340]\n---\n\n# tel: and sms: URI schemes not supported in links.\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the user is signed in and the main memo page is visible.\n\n## Reproduce the report\nOpen http://localhost:15310/.\nStay on localhost:15310 for the whole run and do not open any other website.\nDo these in order:\n1. Open the memo editor to create a new memo\n2. Type `[phone me](tel:+440000000000)` into the memo editor\n3. Click the Save button to create the memo\n4. Locate the saved memo in the memo list and look at the rendered 'phone me' link\nThe reporter says the correct behavior is that the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'. Verify that the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'.\n",
-  "runs": [],
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T12:40:42.291789978Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "Final verification failed: \"the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'\"",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"the rendered memo shows a 'phone me' link that is a clickable anchor with href 'tel:+440000000000'\"",
+        "reason_code": "assertion_error.final_verification",
+        "summary": "The agent used a visual check for a requirement that also depends on hidden link details. The screenshots show “phone me” styled as a link, but they do not reveal whether its destination is exactly `tel:+440000000000`.\nUpdate the final verification to select the rendered “phone me” element and confirm that it is an anchor whose href exactly equals `tel:+440000000000`; optionally activate it only if the browser test environment can safely handle telephone links.",
+        "credits": 41.2328075,
+        "duration_s": 211.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M77WCQ6GVW4MFR96RJNC4973/dashboard/share/US_65MR4IENZNK7ZGRCOL0BJUTIW275ZIA08NLDZ1DH61PKMTIBJF4MRTLJLLGDFCCW?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Link verification omitted href inspection",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "navigate: Navigate to http://localhost:15310/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "wait: queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "type: Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              822.0,
+              499.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "type: Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              822.0,
+              567.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "click: Clicking Sign in button in the login form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              821.0,
+              610.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:15310/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait: PRIMARY: wait for the main memo page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "analyze: the main memo page is visible",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "assert: the user is signed in and the main memo page is visible",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "navigate: Navigate to http://localhost:15310/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "wait: PRIMARY: memo editor is open to create a new memo; role=textbox; text=\"Any thoug",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "type: Typing a message in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              801.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "click: Clicking the Save button to create the memo",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1392.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "wait",
+            "label": "wait: PRIMARY: Locate the saved memo in the memo list and look at the rendered 'phone ",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "analyze: ANALYZE(textual_visual, \"the rendered memo's 'phone me' link is a clickable anch",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "assert: the rendered memo shows a 'phone me' link that is a clickable anchor with href '",
+            "status": "failed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15310/"
+          }
+        ],
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15310/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The agent used a visual check for a requirement that also depends on hidden link details. The screenshots show “phone me” styled as a link, but they do not reveal whether its destination is exactly `tel:+440000000000`.",
+        "suggested_fix": "Update the final verification to select the rendered “phone me” element and confirm that it is an anchor whose href exactly equals `tel:+440000000000`; optionally activate it only if the browser test environment can safely handle telephone links.",
+        "severity": "minor",
+        "bug_confidence": 0.9
+      }
+    }
+  ],
   "fixes": [],
   "pr_url": null,
-  "state": "reenacting"
+  "state": "needs_info"
 }
