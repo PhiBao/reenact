@@ -1,0 +1,44 @@
+{
+  "id": "c-1bd71f18",
+  "created_at": "2026-11-12T15:41:59.292908792Z",
+  "report": {
+    "title": "Search is not case-idependent in non-EN locale",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26\n\n### Bug Description\n\nSeems like the search is not case-independent when memos content is not in English.\n\n### Steps to Reproduce\n\n1. Create a memo:\n ```\n**Рецепты**\n\n**Сырники**:\n\n\n**Блины**\n**Выход** 12-13 шт (большая сковородка), 12\n- молоко 400 (500) мл\n```\n2. Search for \"блины\" -> no results found. Searching for \"Блины\" (note capital Б) works fine though.\n\n### Expected Behavior\n\nI expect search to be case-independent by default (and it seems to be working like this for English)\n\n### Screenshots & Additional Context\n\n<img width=\"855\" height=\"877\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/a3aa2369-2946-4548-a2ca-c3eebb9ccbf3\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5559",
+    "repo": null,
+    "number": 5559
+  },
+  "app_url": "http://localhost:15304",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "no memos exist yet in the fresh install"
+    ],
+    "steps": [
+      "Click the memo editor input on the home page to focus it",
+      "Type the memo content: \"**Рецепты**\", then a blank line, \"**Сырники**:\", then two blank lines, \"**Блины**\", a new line, \"**Выход** 12-13 шт (большая сковородка), 12\", a new line, \"- молоко 400 (500) мл\"",
+      "Click the Save button to create the memo",
+      "Click the search box",
+      "Type \"блины\" (lowercase б) into the search box",
+      "Press Enter to run the search"
+    ],
+    "expected": "the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\"",
+    "reported_actual": "searching for lowercase \"блины\" returns no results, while searching for \"Блины\" with a capital Б finds the memo",
+    "missing": [
+      "assumed: the search box is on the home page and runs the search on Enter",
+      "assumed: the memo is typed with the markdown bold markers exactly as shown, with line breaks as in the report",
+      "Is the memo content visibility or any filter/tag selection relevant?",
+      "Which database backend (SQLite, MySQL, Postgres) is used by the reporter's instance?"
+    ],
+    "confidence": 0.75,
+    "summary": "Search for lowercase Cyrillic word finds no memo, while capitalized version does",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15304/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5559]\n---\n\n# Search is not case-idependent in non-EN locale\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15304/.\nStay on localhost:15304 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page to focus it\n2. Type the memo content: \"**Рецепты**\", then a blank line, \"**Сырники**:\", then two blank lines, \"**Блины**\", a new line, \"**Выход** 12-13 шт (большая сковородка), 12\", a new line, \"- молоко 400 (500) мл\"\n3. Click the Save button to create the memo\n4. Click the search box\n5. Type \"блины\" (lowercase б) into the search box\n6. Press Enter to run the search\nThe reporter says the correct behavior is that the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\". Verify that the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\".\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

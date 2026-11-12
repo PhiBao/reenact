@@ -1,0 +1,44 @@
+{
+  "id": "c-06c961d7",
+  "created_at": "2026-11-12T15:41:59.446308494Z",
+  "report": {
+    "title": "Wrong checkbox checked when it's preceded by checkbox in a codeblock",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nWrong checkbox checked when it's preceded by checkbox in a codeblock\n\n### Steps to Reproduce\n\n1. Create a note:\n    ````\n    ```\n    -[ ] foo\n    ```\n    - [ ] bar\n    ````\n    I.e. the first checkbox is in a codeblock.\n2. In view mode click `bar` checkbox\n\n### Expected\n\n```\n-[ ] foo\n```\n- [x] bar\n\n### Actual\n\n```\n-[x] foo\n```\n- [ ] bar\n\n### Screenshots & Additional Context\n\n**Client env**:\n- Linux Mint 22.2, Chrome 142.0.7444.175 / Brave\n- Android 15, Chrome 142.0.7444.171\n\n**Deployment**:\n- Container from official docker image\n- Official demo site",
+    "source_url": "https://github.com/usememos/memos/issues/5319",
+    "repo": null,
+    "number": 5319
+  },
+  "app_url": "http://localhost:15300",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo exists whose content is a fenced code block containing the line '-[ ] foo' followed by a task list item '- [ ] bar'"
+    ],
+    "steps": [
+      "Open the memo editor to create a new memo",
+      "Type a line containing three backticks (```) to open a fenced code block",
+      "Press Shift+Enter to add a new line and type '-[ ] foo'",
+      "Press Shift+Enter to add a new line and type three backticks (```) to close the code block",
+      "Press Shift+Enter to add a new line and type '- [ ] bar'",
+      "Click the Save button to save the memo",
+      "In the saved memo's view mode, click the checkbox next to 'bar'"
+    ],
+    "expected": "After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'",
+    "reported_actual": "The code block text changes to '-[x] foo' and the checkbox next to 'bar' remains unchecked",
+    "missing": [
+      "assumed: the new lines in the editor are entered with Shift+Enter or plain Enter, which behave equivalently for the purpose of creating the content",
+      "assumed: the memo is saved with the default visibility",
+      "assumed: the code fence lines are plain ``` with no language specified"
+    ],
+    "confidence": 0.8,
+    "summary": "Clicking a task checkbox after a fenced code block containing '-[ ] foo' toggles the code block text instead",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15300/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5319]\n---\n\n# Wrong checkbox checked when it's preceded by checkbox in a codeblock\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15300/.\nStay on localhost:15300 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the memo editor to create a new memo\n2. Type a line containing three backticks (```) to open a fenced code block\n3. Press Shift+Enter to add a new line and type '-[ ] foo'\n4. Press Shift+Enter to add a new line and type three backticks (```) to close the code block\n5. Press Shift+Enter to add a new line and type '- [ ] bar'\n6. Click the Save button to save the memo\n7. In the saved memo's view mode, click the checkbox next to 'bar'\nThe reporter says the correct behavior is that After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'. Verify that After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

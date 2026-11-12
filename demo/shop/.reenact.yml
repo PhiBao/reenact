@@ -1,0 +1,4 @@
+app_url: http://localhost:4100
+description: Corner Shop, a small online coffee-gear store with a cart and coupon codes
+max_steps: 30
+timeout_s: 300

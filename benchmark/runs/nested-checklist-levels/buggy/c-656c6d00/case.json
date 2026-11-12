@@ -1,0 +1,44 @@
+{
+  "id": "c-656c6d00",
+  "created_at": "2026-11-12T15:41:59.859663284Z",
+  "report": {
+    "title": "The nested checklist cannot display levels correctly",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\nThe nested checklist cannot display levels correctly; all items appear on the same level. Furthermore, clicking the checkbox of a sub-checklist incorrectly marks the item above it. The syntax for nested checklists was correctly supported in previous versions.\n\n<img width=\"1072\" height=\"370\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/d7f688e8-a11d-46de-a1fe-1600100f971e\" />\n\n### Steps to Reproduce\n\nThe testing markdown is\n```markdown\n- [ ] task1\n    - [ ] task1.1\n        - [ ] task 1.1.1\n    - [ ] task1.2 \n- [ ] task2\n```\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5575",
+    "repo": null,
+    "number": 5575
+  },
+  "app_url": "http://localhost:15302",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type the line '- [ ] task1' and press Enter",
+      "Type the line ' - [ ] task1.1' (indented by 4 spaces) and press Enter",
+      "Type the line ' - [ ] task 1.1.1' (indented by 8 spaces) and press Enter",
+      "Type the line ' - [ ] task1.2 ' (indented by 4 spaces) and press Enter",
+      "Type the line '- [ ] task2'",
+      "Click the Save button to save the memo",
+      "View the rendered memo in the memo list"
+    ],
+    "expected": "The rendered memo shows task1.1 and task1.2 indented one level under task1, and task 1.1.1 indented two levels under task1, with task2 at the top level, rather than all items appearing on the same level",
+    "reported_actual": "All checklist items are displayed at the same level, and clicking the checkbox of a sub-item marks the item above it instead",
+    "missing": [
+      "assumed: the indentation in the report is 4 spaces per nesting level",
+      "assumed: the memo editor may auto-continue list markers or auto-indent on Enter, so typed lines may need adjusting",
+      "The reporter gave no explicit expected behavior; assumed nested items should render indented as in previous versions",
+      "Which checkbox exactly was clicked when the wrong item was marked"
+    ],
+    "confidence": 0.6,
+    "summary": "Nested checklist items render at the same level and sub-item checkbox toggles the wrong item",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15302/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5575]\n---\n\n# The nested checklist cannot display levels correctly\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15302/.\nStay on localhost:15302 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page\n2. Type the line '- [ ] task1' and press Enter\n3. Type the line ' - [ ] task1.1' (indented by 4 spaces) and press Enter\n4. Type the line ' - [ ] task 1.1.1' (indented by 8 spaces) and press Enter\n5. Type the line ' - [ ] task1.2 ' (indented by 4 spaces) and press Enter\n6. Type the line '- [ ] task2'\n7. Click the Save button to save the memo\n8. View the rendered memo in the memo list\nThe reporter says the correct behavior is that The rendered memo shows task1.1 and task1.2 indented one level under task1, and task 1.1.1 indented two levels under task1, with task2 at the top level, rather than all items appearing on the same level. Verify that The rendered memo shows task1.1 and task1.2 indented one level under task1, and task 1.1.1 indented two levels under task1, with task2 at the top level, rather than all items appearing on the same level.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

@@ -1,0 +1,1 @@
+added the enamel mug first and THEN the coffee beans. In the cart the coffee beans row is on top. I clicked Remove on the coffee beans row and it was the mug that disappeared, the beans stayed. Chrome, mac.
