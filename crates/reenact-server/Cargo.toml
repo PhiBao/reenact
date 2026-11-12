@@ -1,0 +1,18 @@
+[package]
+name = "reenact-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "reenact-server"
+path = "src/main.rs"
+
+[dependencies]
+reenact-core = { path = "../reenact-core" }
+anyhow.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

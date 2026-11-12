@@ -1,0 +1,11 @@
+target/
+node_modules/
+dist/
+.env
+*.evidence
+.testmuai/evidence/
+output-*/
+.reenact/
+*.db
+*.db-*
+!crates/**/fixtures/*.evidence
