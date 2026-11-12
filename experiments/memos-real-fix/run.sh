@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Reenact fixes a REAL bug in a REAL open-source app, and checks itself against the maintainers' fix.
 #
-#   ./run.sh <case>            case: search-filter | memo-detail-stale
+#   ./run.sh <case>            case: search-filter | memo-detail-stale | default-visibility
 #
 # What it does
 #   1. Checks out Memos at the release the bug was filed on (v0.26.2) and serves its web UI from source
@@ -19,7 +19,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../.." && pwd)
 CASE=${1:-search-filter}
 WORK=${WORK:-/tmp/memos-real-fix}
-TAG=v0.26.2          # git tag; the docker tag has no leading v
+TAG=v0.26.2          # git tag the bug was filed on; the docker tag has no leading v
 BACKEND_PORT=18081
 WEB_PORT=13001
 REENACT=$ROOT/target/debug/reenact
@@ -34,6 +34,10 @@ case "$CASE" in
     ISSUE=5659; ID=memo-detail-stale-after-edit
     TITLE="Memo detail page not refresh after editing and saving the content"
     ;;
+  default-visibility)
+    ISSUE=5622; ID=default-visibility-resets; TAG=v0.26.1
+    TITLE="Visibility selection in the submission form becomes Private after the post"
+    ;;
   *) echo "unknown case $CASE"; exit 2 ;;
 esac
 
@@ -41,15 +45,16 @@ FIX_URL=$(python3 -c "import json;print([c for c in json.load(open('$ROOT/benchm
 ISSUE_URL="https://github.com/usememos/memos/issues/$ISSUE"
 [ -f "$ROOT/.env" ] && set -a && . "$ROOT/.env" && set +a
 export REENACT_USERNAME=admin REENACT_PASSWORD='Passw0rd!'
+SRC="$WORK/memos-$TAG"      # one checkout per release
 mkdir -p "$WORK"
 
 # ---- source checkout (once) --------------------------------------------------------------------
-if [ ! -d "$WORK/memos/.git" ]; then
-  git clone -q --depth 1 --branch "$TAG" https://github.com/usememos/memos.git "$WORK/memos"
-  echo "web/pnpm-workspace.yaml" >> "$WORK/memos/.git/info/exclude"
-  (cd "$WORK/memos/web" && pnpm install --frozen-lockfile --ignore-scripts >/dev/null)
+if [ ! -d "$SRC/.git" ]; then
+  git clone -q --depth 1 --branch "$TAG" https://github.com/usememos/memos.git "$SRC"
+  echo "web/pnpm-workspace.yaml" >> "$SRC/.git/info/exclude"
+  (cd "$SRC/web" && pnpm install --frozen-lockfile --ignore-scripts >/dev/null)
 fi
-cd "$WORK/memos" && git checkout -q -- . && git clean -fdq && git checkout -q "$TAG" 2>/dev/null || true
+cd "$SRC" && git checkout -q -- . && git clean -fdq && git checkout -q "$TAG" 2>/dev/null || true
 
 cat > "$WORK/reenact.yml" <<EOF
 app_url: http://localhost:$WEB_PORT
@@ -84,7 +89,7 @@ if [ -z "${SKIP_REPRO:-}" ]; then
 fi
 
 echo "== 2. fix with Kiro CLI, verified by the same Kane test"
-"$REENACT" fix --config "$WORK/reenact.yml" --case "$WORK/cases/issue-$ISSUE" --repo "$WORK/memos" \
+"$REENACT" fix --config "$WORK/reenact.yml" --case "$WORK/cases/issue-$ISSUE" --repo "$SRC" \
   --start-cmd "$START" --app-env DEV_PROXY_SERVER=http://localhost:$BACKEND_PORT \
   --reset-cmd "$RESET" --scope web/src \
   --agent command --agent-cmd "kiro-cli chat --no-interactive --trust-tools=fs_read,fs_write" \
@@ -92,7 +97,7 @@ echo "== 2. fix with Kiro CLI, verified by the same Kane test"
 unserve
 
 echo "== 3. our change vs the maintainers' change"
-cd "$WORK/memos"
+cd "$SRC"
 git diff "$TAG" HEAD -- web/src > "$WORK/ours-$ISSUE.diff" || true
 case "$FIX_URL" in
   */pull/*) gh api "repos/usememos/memos/pulls/${FIX_URL##*/}" -H 'Accept: application/vnd.github.v3.diff' > "$WORK/upstream-$ISSUE.diff" ;;
