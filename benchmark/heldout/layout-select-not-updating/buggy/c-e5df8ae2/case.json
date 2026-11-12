@@ -1,0 +1,45 @@
+{
+  "id": "c-e5df8ae2",
+  "created_at": "2026-11-12T20:22:40.269685473Z",
+  "report": {
+    "title": "Selecting a layout doesn't update the selection or layout until the page is refreshed",
+    "body": "### Describe the bug\n\nWhen I try to change the layout (i.e., from List to Masonry), neither the selection nor the layout are updated until I refresh the screen. That is, it appears my selection was ineffective. But if I refresh the screen, the layout I selected takes effect and is indicated correctly in the layout selector. \n\n### Steps to reproduce\n\nSelect a layout other than the current one.\n\n### The version of Memos you're using\n\n\nv0.25.2\n\n### Screenshots or additional context\n\n<img width=\"510\" height=\"358\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/e1effa15-7c53-46c0-8409-46fa9fc3b41c\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5194",
+    "repo": null,
+    "number": 5194
+  },
+  "app_url": "http://localhost:16206",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the current layout is List",
+      "a layout selector is available in the Memos UI"
+    ],
+    "steps": [
+      "Open the layout selector",
+      "Select the Masonry layout"
+    ],
+    "expected": "After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page.",
+    "reported_actual": "After selecting a different layout, neither the selector nor the displayed layout changes until the page is refreshed; after refresh the selected layout is applied and shown correctly.",
+    "missing": [
+      "Where exactly is the layout selector located (home page, explorer, or settings)?",
+      "Does the bug need any memos to exist to be visible?",
+      "assumed: the layout selector is on the home page and the default layout is List",
+      "assumed: the layout switched to is Masonry, per the example in the report",
+      "Which browser was used?"
+    ],
+    "confidence": 0.4,
+    "summary": "Changing the layout (e.g. List to Masonry) has no effect until the page is refreshed",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16206/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5194]\n---\n\n# Selecting a layout doesn't update the selection or layout until the page is refreshed\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16206/.\nStay on localhost:16206 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the layout selector\n2. Select the Masonry layout\nThe reporter says the correct behavior is that After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page. Verify that After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

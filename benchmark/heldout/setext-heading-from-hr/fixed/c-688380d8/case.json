@@ -1,0 +1,375 @@
+{
+  "id": "c-688380d8",
+  "created_at": "2026-11-12T20:19:50.950215510Z",
+  "report": {
+    "title": "Inconsistent markdown rendering",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nText is being rendered inconsistently. Expect regular or bold text, receive h2.\n\nThe following text was used:\n```markdown\nTop\n--- \n**Bolded** words\n---\n**more, same bolded** regular text\n```\n\n### Steps to Reproduce\n\n1. Create new note.\n2. Enter text from description.\n3. Save note.\n\n### Expected Behavior\n\nExpected to be rendered in standard markdown format without any headings present.\n\n### Screenshots & Additional Context\n\nActual output is as follows:\n```html\n<h2>Top</h2>\n<h2><strong>Bolded</strong> words</h2>\n<p><strong>more, same bolded</strong> regular text</p>\n```\nbut no headings should be present.",
+    "source_url": "https://github.com/usememos/memos/issues/5314",
+    "repo": null,
+    "number": 5314
+  },
+  "app_url": "http://localhost:16201",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the user is signed in and can create a new memo from the home page editor"
+    ],
+    "steps": [
+      "Click the memo editor input box on the home page",
+      "Type \"Top\"",
+      "Press Enter",
+      "Type \"--- \" (three hyphens followed by a space)",
+      "Press Enter",
+      "Type \"**Bolded** words\"",
+      "Press Enter",
+      "Type \"---\"",
+      "Press Enter",
+      "Type \"**more, same bolded** regular text\"",
+      "Click the Save button to save the memo"
+    ],
+    "expected": "In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large heading text), with \"Bolded\" in bold, and \"more, same bolded\" in bold followed by \"regular text\".",
+    "reported_actual": "\"Top\" and \"Bolded words\" are rendered as h2 headings, while the last line renders as a normal paragraph with bold text.",
+    "missing": [
+      "assumed: pressing Enter in the editor inserts a newline between the lines",
+      "assumed: the line \"--- \" has a trailing space, as in the report",
+      "note: under CommonMark a line of text followed by '---' is a setext h2 heading, so the reporter's expectation may differ from the standard",
+      "Does the reporter expect the '---' lines to render as horizontal rules?"
+    ],
+    "confidence": 0.6,
+    "summary": "Text followed by '---' lines renders as h2 headings instead of regular text in a saved memo",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16201/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5314]\n---\n\n# Inconsistent markdown rendering\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16201/.\nStay on localhost:16201 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input box on the home page\n2. Type \"Top\"\n3. Press Enter\n4. Type \"--- \" (three hyphens followed by a space)\n5. Press Enter\n6. Type \"**Bolded** words\"\n7. Press Enter\n8. Type \"---\"\n9. Press Enter\n10. Type \"**more, same bolded** regular text\"\n11. Click the Save button to save the memo\nThe reporter says the correct behavior is that In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large heading text), with \"Bolded\" in bold, and \"more, same bolded\" in bold followed by \"regular text\". Verify that In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large heading text), with \"Bolded\" in bold, and \"more, same bolded\" in bold followed by \"regular text\".\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:19:50.950545743Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The memo did not retain the requested regular-text and bold formatting after it was saved.",
+        "stuck_at": null,
+        "root_cause": "The memo editor appears to interpret the hyphen-only lines as formatting for the surrounding text instead of preserving the requested body text and bold portions.",
+        "suggested_fix": "Inspect the saved memo's Markdown/editor conversion for lines containing three hyphens, including a trailing space. It should not turn the nearby body text into headings and should preserve the bold spans.",
+        "severity": "major",
+        "confidence": 0.82
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large heading text), with \"Bolded\" in bold, and \"more, same bolded\" in bold followed by \"regular text\".\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo editor appears to interpret the hyphen-only lines as formatting for the surrounding text instead of preserving the requested body text and bold portions.\nInspect the saved memo's Markdown/editor conversion for lines containing three hyphens, including a trailing space. It should not turn the nearby body text into headings and should preserve the bold spans.\nevidence: objective_contradiction: Final verification failed: \"In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large ",
+        "credits": 37.0675175,
+        "duration_s": 148.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78PNDGH2NFDXAWXA0BQBW3X/dashboard/share/US_4CQSCYW0Y7TEJUSIO5JPOY2YPIKZEFO554LE9IXN1GMZLQ4D7OWQXFZSU12L5G9F?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Memo separator syntax saves as heading formatting",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16201/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16201/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16201/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (8 steps): type \"Any thoughts...\"; press_key \"Any thoughts...\"; type",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"Top\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"--- \" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "type",
+            "label": "Type \"**Bolded** words\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"---\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "type",
+            "label": "Typing more, same bolded regular text into the memo editor",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": "frames/frame-20-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "click",
+            "label": "Clicking Save button",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": "frames/frame-21-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "assert",
+            "label": "In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (n",
+            "status": "failed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16201/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:16201/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:16201/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The memo editor appears to interpret the hyphen-only lines as formatting for the surrounding text instead of preserving the requested body text and bold portions.",
+        "suggested_fix": "Inspect the saved memo's Markdown/editor conversion for lines containing three hyphens, including a trailing space. It should not turn the nearby body text into headings and should preserve the bold spans.",
+        "severity": "major",
+        "bug_confidence": 0.82
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

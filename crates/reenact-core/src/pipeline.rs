@@ -139,7 +139,8 @@ pub async fn run_and_record(
     };
     let viewport = extracted.as_ref().and_then(|e| e.viewport);
     let expects_login = test_md.contains(&format!("## {}\n", crate::render::LOGIN_HEADING));
-    let verdict = judge(&outcome, extracted.as_ref(), expects_login);
+    let login_path = ctx.cfg.login.as_ref().map(|l| l.path.as_str());
+    let verdict = judge(&outcome, extracted.as_ref(), expects_login, login_path);
     let mut run = summarize(&outcome, extracted.as_ref(), None);
     // Frame files are relative to `frames/`; store them with that prefix so a
     // case directory is self-describing.
@@ -192,6 +193,23 @@ pub async fn run_and_record(
         },
         viewport,
     ))
+}
+
+/// The compiler guesses where a report starts (`/cart`, `/settings`). A guess that does not
+/// exist on the app would make Kane report a missing page as the bug, so check it first
+/// and fall back to the root.
+async fn usable_start_path(cfg: &crate::config::Config, path: &str) -> Option<String> {
+    if path == "/" {
+        return None;
+    }
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(6))
+        .build()
+        .ok()?;
+    match client.get(cfg.join(path)).send().await {
+        Ok(r) if matches!(r.status().as_u16(), 404 | 410) => Some("/".to_string()),
+        _ => None,
+    }
 }
 
 /// Compile a report into a sanitized plan (one LLM call, no browser).
@@ -292,6 +310,15 @@ pub async fn reenact_with_plan(
         return Ok((case, dir));
     }
 
+    let mut plan = plan;
+    if let Some(root) = usable_start_path(&ctx.cfg, &plan.start_path).await {
+        plan.missing.push(format!(
+            "assumed: the page {} does not exist on this app, so the steps start from the home page",
+            plan.start_path
+        ));
+        plan.start_path = root;
+        case.plan = Some(plan.clone());
+    }
     let tag = report
         .number
         .map(|n| format!("issue-{n}"))

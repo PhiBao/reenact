@@ -82,7 +82,7 @@ pub async fn run_dir(ctx: &Ctx, dir: &Path, exclude: Option<&str>) -> Result<Vec
             None,
         )
         .await?;
-        let v = judge(&out, None, ctx.cfg.login.is_some());
+        let v = judge(&out, None, ctx.cfg.login.is_some(), None);
         rows.push(SuiteRow {
             name,
             kind: v.kind,

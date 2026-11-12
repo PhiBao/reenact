@@ -26,7 +26,36 @@ fn first_line(s: &str) -> String {
     s.lines().next().unwrap_or(s).trim().to_string()
 }
 
-pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> Verdict {
+/// How many real user actions (click, type, ...) the run performed outside the sign-in
+/// page. `None` when there is no evidence to count.
+fn actions_off_login(ex: Option<&Extracted>, login_path: Option<&str>) -> Option<usize> {
+    let ex = ex?;
+    if ex.frames.is_empty() {
+        return None;
+    }
+    Some(
+        ex.frames
+            .iter()
+            .filter(|f| {
+                matches!(
+                    f.kind.as_str(),
+                    "click" | "type" | "fill" | "select" | "press"
+                )
+            })
+            .filter(|f| match (login_path, f.url.as_deref()) {
+                (Some(lp), Some(u)) => url::Url::parse(u).map(|u| u.path() != lp).unwrap_or(true),
+                _ => true,
+            })
+            .count(),
+    )
+}
+
+pub fn judge(
+    out: &KaneOutcome,
+    ex: Option<&Extracted>,
+    expects_login: bool,
+    login_path: Option<&str>,
+) -> Verdict {
     if out.timed_out {
         return verdict(
             VerdictKind::Inconclusive,
@@ -98,6 +127,16 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
                     .reason_code
                     .as_deref()
                     .is_some_and(|c| c.contains("confirmed_product_bug"));
+            // A "bug" found before the reporter's steps were even attempted (a missing
+            // page, a blocked load) is not a reproduction of the report.
+            if confirmed && actions_off_login(ex, login_path) == Some(0) {
+                let mut v = verdict(
+                    VerdictKind::NeedsInfo,
+                    "Kane reported a failure before it performed any of the reported steps, so this is not a reproduction of the report.",
+                );
+                v.stuck_at = repro.reason.as_deref().map(first_line);
+                return v;
+            }
             if confirmed {
                 let bug = repro.bug.clone().unwrap_or_default();
                 let headline = bug
@@ -241,7 +280,7 @@ mod tests {
             Some("assertion_error.confirmed_product_bug"),
             Some(bug(true)),
         )]);
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::Reproduced);
+        assert_eq!(judge(&o, None, false, None).kind, VerdictKind::Reproduced);
     }
 
     #[test]
@@ -252,7 +291,7 @@ mod tests {
             Some("assertion_error"),
             Some(bug(false)),
         )]);
-        let v = judge(&o, None, false);
+        let v = judge(&o, None, false, None);
         assert_eq!(v.kind, VerdictKind::NeedsInfo);
         assert!(v.stuck_at.is_some());
     }
@@ -265,27 +304,67 @@ mod tests {
             Some("element_not_found"),
             None,
         )]);
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::NeedsInfo);
+        assert_eq!(judge(&o, None, false, None).kind, VerdictKind::NeedsInfo);
+    }
+
+    fn extracted(kinds: &[&str]) -> Extracted {
+        let mut ex = Extracted::default();
+        for (i, k) in kinds.iter().enumerate() {
+            ex.frames.push(crate::model::Frame {
+                ordinal: i as u32,
+                kind: (*k).into(),
+                label: String::new(),
+                status: "passed".into(),
+                file: String::new(),
+                annotated_file: None,
+                rect: None,
+                url: Some("http://app/".into()),
+            });
+        }
+        ex
+    }
+
+    #[test]
+    fn a_failure_before_any_user_action_is_not_a_reproduction() {
+        let o = out(vec![step(
+            REPRO_HEADING,
+            "failed",
+            Some("assertion_error.confirmed_product_bug"),
+            Some(bug(true)),
+        )]);
+        let only_waiting = extracted(&["navigate", "wait"]);
+        assert_eq!(
+            judge(&o, Some(&only_waiting), false, None).kind,
+            VerdictKind::NeedsInfo
+        );
+        let acted = extracted(&["navigate", "click", "assert"]);
+        assert_eq!(
+            judge(&o, Some(&acted), false, None).kind,
+            VerdictKind::Reproduced
+        );
     }
 
     #[test]
     fn pass_is_not_reproduced() {
         let o = out(vec![step(REPRO_HEADING, "passed", None, None)]);
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::NotReproduced);
+        assert_eq!(
+            judge(&o, None, false, None).kind,
+            VerdictKind::NotReproduced
+        );
     }
 
     #[test]
     fn login_failure_is_inconclusive_not_a_verdict_on_the_bug() {
         let o = out(vec![step(LOGIN_HEADING, "failed", None, None)]);
-        assert_eq!(judge(&o, None, true).kind, VerdictKind::Inconclusive);
+        assert_eq!(judge(&o, None, true, None).kind, VerdictKind::Inconclusive);
     }
 
     #[test]
     fn timeout_and_empty_are_inconclusive() {
         let mut o = out(vec![]);
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::Inconclusive);
+        assert_eq!(judge(&o, None, false, None).kind, VerdictKind::Inconclusive);
         o.timed_out = true;
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::Inconclusive);
+        assert_eq!(judge(&o, None, false, None).kind, VerdictKind::Inconclusive);
     }
 
     #[test]
@@ -293,6 +372,9 @@ mod tests {
         // Exit code 1 with a passed repro step must still be NotReproduced.
         let mut o = out(vec![step(REPRO_HEADING, "passed", None, None)]);
         o.exit_code = Some(1);
-        assert_eq!(judge(&o, None, false).kind, VerdictKind::NotReproduced);
+        assert_eq!(
+            judge(&o, None, false, None).kind,
+            VerdictKind::NotReproduced
+        );
     }
 }

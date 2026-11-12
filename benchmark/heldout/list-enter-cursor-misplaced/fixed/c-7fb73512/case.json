@@ -1,0 +1,43 @@
+{
+  "id": "c-7fb73512",
+  "created_at": "2026-11-12T20:20:56.369648489Z",
+  "report": {
+    "title": "Markdown List Auto-Completion Adds Symbol to Current Line Instead of New Line",
+    "body": "### Describe the bug\n\nWhen using the Markdown editor in the content management system, the auto-completion feature for unordered lists is behaving incorrectly. When entering `- 123` or `* 123` and pressing Enter, the system appends an extra `-` or `*` to the end of the current line instead of inserting it on a new line.\n\n### Steps to reproduce\n\n1. Open the Markdown editor in the content publishing interface.\n2. Type `- 123` (or `* 123`) in the editor.\n3. Press the Enter key to create a new line.\n\n## Expected Behavior\n- The current line should remain as `- 123` (or `* 123`).\n- A new line should be automatically prepended with `-` (or `*`) to continue the unordered list.\n\n## Actual Behavior\n- The current line becomes `- 123-` (or `* 123*`) after pressing Enter.\n- The line break is not properly applied, and the list symbol is incorrectly appended to the existing line.\n\n### The version of Memos you're using\n\n\n0.25.2\n\n### Screenshots or additional context\n\n<img width=\"740\" height=\"145\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/eca12494-ff3d-47cf-8392-2eb1dbba1302\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5236",
+    "repo": null,
+    "number": 5236
+  },
+  "app_url": "http://localhost:16203",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the user is signed in and the memo editor is visible on the home page"
+    ],
+    "steps": [
+      "Click on the memo editor text area",
+      "Type \"- 123\"",
+      "Press the Enter key"
+    ],
+    "expected": "The first line of the editor still reads \"- 123\" with nothing appended, and a new second line begins with \"- \" to continue the list.",
+    "reported_actual": "After pressing Enter, the current line becomes \"- 123-\" (or \"* 123*\") and the list symbol is appended to the existing line instead of a new line.",
+    "missing": [
+      "assumed: the 'Markdown editor in the content publishing interface' is the memo editor on the home page",
+      "Which browser and OS were used?",
+      "Does the issue also occur when typing the '* 123' variant (the steps use the '-' variant only)?"
+    ],
+    "confidence": 0.7,
+    "summary": "Pressing Enter after '- 123' in the memo editor appends '-' to the current line instead of a new line",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16203/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5236]\n---\n\n# Markdown List Auto-Completion Adds Symbol to Current Line Instead of New Line\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16203/.\nStay on localhost:16203 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click on the memo editor text area\n2. Type \"- 123\"\n3. Press the Enter key\nThe reporter says the correct behavior is that The first line of the editor still reads \"- 123\" with nothing appended, and a new second line begins with \"- \" to continue the list. Verify that The first line of the editor still reads \"- 123\" with nothing appended, and a new second line begins with \"- \" to continue the list.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}
