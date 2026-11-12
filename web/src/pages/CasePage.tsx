@@ -31,7 +31,7 @@ function Steps({ run }: { run: RunRecord }) {
       {frames.map((f, i) => (
         <li key={f.ordinal}>
           <span className="n">{String(i + 1).padStart(2, '0')}</span>
-          <span className="what">{f.label}</span>
+          <span className="what">{f.label.replace(/\{\{[^}]*\}\}/g, "\u2022\u2022\u2022")}</span>
           <span className={`res res-${f.status}`}>{f.status}</span>
         </li>
       ))}

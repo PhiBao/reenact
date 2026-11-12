@@ -87,7 +87,7 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
             out.push_str(&format!(
                 "| {} | {} | {} |\n",
                 i + 1,
-                esc_cell(&f.label),
+                esc_cell(&mask_placeholders(&f.label)),
                 f.status
             ));
         }
@@ -215,6 +215,27 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
         rec.run.credits, rec.run.duration_s
     ));
     out.push_str(&format!("<sub>{}</sub>\n", foot.join(" · ")));
+    out
+}
+
+/// Replace `{{name}}` template placeholders with bullets so logins never read as raw variables.
+fn mask_placeholders(s: &str) -> String {
+    let mut out = String::new();
+    let mut rest = s;
+    while let Some(start) = rest.find("{{") {
+        out.push_str(&rest[..start]);
+        match rest[start..].find("}}") {
+            Some(end) => {
+                out.push_str("\u{2022}\u{2022}\u{2022}");
+                rest = &rest[start + end + 2..];
+            }
+            None => {
+                rest = &rest[start..];
+                break;
+            }
+        }
+    }
+    out.push_str(rest);
     out
 }
 

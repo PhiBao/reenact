@@ -31,8 +31,13 @@ export function Home() {
     getBenchmark().then(setBench).catch(() => setBench(null));
   }, []);
 
+  const num = (id: string) => Number(id.replace(/\D/g, '')) || Infinity;
   const featured =
-    cases?.find((c) => c.has_fix && (c.source_url ?? '').includes('usememos/memos')) ?? cases?.find((c) => c.has_fix) ?? cases?.[0];
+    cases
+      ?.filter((c) => c.has_fix && (c.source_url ?? '').includes('usememos/memos'))
+      .sort((a, b) => num(a.id) - num(b.id))[0] ??
+    cases?.find((c) => c.has_fix) ??
+    cases?.[0];
   const totals = bench && bench.length ? headline(bench) : null;
 
   return (
