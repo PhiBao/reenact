@@ -180,7 +180,14 @@ pub async fn upload_bundle(
         .body(buf)
         .send()
         .await?;
-    anyhow::ensure!(r.status().is_success(), "upload failed: {}", r.status());
+    let status = r.status();
+    if !status.is_success() {
+        let why = r.text().await.unwrap_or_default();
+        anyhow::bail!(
+            "upload failed: {status} {}",
+            why.chars().take(200).collect::<String>()
+        );
+    }
     Ok(())
 }
 
@@ -230,6 +237,107 @@ pub async fn ship(case_dir: &Path, a: &ShipArgs) -> Result<()> {
         );
         let url = github::upsert_comment(&repo, n, &case.id, &body)?;
         eprintln!("[ship] comment: {url}");
+        let label = match case.state {
+            reenact_core::model::CaseState::NeedsInfo => Some("reenact:needs-info"),
+            reenact_core::model::CaseState::NotReproduced => Some("reenact:not-reproduced"),
+            reenact_core::model::CaseState::Inconclusive => Some("reenact:inconclusive"),
+            reenact_core::model::CaseState::Reproduced
+            | reenact_core::model::CaseState::Fixed
+            | reenact_core::model::CaseState::FixFailed => Some("reenact:reproduced"),
+            _ => None,
+        };
+        if let Some(l) = label {
+            github::set_verdict_label(&repo, n, l);
+        }
     }
     Ok(())
+}
+
+/// A comment that fills in while Kane works, so the issue is not silent for minutes.
+/// Updates are coalesced (at most one every few seconds) and `finish` joins the worker
+/// so a late progress update can never overwrite the final comment.
+pub struct Live {
+    tx: std::sync::Arc<std::sync::Mutex<Option<std::sync::mpsc::Sender<String>>>>,
+    worker: Option<std::thread::JoinHandle<()>>,
+}
+
+impl Live {
+    pub fn start(
+        repo: String,
+        number: u64,
+        case_id: String,
+        title: &str,
+    ) -> (Live, reenact_core::pipeline::Progress) {
+        let (tx, rx) = std::sync::mpsc::channel::<String>();
+        let tx = std::sync::Arc::new(std::sync::Mutex::new(Some(tx)));
+        let title = title.to_string();
+        let worker = std::thread::spawn(move || {
+            let mut lines: std::collections::VecDeque<String> = std::collections::VecDeque::new();
+            let mut dirty = true;
+            let mut last = std::time::Instant::now() - std::time::Duration::from_secs(60);
+            loop {
+                let done = match rx.recv_timeout(std::time::Duration::from_secs(2)) {
+                    Ok(l) => {
+                        lines.push_back(l);
+                        if lines.len() > 8 {
+                            lines.pop_front();
+                        }
+                        dirty = true;
+                        false
+                    }
+                    Err(std::sync::mpsc::RecvTimeoutError::Timeout) => false,
+                    Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => true,
+                };
+                if done {
+                    break;
+                }
+                if dirty && last.elapsed() >= std::time::Duration::from_secs(8) {
+                    let mut body = format!(
+                        "{}{} -->\n### Reenact is working on this\n\n",
+                        reenact_core::comment::MARKER_PREFIX,
+                        case_id
+                    );
+                    body.push_str(&format!(
+                        "Reading and reproducing: _{}_\n\n",
+                        title.replace('_', " ")
+                    ));
+                    for l in &lines {
+                        body.push_str(&format!("- {l}\n"));
+                    }
+                    body.push_str("\n<sub>This comment updates as Kane works and is replaced by the result.</sub>\n");
+                    let _ = github::upsert_comment(&repo, number, &case_id, &body);
+                    dirty = false;
+                    last = std::time::Instant::now();
+                }
+            }
+        });
+        let tx2 = tx.clone();
+        let progress: reenact_core::pipeline::Progress = std::sync::Arc::new(move |stage, msg| {
+            eprintln!("[{stage}] {msg}");
+            if let Some(t) = tx2.lock().unwrap().as_ref() {
+                let line = match stage {
+                    "action" | "step" | "triage" => msg.to_string(),
+                    "compiling" => "Reading the report".to_string(),
+                    "compiled" => format!("Plan ready: {msg}"),
+                    "running" => "Kane is driving a real browser".to_string(),
+                    _ => return,
+                };
+                let _ = t.send(line);
+            }
+        });
+        (
+            Live {
+                tx,
+                worker: Some(worker),
+            },
+            progress,
+        )
+    }
+
+    pub fn finish(&mut self) {
+        self.tx.lock().unwrap().take();
+        if let Some(w) = self.worker.take() {
+            let _ = w.join();
+        }
+    }
 }

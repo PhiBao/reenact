@@ -150,6 +150,7 @@ fn cfg_for(port: u16) -> Config {
             password_env: "REENACT_PASSWORD".into(),
         }),
         max_steps: 40,
+        repro_attempts: 2,
         timeout_s: 420,
     }
 }

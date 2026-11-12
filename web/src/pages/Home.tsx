@@ -27,7 +27,8 @@ export function Home() {
     getBenchmark().then(setBench).catch(() => setBench(null));
   }, []);
 
-  const featured = cases?.find((c) => c.has_fix) ?? cases?.[0];
+  const featured =
+    cases?.find((c) => c.has_fix && (c.source_url ?? '').includes('usememos/memos')) ?? cases?.find((c) => c.has_fix) ?? cases?.[0];
   const totals = bench ? benchTotals(bench) : null;
 
   return (
@@ -98,7 +99,10 @@ export function Home() {
             <li key={c.id}>
               <Link to={`/c/${c.id}`}>
                 <span className="feed-id">{c.id}</span>
-                <span className="feed-title">{c.title}</span>
+                <span className="feed-title">
+                  {c.title}
+                  {c.source_url && <small className="feed-src">{c.source_url.replace('https://github.com/', '').replace(/\/issues\/\d+$/, '')}</small>}
+                </span>
                 <span className="feed-verdict">
                   <Stamp kind={kindFromLabel(c.verdict)} />
                   {c.has_fix && <span className="fix-chip">fix verified</span>}

@@ -144,6 +144,8 @@ pub enum RunKind {
     /// A second, independent reproduction on the unmodified app, run before any fix is attempted.
     Confirm,
     VerifyFix,
+    /// The maintainers' own fix, run through the same test to check the test accepts a correct fix.
+    Reference,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -186,6 +188,15 @@ pub struct Case {
     pub fixes: Vec<FixAttempt>,
     pub pr_url: Option<String>,
     pub state: CaseState,
+    /// Which fixer produced the accepted change (for example "Kiro CLI").
+    #[serde(default)]
+    pub fix_agent: Option<String>,
+    /// The accepted change, as a unified diff of source files.
+    #[serde(default)]
+    pub fix_diff: Option<String>,
+    /// The maintainers' own fix for the same bug, when one exists (shown for comparison).
+    #[serde(default)]
+    pub reference_diff: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]

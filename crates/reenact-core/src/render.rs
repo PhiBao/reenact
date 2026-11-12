@@ -91,6 +91,7 @@ mod tests {
                 password_env: "P".into(),
             }),
             max_steps: 40,
+            repro_attempts: 2,
             timeout_s: 100,
         }
     }

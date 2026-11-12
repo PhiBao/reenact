@@ -63,6 +63,146 @@ pub fn fetch_issue(url: &str) -> Result<Report> {
     })
 }
 
+/// The issue plus the human replies that add detail (the reporter's, and people with write
+/// access). Used for the "Needs info" loop: when the reporter answers, Reenact reads the
+/// answer together with the original report. Bot comments (including ours) are skipped.
+pub fn fetch_issue_with_thread(url: &str) -> Result<Report> {
+    let mut report = fetch_issue(url)?;
+    let (o, r, n) = parse_issue_url(url)?;
+    let issue: Value =
+        serde_json::from_str(&gh(&["api", &format!("repos/{o}/{r}/issues/{n}")], None)?)?;
+    let author = issue["user"]["login"]
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let raw = gh(
+        &[
+            "api",
+            &format!("repos/{o}/{r}/issues/{n}/comments"),
+            "--paginate",
+        ],
+        None,
+    )?;
+    let mut extra = String::new();
+    let mut count = 0;
+    for page in serde_json::Deserializer::from_str(&raw)
+        .into_iter::<Value>()
+        .flatten()
+    {
+        for c in page.as_array().into_iter().flatten() {
+            let body = c["body"].as_str().unwrap_or_default();
+            let who = c["user"]["login"].as_str().unwrap_or_default();
+            let bot = c["user"]["type"].as_str() == Some("Bot") || body.contains(MARKER_PREFIX);
+            let trusted = matches!(
+                c["author_association"].as_str(),
+                Some("OWNER" | "MEMBER" | "COLLABORATOR")
+            );
+            if bot || body.trim_start().starts_with("/reenact") || !(who == author || trusted) {
+                continue;
+            }
+            if count >= 5 {
+                break;
+            }
+            count += 1;
+            let clipped: String = body.chars().take(800).collect();
+            extra.push_str(&format!(
+                "\n[{}] {}\n",
+                if who == author {
+                    "reporter"
+                } else {
+                    "maintainer"
+                },
+                clipped
+            ));
+        }
+    }
+    if !extra.is_empty() {
+        report
+            .body
+            .push_str("\n\n---\nAdditional detail from the issue thread:\n");
+        report.body.push_str(&extra);
+    }
+    Ok(report)
+}
+
+pub const LABELS: [(&str, &str, &str); 4] = [
+    (
+        "reenact:reproduced",
+        "D7301F",
+        "Reenact reproduced this in a real browser",
+    ),
+    (
+        "reenact:not-reproduced",
+        "1F7A4D",
+        "Reenact could not reproduce this on the tested version",
+    ),
+    (
+        "reenact:needs-info",
+        "B7791F",
+        "Reenact needs more detail to reproduce this",
+    ),
+    (
+        "reenact:inconclusive",
+        "5B5851",
+        "Reenact could not complete a browser run",
+    ),
+];
+
+/// Keep exactly one `reenact:*` verdict label on the issue. Best effort: labels are a courtesy.
+pub fn set_verdict_label(repo: &str, number: u64, verdict_label: &str) {
+    for (name, color, desc) in LABELS {
+        let _ = gh(
+            &[
+                "label",
+                "create",
+                name,
+                "--repo",
+                repo,
+                "--color",
+                color,
+                "--description",
+                desc,
+                "--force",
+            ],
+            None,
+        );
+    }
+    let remove: Vec<&str> = LABELS
+        .iter()
+        .map(|l| l.0)
+        .filter(|l| *l != verdict_label)
+        .collect();
+    let n = number.to_string();
+    let mut args = vec![
+        "issue",
+        "edit",
+        n.as_str(),
+        "--repo",
+        repo,
+        "--add-label",
+        verdict_label,
+    ];
+    for r in &remove {
+        args.push("--remove-label");
+        args.push(r);
+    }
+    if gh(&args, None).is_err() {
+        // Removing a label the issue does not have can fail on some versions: add only.
+        let _ = gh(
+            &[
+                "issue",
+                "edit",
+                n.as_str(),
+                "--repo",
+                repo,
+                "--add-label",
+                verdict_label,
+            ],
+            None,
+        );
+    }
+}
+
 /// Create or update the single Reenact comment for `case_id` on an issue.
 pub fn upsert_comment(repo: &str, number: u64, case_id: &str, body: &str) -> Result<String> {
     let raw = gh(

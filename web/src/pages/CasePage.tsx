@@ -4,6 +4,7 @@ import { caseFile, getCase } from '../api';
 import { VERDICT_LABEL, type CaseFile, type RunRecord } from '../types';
 import { Stamp } from '../components/Stamp';
 import { Compare } from '../components/Compare';
+import { Diff } from '../components/Diff';
 
 /** Issue templates are mostly boilerplate. Show the parts that describe the bug. */
 export function compactReport(body: string): string {
@@ -63,6 +64,7 @@ export function CasePage() {
   const hasStrip = repro.run.frames.length > 0;
   const fixed = fix?.verdict.kind === 'not_reproduced';
   const confirm = [...c.runs].reverse().find((r) => r.kind === 'confirm');
+  const reference = [...c.runs].reverse().find((r) => r.kind === 'reference');
 
   return (
     <article className="case">
@@ -184,7 +186,26 @@ export function CasePage() {
               <a href={c.pr_url}>Pull request</a>
             )}
           </p>
+          {c.fix_agent && (
+            <p className="muted">
+              Change proposed by <strong>{c.fix_agent}</strong>. It was accepted only because the same Kane test passed
+              {c.fixes.some((a) => (a.suite_checked ?? 0) > 0) ? ' and earlier saved tests still held' : ''}.
+            </p>
+          )}
           {fixed && <Compare before={caseFile(c.id, 'before.png')} after={caseFile(c.id, 'after.png')} />}
+          {c.fix_diff && (
+            <div className="diffs">
+              <Diff text={c.fix_diff} label={c.fix_agent ? `Change by ${c.fix_agent}` : 'Accepted change'} />
+              {c.reference_diff && <Diff text={c.reference_diff} label="The maintainers' own fix" />}
+            </div>
+          )}
+          {reference && (
+            <p className="reference">
+              {reference.verdict.kind === 'not_reproduced'
+                ? "The maintainers' own fix, run through the same test, also passes. The test accepts a correct fix."
+                : `The maintainers' own fix, run through the same test, gave "${VERDICT_LABEL[reference.verdict.kind]}". Treat this test with caution.`}
+            </p>
+          )}
           <ol className="attempts">
             {c.fixes.map((a) => (
               <li key={a.attempt}>

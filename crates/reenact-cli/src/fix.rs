@@ -41,6 +41,9 @@ pub struct FixArgs {
     /// Run once before the first start (install dependencies, build). Trusted maintainer config.
     #[arg(long)]
     prepare_cmd: Option<String>,
+    /// Run before every (re)start of the app, to give it a fresh backend or database. Trusted config.
+    #[arg(long)]
+    reset_cmd: Option<String>,
     /// KEY=VALUE passed to the app under test (the app otherwise gets PATH, PORT and a temp HOME).
     #[arg(long = "app-env")]
     app_env: Vec<String>,
@@ -309,6 +312,7 @@ impl Drop for Server {
 }
 
 struct AppCfg<'a> {
+    reset: Option<&'a str>,
     repo: &'a Path,
     cmd: &'a str,
     url: &'a str,
@@ -320,6 +324,19 @@ async fn start_server(a: &AppCfg<'_>) -> Result<Server> {
     let port = url::Url::parse(a.url)?
         .port_or_known_default()
         .unwrap_or(80);
+    if let Some(reset) = a.reset {
+        let st = tokio::process::Command::new("sh")
+            .arg("-c")
+            .arg(reset)
+            .current_dir(a.repo)
+            .env_clear()
+            .envs(app_env(port, a.home, a.extra))
+            .stdin(Stdio::null())
+            .status()
+            .await
+            .context("reset command")?;
+        anyhow::ensure!(st.success(), "reset command failed");
+    }
     let mut c = tokio::process::Command::new("sh");
     c.arg("-c")
         .arg(a.cmd)
@@ -501,12 +518,19 @@ fn run_agent(repo: &Path, cmd: &str, task: &str, pass_env: &[String]) -> Result<
 
 /// Files the agent changed (tracked or new) and how many lines moved.
 fn changed_files(repo: &Path) -> Result<(Vec<String>, usize)> {
-    let status = git(repo, &["status", "--porcelain", "-uall"])?;
-    let files: Vec<String> = status
+    // Tracked changes plus new files that are not ignored. (Not `status --porcelain`:
+    // its first column is a space for unstaged edits and gets lost when output is trimmed.)
+    let mut files: Vec<String> = git(repo, &["diff", "--name-only"])?
         .lines()
-        .filter_map(|l| l.get(3..))
-        .map(|p| p.trim().trim_matches('"').to_string())
+        .map(|l| l.trim().to_string())
+        .filter(|l| !l.is_empty())
         .collect();
+    for l in git(repo, &["ls-files", "--others", "--exclude-standard"])?.lines() {
+        let l = l.trim();
+        if !l.is_empty() {
+            files.push(l.to_string());
+        }
+    }
     let numstat = git(repo, &["diff", "--numstat"])?;
     let mut lines = 0usize;
     for l in numstat.lines() {
@@ -530,9 +554,66 @@ fn failed(n: u32, rationale: &str, note: String) -> FixAttempt {
     }
 }
 
+/// Before/after images for a fixed case: the reproduction's last frame against the
+/// accepted fix check's last frame, cropped to where the user acted and the page changed.
+pub fn compose_proof(case_dir: &Path, case: &Case) -> Result<()> {
+    let frames_of = |kind: RunKind| {
+        case.runs
+            .iter()
+            .rev()
+            .find(|r| r.kind == kind)
+            .map(|r| r.run.frames.clone())
+            .unwrap_or_default()
+    };
+    let before = frames_of(RunKind::Reenact);
+    let after = frames_of(RunKind::VerifyFix);
+    if let (Some(b), Some(af)) = (before.last(), after.last()) {
+        let rect = strip::trigger_rect(&before);
+        let vp = (1920, 1080);
+        let window = strip::change_window(case_dir, b, case_dir, af, rect, vp)?;
+        strip::compose_compare(
+            case_dir,
+            b,
+            rect,
+            case_dir,
+            af,
+            vp,
+            window,
+            &case_dir.join("compare.png"),
+        )?;
+        strip::compose_single(
+            case_dir,
+            b,
+            rect,
+            strip::red(),
+            vp,
+            window,
+            &case_dir.join("before.png"),
+        )?;
+        strip::compose_single(
+            case_dir,
+            af,
+            rect,
+            strip::green(),
+            vp,
+            window,
+            &case_dir.join("after.png"),
+        )?;
+    }
+    Ok(())
+}
+
 pub async fn run(a: FixArgs) -> Result<()> {
-    let ctx: Ctx = crate::make_ctx(&a.config)?;
+    let mut ctx: Ctx = crate::make_ctx(&a.config)?;
     let mut case = pipeline::load_case(&a.case)?;
+    let mut live = None;
+    if let (true, Some(repo), Some(n)) = (a.ship.post, case.report.repo.clone(), case.report.number)
+    {
+        let (l, progress) = crate::ship::Live::start(repo, n, case.id.clone(), &case.report.title);
+        ctx.progress = progress;
+        live = Some(l);
+    }
+    let say = |m: &str| (ctx.progress)("step", m);
     let last = case
         .runs
         .iter()
@@ -597,6 +678,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
         );
     }
     let appcfg = AppCfg {
+        reset: a.reset_cmd.as_deref(),
         repo: &a.repo,
         cmd: &a.start_cmd,
         url: &ctx.cfg.app_url,
@@ -618,7 +700,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
     // 1. The bug must reproduce a second time before anyone edits code.
     let mut confirmed = true;
     if !a.no_confirm {
-        eprintln!("[fix] confirming the bug on a second, independent run");
+        say("Confirming the bug on a second, independent run");
         let rec = pipeline::verify_as(&ctx, &a.case, "confirm", RunKind::Confirm).await?;
         confirmed = rec.verdict.kind == VerdictKind::Reproduced;
         if !confirmed {
@@ -639,7 +721,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
             break;
         }
         let num = first_new + n;
-        eprintln!("[fix] attempt {}/{}", n + 1, a.max_attempts);
+        say(&format!("Fix attempt {} of {}", n + 1, a.max_attempts));
 
         // 2. Propose and apply.
         let (rationale, touched, undo): (String, Vec<String>, Revert) = if let Some(llm) = &llm {
@@ -709,7 +791,10 @@ pub async fn run(a: FixArgs) -> Result<()> {
             }
             (said, changed, Revert::Git)
         };
-        eprintln!("[fix] changed: {}", touched.join(", "));
+        say(&format!(
+            "Changed {}; re-running the same Kane test",
+            touched.join(", ")
+        ));
 
         // 3. Restart the app and re-run the SAME test, live.
         server.stop();
@@ -721,7 +806,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
         let mut regressions: Vec<String> = Vec::new();
         let mut checked = 0u32;
         if passes && !a.no_suite && reg_path.is_dir() {
-            eprintln!("[fix] re-running earlier saved tests");
+            say("Re-running earlier saved tests against the change");
             match suite::run_dir(&ctx, &reg_path, Some(&own_test)).await {
                 Ok(rows) => {
                     checked = rows.len() as u32;
@@ -779,45 +864,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
     };
 
     if fixed {
-        // Before/after proof.
-        let frames_of = |kind: RunKind| {
-            case.runs
-                .iter()
-                .rev()
-                .find(|r| r.kind == kind)
-                .map(|r| r.run.frames.clone())
-                .unwrap_or_default()
-        };
-        let before = frames_of(RunKind::Reenact);
-        let after = frames_of(RunKind::VerifyFix);
-        if let (Some(b), Some(af)) = (before.last(), after.last()) {
-            let rect = strip::trigger_rect(&before);
-            strip::compose_compare(
-                &a.case,
-                b,
-                rect,
-                &a.case,
-                af,
-                (1920, 1080),
-                &a.case.join("compare.png"),
-            )?;
-            strip::compose_single(
-                &a.case,
-                b,
-                rect,
-                strip::red(),
-                (1920, 1080),
-                &a.case.join("before.png"),
-            )?;
-            strip::compose_single(
-                &a.case,
-                af,
-                rect,
-                strip::green(),
-                (1920, 1080),
-                &a.case.join("after.png"),
-            )?;
-        }
+        compose_proof(&a.case, &case)?;
 
         // Permanent regression test: plain English, committed next to the code.
         // `reenact suite` re-runs it live (Kane's cached replay reuses recorded
@@ -894,6 +941,9 @@ pub async fn run(a: FixArgs) -> Result<()> {
         }
     }
     pipeline::save_case(&a.case, &case)?;
+    if let Some(l) = live.as_mut() {
+        l.finish();
+    }
     if a.ship.post || a.ship.publish_branch.is_some() || a.ship.upload_url.is_some() {
         crate::ship::ship(&a.case, &a.ship).await?;
     }
@@ -940,6 +990,27 @@ mod tests {
         let text = String::from_utf8_lossy(&out.stdout);
         assert!(!text.contains("hunter2") && !text.contains("REENACT_TEST_SECRET"));
         assert!(text.contains("PORT=1"));
+    }
+
+    #[test]
+    fn changed_files_sees_unstaged_edits_with_their_full_path() {
+        let d = tempfile::tempdir().unwrap();
+        let r = d.path();
+        let sh = |c: &str| {
+            assert!(Command::new("sh")
+                .arg("-c")
+                .arg(c)
+                .current_dir(r)
+                .status()
+                .unwrap()
+                .success());
+        };
+        sh("git init -q && mkdir -p web/src && echo a > web/src/x.ts && git add -A && git -c user.name=t -c user.email=t@t commit -qm i");
+        sh("echo b >> web/src/x.ts && echo n > web/src/new.ts");
+        let (mut files, lines) = changed_files(r).unwrap();
+        files.sort();
+        assert_eq!(files, ["web/src/new.ts", "web/src/x.ts"]);
+        assert_eq!(lines, 1);
     }
 
     #[test]

@@ -151,3 +151,17 @@ td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--rule); vertical-a
   .feed li a { grid-template-columns: 1fr; gap: 6px; }
   .facts { grid-template-columns: 1fr; gap: 2px; } .facts dd { margin-bottom: 12px; }
 }
+
+/* ---------- diffs ---------- */
+.diffs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 28px 0 8px; max-width: 1000px; }
+.diff { margin: 0; border: 1px solid var(--rule); background: #fbfaf6; min-width: 0; }
+.diff figcaption { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--rule); font: 500 11px/1.5 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--graphite); }
+.diff figcaption code { text-transform: none; letter-spacing: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.diff pre { margin: 0; padding: 10px 0; overflow-x: auto; font-size: 12px; line-height: 1.55; }
+.diff pre span { display: block; padding: 0 12px; white-space: pre; }
+.diff .add { background: rgba(31, 122, 77, 0.12); }
+.diff .del { background: rgba(215, 48, 31, 0.1); }
+.diff .hunk { color: var(--graphite); }
+.reference { margin: 14px 0 0; max-width: var(--measure); color: var(--green); font-weight: 500; }
+.feed-src { display: block; font: 11px var(--mono); color: var(--graphite); margin-top: 2px; }
+@media (max-width: 880px) { .diffs { grid-template-columns: 1fr; } }

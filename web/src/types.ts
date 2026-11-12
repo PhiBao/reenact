@@ -33,7 +33,7 @@ export interface RunSummary {
 }
 
 export interface RunRecord {
-  kind: 'reenact' | 'confirm' | 'verify_fix';
+  kind: 'reenact' | 'confirm' | 'verify_fix' | 'reference';
   label: string;
   started_at: string;
   verdict: Verdict;
@@ -73,6 +73,9 @@ export interface CaseFile {
   fixes: FixAttempt[];
   pr_url: string | null;
   state: string;
+  fix_agent?: string | null;
+  fix_diff?: string | null;
+  reference_diff?: string | null;
 }
 
 export interface CaseSummary {

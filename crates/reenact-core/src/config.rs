@@ -19,6 +19,10 @@ pub struct Config {
     /// Max Kane steps per run.
     #[serde(default = "default_max_steps")]
     pub max_steps: u32,
+    /// Reproduction attempts per report (1 or 2). A second run is made when the first did not
+    /// reproduce the bug: a false "Not reproduced" is the common error of a browser agent.
+    #[serde(default = "default_attempts")]
+    pub repro_attempts: u32,
     /// Wall clock cap for one Kane run, seconds.
     #[serde(default = "default_timeout")]
     pub timeout_s: u64,
@@ -26,6 +30,9 @@ pub struct Config {
 
 fn default_max_steps() -> u32 {
     40
+}
+fn default_attempts() -> u32 {
+    2
 }
 fn default_timeout() -> u64 {
     420

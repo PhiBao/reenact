@@ -42,6 +42,21 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
     let app = case.app_label.as_deref().unwrap_or("the app");
 
     out.push_str(&format!("### Reenact: {}\n\n", v.kind.label()));
+    if rec.label.contains("retry") {
+        if let Some(first) = case
+            .runs
+            .iter()
+            .rev()
+            .skip_while(|r| !std::ptr::eq(*r, rec))
+            .skip(1)
+            .find(|r| r.kind == RunKind::Reenact && r.label == "reenact")
+        {
+            out.push_str(&format!(
+                "_First run said **{}**; this is the result of a second run._\n\n",
+                first.verdict.kind.label()
+            ));
+        }
+    }
     out.push_str(&format!("{}\n\n", quote(&v.headline)));
 
     if let Some(plan) = &case.plan {
@@ -242,6 +257,9 @@ mod tests {
             fixes: vec![],
             pr_url: None,
             state: CaseState::Reproduced,
+            fix_agent: None,
+            fix_diff: None,
+            reference_diff: None,
         }
     }
 

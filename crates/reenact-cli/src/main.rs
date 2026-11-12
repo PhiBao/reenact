@@ -13,6 +13,7 @@ mod bench;
 mod fix;
 mod ship;
 mod suite;
+mod sweep;
 
 #[derive(Parser)]
 #[command(
@@ -43,6 +44,9 @@ enum Cmd {
         /// Use this case id (CI uses `issue-<n>`). Letters, digits, `-`, `_`.
         #[arg(long)]
         case_id: Option<String>,
+        /// Also read the reporter's and maintainers' replies in the issue thread.
+        #[arg(long)]
+        with_thread: bool,
         #[command(flatten)]
         ship: ship::ShipArgs,
     },
@@ -52,6 +56,9 @@ enum Cmd {
         config: PathBuf,
         #[arg(long)]
         case: PathBuf,
+        /// What this run means: `fix` (default), `confirm` or `reference` (the maintainers' own fix).
+        #[arg(long, default_value = "fix")]
+        kind: String,
     },
     /// Print the GitHub comment for a case.
     Comment {
@@ -63,6 +70,17 @@ enum Cmd {
         compare_url: Option<String>,
         #[arg(long)]
         case_url: Option<String>,
+    },
+    /// Attach the accepted diff, the maintainers' diff and the fixer's name to a case.
+    Attach {
+        #[arg(long)]
+        case: PathBuf,
+        #[arg(long)]
+        fix_diff: Option<PathBuf>,
+        #[arg(long)]
+        reference_diff: Option<PathBuf>,
+        #[arg(long)]
+        agent: Option<String>,
     },
     /// Recompose the evidence strips of an existing case folder with the current layout.
     Restrip {
@@ -80,6 +98,8 @@ enum Cmd {
     Fix(fix::FixArgs),
     /// Re-run every saved reproduction live; fail if a fixed bug is back.
     Suite(suite::SuiteArgs),
+    /// Triage a project's open bug reports against a running instance (read-only).
+    Sweep(sweep::SweepArgs),
     /// Run the historical benchmark (buggy and fixed versions of a real app).
     Bench(bench::BenchArgs),
 }
@@ -125,6 +145,7 @@ async fn main() -> Result<()> {
             body_file,
             out,
             case_id,
+            with_thread,
             ship,
         } => {
             let mut ctx = make_ctx(&config)?;
@@ -140,6 +161,7 @@ async fn main() -> Result<()> {
                 ctx.case_id = Some(id);
             }
             let report = match (issue, title, body_file) {
+                (Some(url), _, _) if with_thread => github::fetch_issue_with_thread(&url)?,
                 (Some(url), _, _) => github::fetch_issue(&url)?,
                 (None, Some(t), Some(f)) => Report {
                     title: t,
@@ -151,14 +173,36 @@ async fn main() -> Result<()> {
                 },
                 _ => anyhow::bail!("give --issue <url>, or --title and --body-file"),
             };
-            let (case, dir) = pipeline::reenact(&ctx, &out, report).await?;
+            // With --post, the issue gets a comment right away that fills in as Kane works.
+            let mut live = None;
+            if let (true, Some(repo), Some(n), Some(id)) = (
+                ship.post,
+                report.repo.clone(),
+                report.number,
+                ctx.case_id.clone(),
+            ) {
+                let (l, progress) = ship::Live::start(repo, n, id, &report.title);
+                ctx.progress = progress;
+                live = Some(l);
+            }
+            let result = pipeline::reenact(&ctx, &out, report).await;
+            if let Some(l) = live.as_mut() {
+                l.finish();
+            }
+            let (case, dir) = result?;
             println!("{}", serde_json::to_string_pretty(&short_summary(&case))?);
             eprintln!("case directory: {}", dir.display());
             ship::ship(&dir, &ship).await?;
         }
-        Cmd::Verify { config, case } => {
+        Cmd::Verify { config, case, kind } => {
             let ctx = make_ctx(&config)?;
-            let rec = pipeline::verify(&ctx, &case, "verify").await?;
+            let k = match kind.as_str() {
+                "fix" => RunKind::VerifyFix,
+                "confirm" => RunKind::Confirm,
+                "reference" => RunKind::Reference,
+                other => anyhow::bail!("unknown --kind {other}"),
+            };
+            let rec = pipeline::verify_as(&ctx, &case, &format!("verify ({kind})"), k).await?;
             println!(
                 "{}",
                 serde_json::to_string_pretty(&serde_json::json!({
@@ -185,22 +229,56 @@ async fn main() -> Result<()> {
                 )
             );
         }
+        Cmd::Attach {
+            case,
+            fix_diff,
+            reference_diff,
+            agent,
+        } => {
+            let mut c = pipeline::load_case(&case)?;
+            let read = |p: &PathBuf| -> Result<String> {
+                Ok(std::fs::read_to_string(p)?.chars().take(20_000).collect())
+            };
+            if let Some(p) = fix_diff {
+                c.fix_diff = Some(read(&p)?);
+            }
+            if let Some(p) = reference_diff {
+                c.reference_diff = Some(read(&p)?);
+            }
+            if agent.is_some() {
+                c.fix_agent = agent;
+            }
+            pipeline::save_case(&case, &c)?;
+        }
         Cmd::Restrip { case } => {
             let mut c = pipeline::load_case(&case)?;
             for r in &mut c.runs {
-                let Some(name) = r.run.strip_file.clone() else { continue };
+                let Some(name) = r.run.strip_file.clone() else {
+                    continue;
+                };
                 let shown: Vec<Frame> = r.run.frames.clone();
                 if shown.len() < 2 {
                     continue;
                 }
-                reenact_core::strip::compose_strip(&case, &shown, r.verdict.kind, (1920, 1080), &case.join(&name))?;
+                reenact_core::strip::compose_strip(
+                    &case,
+                    &shown,
+                    r.verdict.kind,
+                    (1920, 1080),
+                    &case.join(&name),
+                )?;
                 eprintln!("recomposed {name}");
+            }
+            if c.runs.iter().any(|r| r.kind == RunKind::VerifyFix) {
+                fix::compose_proof(&case, &c)?;
+                eprintln!("recomposed before/after");
             }
             pipeline::save_case(&case, &c)?;
         }
         Cmd::Ship { case, ship } => ship::ship(&case, &ship).await?,
         Cmd::Fix(a) => fix::run(a).await?,
         Cmd::Suite(a) => suite::run(a).await?,
+        Cmd::Sweep(a) => sweep::run(a).await?,
         Cmd::Bench(a) => bench::run(a).await?,
     }
     Ok(())

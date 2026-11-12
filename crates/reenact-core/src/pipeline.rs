@@ -260,6 +260,9 @@ pub async fn reenact_with_plan(
         fixes: prev_fixes,
         pr_url: None,
         state: CaseState::Compiling,
+        fix_agent: None,
+        fix_diff: None,
+        reference_diff: None,
     };
 
     if let Some(gap) = plan_gap(&plan) {
@@ -308,20 +311,24 @@ pub async fn reenact_with_plan(
     )
     .await?;
     let mut records = vec![first];
-    // Browser agents are not perfectly repeatable. One retry for results that
-    // say little (infrastructure trouble, or Kane could not finish the steps).
-    if matches!(
-        records[0].verdict.kind,
-        VerdictKind::Inconclusive | VerdictKind::NeedsInfo
-    ) {
+    // Browser agents are not perfectly repeatable. Retry once when the first run was
+    // inconclusive, got stuck, or found nothing: a false "Not reproduced" is the common
+    // error. A first run that reproduced the bug is confirmed later, before any fix.
+    if ctx.cfg.repro_attempts >= 2
+        && matches!(
+            records[0].verdict.kind,
+            VerdictKind::Inconclusive | VerdictKind::NeedsInfo | VerdictKind::NotReproduced
+        )
+    {
         ctx.say("retry", "Result was not conclusive; running once more");
+        let retry_prefix = format!("{base_prefix}retry-");
         let (second, _) = run_and_record(
             ctx,
             &dir,
             &test_md,
             RunKind::Reenact,
             "reenact (retry)",
-            "retry-",
+            &retry_prefix,
         )
         .await?;
         records.push(second);
@@ -358,6 +365,7 @@ pub async fn verify_as(ctx: &Ctx, dir: &Path, label: &str, kind: RunKind) -> Res
     let n = case.runs.iter().filter(|r| r.kind == kind).count() + 1;
     let prefix = match kind {
         RunKind::Confirm => format!("confirm{n}-"),
+        RunKind::Reference => format!("ref{n}-"),
         _ => format!("fix{n}-"),
     };
     let (rec, _) = run_and_record(ctx, dir, &md, kind, label, &prefix).await?;

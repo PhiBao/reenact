@@ -134,7 +134,7 @@ runs:
         case "$MODE" in
           repro)
             reenact repro --config "$CONFIG" --issue "$ISSUE_URL" --case-id "issue-$ISSUE_NUMBER" \
-              --out .reenact/cases --publish-branch "$BRANCH" --post
+              --out .reenact/cases --publish-branch "$BRANCH" --post --with-thread
             ;;
           fix)
             # The reproduction lives on the evidence branch under issue-<n>/.
