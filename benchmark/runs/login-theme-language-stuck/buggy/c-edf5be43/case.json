@@ -1,0 +1,193 @@
+{
+  "id": "c-edf5be43",
+  "created_at": "2026-11-12T15:48:05.047146401Z",
+  "report": {
+    "title": "Bug: Login screen Theme and Language settings stuck (v0.25.3)",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\n(v0.25.3)\n\n### Bug Description\n\n**Describe the bug**\nI am unable to change the Theme (Dark/Light mode) and Language settings on the Login screen. The UI elements appear to be unresponsive; selecting a different language or toggling the theme does not update the interface.\n\n**To Reproduce**\nSteps to reproduce the behavior:\n1. Go to the 'Login Screen' (fresh instance or logged out).\n2. Click on the 'Language Selector' dropdown.\n3. Click on the 'Theme Toggle' button.\n4. Observe that neither the language nor the theme changes visually.\n\n**Expected behavior**\nThe application should switch the UI language and toggle the theme immediately upon selection.\n\n**Environment info**\n - Version: **0.25.3** (Docker image `neosmemo/memos:stable`)\n - Database: SQLite (Schema v0.25.1)\n - Browser: [Chrome / Firefox / Safari - Kullandığını buraya yaz]\n - OS: [Windows / macOS / Linux - Kullandığını buraya yaz]\n\n**Additional Context**\n - **Important:** I checked the **official demo version**, and this issue does **NOT** occur there. It works perfectly in the demo but fails in this Docker version (v0.25.3).\n - No errors appear in the browser console.\n\n**Possible Root Cause (Technical Analysis)**\nI analyzed the bundled JS code for the Theme Selector component (likely exported as `T`) in my local instance. There appears to be a logic condition that prevents the global theme setter from running if an `onValueChange` prop is present.\n\nCurrent logic found in the minified bundle:\n`const a = s => { t ? t(s) : r.setTheme(s) };`\n\nIf the Login page passes an `onValueChange` handler (prop `t`), the `r.setTheme(s)` function is never executed. It seems the component is blocking the global state update when a parent handler is provided.\n\n### Steps to Reproduce\n\n1. Deploy a fresh Memos instance using Docker (v0.25.3):\n   `docker run -d -p 5230:5230 neosmemo/memos:stable`\n2. Open `http://localhost:5230` in an Incognito/Private window (to ensure no cache/session).\n3. Stay on the **Sign In** page (do not log in).\n4. Attempt to change the **Language** using the dropdown menu at the bottom.\n5. Attempt to toggle the **Theme** button (Sun/Moon icon).\n\n### Expected Behavior\n\nThe UI should immediately u",
+    "source_url": "https://github.com/usememos/memos/issues/5440",
+    "repo": null,
+    "number": 5440
+  },
+  "app_url": "http://localhost:15306",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/auth",
+    "preconditions": [
+      "the user is signed out and viewing the Sign In page",
+      "the Sign In page has a language dropdown at the bottom and a theme toggle (Sun/Moon icon)"
+    ],
+    "steps": [
+      "Open the Sign In page while signed out",
+      "Click the Language dropdown at the bottom of the page",
+      "Select a different language from the dropdown",
+      "Click the Theme toggle button (Sun/Moon icon)"
+    ],
+    "expected": "After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance.",
+    "reported_actual": "Selecting a different language and toggling the theme on the Sign In page do not change the interface; the controls appear unresponsive and no console errors appear.",
+    "missing": [
+      "Which specific language was selected from the dropdown?",
+      "Which theme options does the toggle offer (light/dark/system), and what was the starting theme?",
+      "Which browser and OS were used (the report left these as placeholders)?",
+      "assumed: the sign-in page path is /auth",
+      "assumed: any non-default language in the dropdown reproduces the issue",
+      "assumed: the Theme control is on the Sign In page itself, as the report states"
+    ],
+    "confidence": 0.6,
+    "summary": "Language and theme controls on the Sign In page do not change the UI in v0.25.3",
+    "signed_in": false
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15306/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5440]\n---\n\n# Bug: Login screen Theme and Language settings stuck (v0.25.3)\n\n## Reproduce the report\nOpen http://localhost:15306/auth.\nStay on localhost:15306 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the Sign In page while signed out\n2. Click the Language dropdown at the bottom of the page\n3. Select a different language from the dropdown\n4. Click the Theme toggle button (Sun/Moon icon)\nThe reporter says the correct behavior is that After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance. Verify that After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:48:05.047489935Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "An unexpected theme menu blocked the Language dropdown, preventing language selection in the required single action.",
+        "stuck_at": null,
+        "root_cause": "The Sign In page had a theme menu open when it should not have been. Clicking the Language dropdown only closed that menu instead of opening the language choices.",
+        "suggested_fix": "Ensure the theme menu is closed when the Sign In page appears and that clicking Language opens its own list even if another menu is present.",
+        "severity": "major",
+        "confidence": 0.9
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The required dropdown click instead dismissed an unexpected theme menu, so no language options are available without retrying.",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The Sign In page had a theme menu open when it should not have been. Clicking the Language dropdown only closed that menu instead of opening the language choices.\nEnsure the theme menu is closed when the Sign In page appears and that clicking Language opens its own list even if another menu is present.\nevidence: objective_contradiction: The required dropdown click instead dismissed an unexpected theme menu, so no language options are available without ret",
+        "credits": 33.82851,
+        "duration_s": 126.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M7873TWJWVDA7HW4AJHV9JCV/dashboard/share/US_TLC4KPD7O832LTRBRWLMBKN9CKPNR9FT6YLPF6M7BWYQ4GTG5KVDU58RB67FOC63?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Theme menu remains open and blocks language selection on Sign In",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15306/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "analyze",
+            "label": "the app behaves unexpectedly",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "click",
+            "label": "Clicking the English language dropdown in the bottom of the page",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              856.0,
+              1021.0,
+              98.0,
+              22.0
+            ],
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "click",
+            "label": "Selecting Arabic from the language dropdown list",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              860.0,
+              21.0,
+              134.0,
+              20.0
+            ],
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "click",
+            "label": "Clicking the theme toggle button to switch between light and dark modes",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": "frames/frame-05-annotated.png",
+            "rect": [
+              980.0,
+              1021.0,
+              82.0,
+              22.0
+            ],
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "",
+            "label": "Waiting after checking the language and theme results",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "Open the Sign In page while signed out",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 8,
+            "kind": "click",
+            "label": "Click the Language dropdown at the bottom of the page",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": "frames/frame-08-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          },
+          {
+            "ordinal": 9,
+            "kind": "",
+            "label": "Waiting select a different language from the dropdown",
+            "status": "failed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15306/auth"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "The Sign In page had a theme menu open when it should not have been. Clicking the Language dropdown only closed that menu instead of opening the language choices.",
+        "suggested_fix": "Ensure the theme menu is closed when the Sign In page appears and that clicking Language opens its own list even if another menu is present.",
+        "severity": "major",
+        "bug_confidence": 0.9
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

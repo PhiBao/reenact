@@ -1,0 +1,198 @@
+{
+  "id": "c-dacd0589",
+  "created_at": "2026-11-12T15:50:39.919655763Z",
+  "report": {
+    "title": "Bug: Login screen Theme and Language settings stuck (v0.25.3)",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\n(v0.25.3)\n\n### Bug Description\n\n**Describe the bug**\nI am unable to change the Theme (Dark/Light mode) and Language settings on the Login screen. The UI elements appear to be unresponsive; selecting a different language or toggling the theme does not update the interface.\n\n**To Reproduce**\nSteps to reproduce the behavior:\n1. Go to the 'Login Screen' (fresh instance or logged out).\n2. Click on the 'Language Selector' dropdown.\n3. Click on the 'Theme Toggle' button.\n4. Observe that neither the language nor the theme changes visually.\n\n**Expected behavior**\nThe application should switch the UI language and toggle the theme immediately upon selection.\n\n**Environment info**\n - Version: **0.25.3** (Docker image `neosmemo/memos:stable`)\n - Database: SQLite (Schema v0.25.1)\n - Browser: [Chrome / Firefox / Safari - Kullandığını buraya yaz]\n - OS: [Windows / macOS / Linux - Kullandığını buraya yaz]\n\n**Additional Context**\n - **Important:** I checked the **official demo version**, and this issue does **NOT** occur there. It works perfectly in the demo but fails in this Docker version (v0.25.3).\n - No errors appear in the browser console.\n\n**Possible Root Cause (Technical Analysis)**\nI analyzed the bundled JS code for the Theme Selector component (likely exported as `T`) in my local instance. There appears to be a logic condition that prevents the global theme setter from running if an `onValueChange` prop is present.\n\nCurrent logic found in the minified bundle:\n`const a = s => { t ? t(s) : r.setTheme(s) };`\n\nIf the Login page passes an `onValueChange` handler (prop `t`), the `r.setTheme(s)` function is never executed. It seems the component is blocking the global state update when a parent handler is provided.\n\n### Steps to Reproduce\n\n1. Deploy a fresh Memos instance using Docker (v0.25.3):\n   `docker run -d -p 5230:5230 neosmemo/memos:stable`\n2. Open `http://localhost:5230` in an Incognito/Private window (to ensure no cache/session).\n3. Stay on the **Sign In** page (do not log in).\n4. Attempt to change the **Language** using the dropdown menu at the bottom.\n5. Attempt to toggle the **Theme** button (Sun/Moon icon).\n\n### Expected Behavior\n\nThe UI should immediately u",
+    "source_url": "https://github.com/usememos/memos/issues/5440",
+    "repo": null,
+    "number": 5440
+  },
+  "app_url": "http://localhost:15307",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/auth",
+    "preconditions": [
+      "the user is signed out and viewing the Sign In page",
+      "the Sign In page has a language dropdown at the bottom and a theme toggle (Sun/Moon icon)"
+    ],
+    "steps": [
+      "Open the Sign In page while signed out",
+      "Click the Language dropdown at the bottom of the page",
+      "Select a different language from the dropdown",
+      "Click the Theme toggle button (Sun/Moon icon)"
+    ],
+    "expected": "After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance.",
+    "reported_actual": "Selecting a different language and toggling the theme on the Sign In page do not change the interface; the controls appear unresponsive and no console errors appear.",
+    "missing": [
+      "Which specific language was selected from the dropdown?",
+      "Which theme options does the toggle offer (light/dark/system), and what was the starting theme?",
+      "Which browser and OS were used (the report left these as placeholders)?",
+      "assumed: the sign-in page path is /auth",
+      "assumed: any non-default language in the dropdown reproduces the issue",
+      "assumed: the Theme control is on the Sign In page itself, as the report states"
+    ],
+    "confidence": 0.6,
+    "summary": "Language and theme controls on the Sign In page do not change the UI in v0.25.3",
+    "signed_in": false
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15307/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5440]\n---\n\n# Bug: Login screen Theme and Language settings stuck (v0.25.3)\n\n## Reproduce the report\nOpen http://localhost:15307/auth.\nStay on localhost:15307 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the Sign In page while signed out\n2. Click the Language dropdown at the bottom of the page\n3. Select a different language from the dropdown\n4. Click the Theme toggle button (Sun/Moon icon)\nThe reporter says the correct behavior is that After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance. Verify that After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:50:39.919949828Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Opened the Sign In page on localhost while signed out.\nOpened the language selector and changed the page language to German.\nUsed the theme control and confirmed that light and dark appearance options were available.\nThe Sign In page remained at the authentication address after the requested changes.",
+        "credits": 32.47011,
+        "duration_s": 104.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M7878HH5J293NA3265BM2S2Y/dashboard/share/US_FUU2GEQ2AERCPA7LO1GC3WX3PK621X974A2TULM7E29H2B8S4D9D96PWWZ9MA5V2?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15307/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "analyze",
+            "label": "the app behaves unexpectedly",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "",
+            "label": "Waiting without altering the current behavior",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "wait",
+            "label": "confirm the already-open signed-out Sign In page",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "click",
+            "label": "Clicking the Language dropdown in the page footer",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": "frames/frame-05-annotated.png",
+            "rect": [
+              812.0,
+              1021.0,
+              98.0,
+              22.0
+            ],
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Selecting Deutsch from the language dropdown",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              816.0,
+              113.0,
+              134.0,
+              20.0
+            ],
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "click",
+            "label": "Clicking the Theme toggle button (Sun/Moon icon) in the footer",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": "frames/frame-07-annotated.png",
+            "rect": [
+              940.0,
+              1021.0,
+              170.0,
+              22.0
+            ],
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "After selecting a different language, the Sign In page text is displayed in that",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15307/auth"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15307/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15307/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

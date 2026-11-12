@@ -1,0 +1,45 @@
+{
+  "id": "c-bd78e4ee",
+  "created_at": "2026-11-12T15:53:57.355833247Z",
+  "report": {
+    "title": "Using dollar sign causes improper formatting",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nSee image. Not sure which is causing this.\n\n<img width=\"527\" height=\"140\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/188cf525-da4d-42c8-86f6-a786f22ae3d6\" />\n\nThe problematic text should read:\n\n`with the local markets... $22 for the smallest bit of rice and fried chicken.`\n\n### Steps to reproduce\n\nTry and write any kind of amount of money or use ellipsis. \n\n### Memos version\n\n0.30.0\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6325",
+    "repo": null,
+    "number": 6325
+  },
+  "app_url": "http://localhost:15313",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the Memos editor is available to the signed-in user",
+      "the reporter says the problem happens when writing a money amount with a dollar sign or when using an ellipsis"
+    ],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type \"with the local markets... $22 for the smallest bit of rice and fried chicken.\"",
+      "Click the Save button to create the memo",
+      "Look at the rendered memo in the memo list"
+    ],
+    "expected": "the saved memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\", with the \"$22\" and the ellipsis visible and no broken or math-style formatting",
+    "reported_actual": "the memo text is displayed with improper formatting (shown in a screenshot, not described in text) when it contains a dollar amount or an ellipsis",
+    "missing": [
+      "What exactly does the improper formatting look like (the screenshot is not available)?",
+      "Is the cause the dollar sign, the ellipsis, or both together?",
+      "Does the problem occur with only one dollar amount in the text, or only when a second '$' appears elsewhere in the memo (for example, as an inline math delimiter)?",
+      "Is there any text before or after the quoted line in the original memo?",
+      "assumed: the problem is visible in the rendered memo after saving, not in the editor while typing",
+      "assumed: the quoted sentence from the report is enough to trigger the bug, since the reporter gave it as the problematic text"
+    ],
+    "confidence": 0.5,
+    "summary": "Memo text containing a dollar amount and ellipsis renders with improper formatting",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15313/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6325]\n---\n\n# Using dollar sign causes improper formatting\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15313/.\nStay on localhost:15313 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page\n2. Type \"with the local markets... $22 for the smallest bit of rice and fried chicken.\"\n3. Click the Save button to create the memo\n4. Look at the rendered memo in the memo list\nThe reporter says the correct behavior is that the saved memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\", with the \"$22\" and the ellipsis visible and no broken or math-style formatting. Verify that the saved memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\", with the \"$22\" and the ellipsis visible and no broken or math-style formatting.\n",
+  "runs": [],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reenacting"
+}

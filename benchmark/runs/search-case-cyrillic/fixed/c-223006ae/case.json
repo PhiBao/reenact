@@ -1,0 +1,282 @@
+{
+  "id": "c-223006ae",
+  "created_at": "2026-11-12T15:45:14.344964798Z",
+  "report": {
+    "title": "Search is not case-idependent in non-EN locale",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26\n\n### Bug Description\n\nSeems like the search is not case-independent when memos content is not in English.\n\n### Steps to Reproduce\n\n1. Create a memo:\n ```\n**Рецепты**\n\n**Сырники**:\n\n\n**Блины**\n**Выход** 12-13 шт (большая сковородка), 12\n- молоко 400 (500) мл\n```\n2. Search for \"блины\" -> no results found. Searching for \"Блины\" (note capital Б) works fine though.\n\n### Expected Behavior\n\nI expect search to be case-independent by default (and it seems to be working like this for English)\n\n### Screenshots & Additional Context\n\n<img width=\"855\" height=\"877\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/a3aa2369-2946-4548-a2ca-c3eebb9ccbf3\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5559",
+    "repo": null,
+    "number": 5559
+  },
+  "app_url": "http://localhost:15305",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "no memos exist yet in the fresh install"
+    ],
+    "steps": [
+      "Click the memo editor input on the home page to focus it",
+      "Type the memo content: \"**Рецепты**\", then a blank line, \"**Сырники**:\", then two blank lines, \"**Блины**\", a new line, \"**Выход** 12-13 шт (большая сковородка), 12\", a new line, \"- молоко 400 (500) мл\"",
+      "Click the Save button to create the memo",
+      "Click the search box",
+      "Type \"блины\" (lowercase б) into the search box",
+      "Press Enter to run the search"
+    ],
+    "expected": "the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\"",
+    "reported_actual": "searching for lowercase \"блины\" returns no results, while searching for \"Блины\" with a capital Б finds the memo",
+    "missing": [
+      "assumed: the search box is on the home page and runs the search on Enter",
+      "assumed: the memo is typed with the markdown bold markers exactly as shown, with line breaks as in the report",
+      "Is the memo content visibility or any filter/tag selection relevant?",
+      "Which database backend (SQLite, MySQL, Postgres) is used by the reporter's instance?"
+    ],
+    "confidence": 0.75,
+    "summary": "Search for lowercase Cyrillic word finds no memo, while capitalized version does",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15305/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5559]\n---\n\n# Search is not case-idependent in non-EN locale\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15305/.\nStay on localhost:15305 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page to focus it\n2. Type the memo content: \"**Рецепты**\", then a blank line, \"**Сырники**:\", then two blank lines, \"**Блины**\", a new line, \"**Выход** 12-13 шт (большая сковородка), 12\", a new line, \"- молоко 400 (500) мл\"\n3. Click the Save button to create the memo\n4. Click the search box\n5. Type \"блины\" (lowercase б) into the search box\n6. Press Enter to run the search\nThe reporter says the correct behavior is that the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\". Verify that the memo containing \"Блины\" is shown in the search results after searching for \"блины\", the same as when searching for \"Блины\".\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:45:14.345216275Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a memo containing the requested recipes text, including the «Блины» section and ingredient line.\nSearched the saved memos for «блины» using lowercase letters.\nThe memo containing «Блины» appeared in the search results, confirming the search found it.",
+        "credits": 28.56313,
+        "duration_s": 138.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M786YJTE7GSAYSK429RZH40H/dashboard/share/US_4SBEM8S4OGFAA59L85DOXN2BSYASB7BP0S1SWIOMX3HYC60I2CWK4J6EFD9BVXNR?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15305/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15305/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15305/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Typing a new memo in the memo editor with the provided recipes content",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking the Save button",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              1408.0,
+              253.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Typing блины into the search box",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              109.0,
+              29.0,
+              225.0,
+              20.0
+            ],
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "press_key",
+            "label": "press Enter to run the search",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/?filter=contentSearch%3A%25D0%25B1%25D0%25BB%25D0%25B8%25D0%25BD%25D1%258B"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "the memo containing \"Блины\" is shown in the search results after searching for \"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15305/?filter=contentSearch%3A%25D0%25B1%25D0%25BB%25D0%25B8%25D0%25BD%25D1%258B"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15305/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15305/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

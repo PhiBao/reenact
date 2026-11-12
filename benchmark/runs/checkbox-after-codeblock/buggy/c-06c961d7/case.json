@@ -37,8 +37,306 @@
     "signed_in": true
   },
   "test_md": "---\nmode: testing\nurl: http://localhost:15300/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5319]\n---\n\n# Wrong checkbox checked when it's preceded by checkbox in a codeblock\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15300/.\nStay on localhost:15300 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the memo editor to create a new memo\n2. Type a line containing three backticks (```) to open a fenced code block\n3. Press Shift+Enter to add a new line and type '-[ ] foo'\n4. Press Shift+Enter to add a new line and type three backticks (```) to close the code block\n5. Press Shift+Enter to add a new line and type '- [ ] bar'\n6. Click the Save button to save the memo\n7. In the saved memo's view mode, click the checkbox next to 'bar'\nThe reporter says the correct behavior is that After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'. Verify that After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'.\n",
-  "runs": [],
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:41:59.446677505Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The memo did not retain the fenced code line containing the unchecked `foo` task, so the required saved view could not be shown after checking `bar`.",
+        "stuck_at": null,
+        "root_cause": "After the requested fenced-code and task text was entered, the memo that was saved displayed only the `bar` task. The earlier code-block content, including `-[ ] foo`, was lost instead of being preserved.",
+        "suggested_fix": "Fix the memo editor so adding later lines after a fenced code block preserves the entire code block and its literal `-[ ] foo` text through save and view mode.",
+        "severity": "major",
+        "confidence": 0.86
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"After clicking, the checkbox next to 'bar' is checked, and the code block still shows the unchecked text '-[ ] foo'.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "After the requested fenced-code and task text was entered, the memo that was saved displayed only the `bar` task. The earlier code-block content, including `-[ ] foo`, was lost instead of being preserved.\nFix the memo editor so adding later lines after a fenced code block preserves the entire code block and its literal `-[ ] foo` text through save and view mode.\nevidence: objective_contradiction: Final verification failed: \"After clicking, the checkbox next to 'bar' is checked, and the code block still shows the un",
+        "credits": 42.713837500000004,
+        "duration_s": 261.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M786RP7AY8XJXQV9SCYK5TMD/dashboard/share/US_7JB69IXKY10Q62ILGTQS4IRQM3WNHJ9ETLWWGS68N7IOHGHIBQQW6V4IKZRAWFX5?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Fenced code content is lost before memo save",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15300/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in with username and password",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15300/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the sign-in form is gone",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15300/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Typing in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "press_key",
+            "label": "press Shift+Enter to add a new line",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Typing -[ ] foo in the memo composer",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "press_key",
+            "label": "press Shift+Enter to add a new line",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "type",
+            "label": "Typing Any thoughts into the memo composer",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "press_key",
+            "label": "press Shift+Enter to add a new line",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "type",
+            "label": "Typing - [ ] bar into the memo composer",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Clicking the Save button to save the memo",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Clicking the checkbox next to bar in the saved memo list",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              818.0,
+              174.0,
+              14.0,
+              14.0
+            ],
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "analyze",
+            "label": "After clicking, the checkbox next to 'bar' is checked.",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "assert",
+            "label": "After clicking, the checkbox next to 'bar' is checked, and the code block still",
+            "status": "failed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15300/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "After the requested fenced-code and task text was entered, the memo that was saved displayed only the `bar` task. The earlier code-block content, including `-[ ] foo`, was lost instead of being preserved.",
+        "suggested_fix": "Fix the memo editor so adding later lines after a fenced code block preserves the entire code block and its literal `-[ ] foo` text through save and view mode.",
+        "severity": "major",
+        "bug_confidence": 0.86
+      }
+    }
+  ],
   "fixes": [],
   "pr_url": null,
-  "state": "reenacting"
+  "state": "reproduced"
 }

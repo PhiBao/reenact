@@ -70,7 +70,7 @@ Return ONLY a JSON object:
 
 Rules:
 - Edit only existing source files shown to you. No new files, no test files, no config, no CI.
-- Make the smallest change that fixes the reported behavior. Do not refactor.
+- Make the smallest change that fixes the reported behavior. Do not refactor. Fix ONLY the reported behavior: if you notice other bugs, leave them alone.
 - `search` must match the file byte for byte (including indentation) and occur exactly once.
 - Kane's root-cause note is a hint and may be wrong. Read the code.
 - If earlier attempts failed, they are listed with Kane's result. Do something different."#;
@@ -283,7 +283,10 @@ pub async fn run(a: FixArgs) -> Result<()> {
             files: touched,
             applied: true,
             outcome: Some(rec.verdict.kind),
-            note: format!("{}: {}", rec.verdict.kind.label(), rec.verdict.headline),
+            note: match &rec.verdict.stuck_at {
+                Some(why) => format!("{}: {} Kane stopped at: {why}", rec.verdict.kind.label(), rec.verdict.headline),
+                None => format!("{}: {}", rec.verdict.kind.label(), rec.verdict.headline),
+            },
         });
         if ok {
             fixed = true;
