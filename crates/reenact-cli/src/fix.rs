@@ -327,7 +327,7 @@ pub async fn run(a: FixArgs) -> Result<()> {
         git(&a.repo, &["-c", "user.name=Reenact", "-c", "user.email=reenact@users.noreply.github.com", "commit", "-q", "-m", &msg])?;
 
         if a.pr {
-            git(&a.repo, &["push", "-u", "origin", &branch, "--force-with-lease"])?;
+            git(&a.repo, &["push", "-u", "origin", &branch, "--force"])?;
             let body = format!(
                 "Fixes #{issue}.\n\nReenact reproduced this report in a real browser with Kane, an agent proposed this change, and **the same test now passes**.\n\n- Attempts: {}\n- Regression test: `{}/{}`\n",
                 case.fixes.len(),
@@ -338,7 +338,13 @@ pub async fn run(a: FixArgs) -> Result<()> {
             if out.status.success() {
                 case.pr_url = Some(String::from_utf8_lossy(&out.stdout).trim().to_string());
             } else {
-                eprintln!("[fix] gh pr create failed: {}", String::from_utf8_lossy(&out.stderr));
+                // A PR for this branch may already exist (re-run): link to it.
+                let view = Command::new("gh").current_dir(&a.repo).args(["pr", "view", &branch, "--json", "url", "-q", ".url"]).output()?;
+                if view.status.success() {
+                    case.pr_url = Some(String::from_utf8_lossy(&view.stdout).trim().to_string());
+                } else {
+                    eprintln!("[fix] gh pr create failed: {}", String::from_utf8_lossy(&out.stderr));
+                }
             }
         }
     }
