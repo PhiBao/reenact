@@ -75,22 +75,61 @@ Rules:
 - Kane's root-cause note is a hint and may be wrong. Read the code.
 - If earlier attempts failed, they are listed with Kane's result. Do something different."#;
 
-const DENY_PREFIXES: [&str; 6] = [".git/", ".github/", "reenact/", ".testmuai/", "node_modules/", "target/"];
+const DENY_PREFIXES: [&str; 6] = [
+    ".git/",
+    ".github/",
+    "reenact/",
+    ".testmuai/",
+    "node_modules/",
+    "target/",
+];
 
 fn source_files(repo: &Path) -> Result<BTreeMap<String, String>> {
-    let out = Command::new("git").arg("-C").arg(repo).args(["ls-files"]).output().context("git ls-files")?;
-    anyhow::ensure!(out.status.success(), "{} is not a git repository", repo.display());
+    let out = Command::new("git")
+        .arg("-C")
+        .arg(repo)
+        .args(["ls-files"])
+        .output()
+        .context("git ls-files")?;
+    anyhow::ensure!(
+        out.status.success(),
+        "{} is not a git repository",
+        repo.display()
+    );
     let mut map = BTreeMap::new();
     let mut total = 0usize;
     for rel in String::from_utf8_lossy(&out.stdout).lines() {
-        if DENY_PREFIXES.iter().any(|p| rel.starts_with(p)) || rel.ends_with("_test.md") || rel.ends_with("lock.json") {
+        if DENY_PREFIXES.iter().any(|p| rel.starts_with(p))
+            || rel.ends_with("_test.md")
+            || rel.ends_with("lock.json")
+        {
             continue;
         }
-        let ext = Path::new(rel).extension().and_then(|e| e.to_str()).unwrap_or("");
-        if !matches!(ext, "js" | "mjs" | "ts" | "tsx" | "jsx" | "html" | "css" | "json" | "py" | "rb" | "go" | "rs" | "vue" | "svelte") {
+        let ext = Path::new(rel)
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("");
+        if !matches!(
+            ext,
+            "js" | "mjs"
+                | "ts"
+                | "tsx"
+                | "jsx"
+                | "html"
+                | "css"
+                | "json"
+                | "py"
+                | "rb"
+                | "go"
+                | "rs"
+                | "vue"
+                | "svelte"
+        ) {
             continue;
         }
-        let Ok(text) = std::fs::read_to_string(repo.join(rel)) else { continue };
+        let Ok(text) = std::fs::read_to_string(repo.join(rel)) else {
+            continue;
+        };
         if text.len() > 60_000 {
             continue;
         }
@@ -104,7 +143,11 @@ fn source_files(repo: &Path) -> Result<BTreeMap<String, String>> {
     Ok(map)
 }
 
-fn validate_and_apply(repo: &Path, files: &BTreeMap<String, String>, edits: &[Edit]) -> Result<BTreeMap<String, String>> {
+fn validate_and_apply(
+    repo: &Path,
+    files: &BTreeMap<String, String>,
+    edits: &[Edit],
+) -> Result<BTreeMap<String, String>> {
     anyhow::ensure!(!edits.is_empty(), "the model proposed no edits");
     anyhow::ensure!(edits.len() <= 6, "too many edits");
     let total: usize = edits.iter().map(|e| e.replace.len()).sum();
@@ -113,13 +156,23 @@ fn validate_and_apply(repo: &Path, files: &BTreeMap<String, String>, edits: &[Ed
     let mut working: BTreeMap<String, String> = BTreeMap::new();
     for e in edits {
         let p = e.path.trim().trim_start_matches("./");
-        anyhow::ensure!(!p.starts_with('/') && !p.contains(".."), "path escapes the repo: {p}");
-        let base = files.get(p).with_context(|| format!("{p} is not an editable source file"))?;
+        anyhow::ensure!(
+            !p.starts_with('/') && !p.contains(".."),
+            "path escapes the repo: {p}"
+        );
+        let base = files
+            .get(p)
+            .with_context(|| format!("{p} is not an editable source file"))?;
         let cur = working.get(p).unwrap_or(base).clone();
         anyhow::ensure!(!e.search.is_empty(), "empty search text");
         let n = cur.matches(&e.search).count();
-        anyhow::ensure!(n == 1, "search text for {p} matched {n} times (needs exactly 1)");
-        originals.entry(p.to_string()).or_insert_with(|| base.clone());
+        anyhow::ensure!(
+            n == 1,
+            "search text for {p} matched {n} times (needs exactly 1)"
+        );
+        originals
+            .entry(p.to_string())
+            .or_insert_with(|| base.clone());
         working.insert(p.to_string(), cur.replacen(&e.search, &e.replace, 1));
     }
     for (p, text) in &working {
@@ -152,9 +205,18 @@ impl Drop for Server {
 }
 
 async fn start_server(repo: &Path, cmd: &str, app_url: &str) -> Result<Server> {
-    let port = url::Url::parse(app_url)?.port_or_known_default().unwrap_or(80);
+    let port = url::Url::parse(app_url)?
+        .port_or_known_default()
+        .unwrap_or(80);
     let mut c = tokio::process::Command::new("sh");
-    c.arg("-c").arg(cmd).current_dir(repo).env("PORT", port.to_string()).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null()).process_group(0);
+    c.arg("-c")
+        .arg(cmd)
+        .current_dir(repo)
+        .env("PORT", port.to_string())
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .process_group(0);
     let child = c.spawn().context("starting the app")?;
     let srv = Server { pid: child.id() };
     std::mem::forget(child); // lifetime is managed through the process group
@@ -169,8 +231,18 @@ async fn start_server(repo: &Path, cmd: &str, app_url: &str) -> Result<Server> {
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<String> {
-    let out = Command::new("git").arg("-C").arg(repo).args(args).output().context("git")?;
-    anyhow::ensure!(out.status.success(), "git {} failed: {}", args.join(" "), String::from_utf8_lossy(&out.stderr));
+    let out = Command::new("git")
+        .arg("-C")
+        .arg(repo)
+        .args(args)
+        .output()
+        .context("git")?;
+    anyhow::ensure!(
+        out.status.success(),
+        "git {} failed: {}",
+        args.join(" "),
+        String::from_utf8_lossy(&out.stderr)
+    );
     Ok(String::from_utf8_lossy(&out.stdout).trim().to_string())
 }
 
@@ -183,7 +255,10 @@ fn build_prompt(case: &Case, files: &BTreeMap<String, String>, attempts: &[FixAt
         sanitize::clean_text(&case.report.title, 300),
         sanitize::clean_text(&case.report.body, 3000)
     ));
-    s.push_str(&format!("Expected behavior (from the report): {}\n", plan.expected));
+    s.push_str(&format!(
+        "Expected behavior (from the report): {}\n",
+        plan.expected
+    ));
     if let Some(r) = rec {
         s.push_str(&format!("Kane observed: {}\n", r.verdict.headline));
         if let Some(rc) = &r.verdict.root_cause {
@@ -199,7 +274,10 @@ fn build_prompt(case: &Case, files: &BTreeMap<String, String>, attempts: &[FixAt
     if !attempts.is_empty() {
         s.push_str("\nEarlier attempts that did NOT pass Kane's verification:\n");
         for a in attempts {
-            s.push_str(&format!("- Attempt {}: {} Result: {}\n", a.attempt, a.rationale, a.note));
+            s.push_str(&format!(
+                "- Attempt {}: {} Result: {}\n",
+                a.attempt, a.rationale, a.note
+            ));
         }
     }
     s.push_str("\nSource files:\n");
@@ -212,7 +290,11 @@ fn build_prompt(case: &Case, files: &BTreeMap<String, String>, attempts: &[FixAt
 async fn propose(llm: &Llm, prompt: &str) -> Result<FixReply> {
     let mut last = String::new();
     for i in 0..2 {
-        let p = if i == 0 { prompt.to_string() } else { format!("{prompt}\n\nYour previous reply was not valid JSON for the schema. Reply with ONLY the JSON object.") };
+        let p = if i == 0 {
+            prompt.to_string()
+        } else {
+            format!("{prompt}\n\nYour previous reply was not valid JSON for the schema. Reply with ONLY the JSON object.")
+        };
         let reply = llm.chat(SYSTEM, &p).await?;
         last = reply.clone();
         if let Some(obj) = extract_json_object(&reply) {
@@ -221,26 +303,44 @@ async fn propose(llm: &Llm, prompt: &str) -> Result<FixReply> {
             }
         }
     }
-    bail!("model reply was not usable: {}", last.chars().take(160).collect::<String>())
+    bail!(
+        "model reply was not usable: {}",
+        last.chars().take(160).collect::<String>()
+    )
 }
 
 pub async fn run(a: FixArgs) -> Result<()> {
     let ctx: Ctx = crate::make_ctx(&a.config)?;
     let mut case = pipeline::load_case(&a.case)?;
-    let last = case.runs.iter().rev().find(|r| r.kind == RunKind::Reenact).context("case has no reproduction")?;
+    let last = case
+        .runs
+        .iter()
+        .rev()
+        .find(|r| r.kind == RunKind::Reenact)
+        .context("case has no reproduction")?;
     if last.verdict.kind != VerdictKind::Reproduced && !a.force {
         bail!("this case is '{}', not Reproduced. Fixing something that was not reproduced cannot be verified.", last.verdict.kind.label());
     }
     let llm = {
-        let base = ctx.llm.clone().context("an LLM is required (set REENACT_LLM_API_KEY)")?;
+        let base = ctx
+            .llm
+            .clone()
+            .context("an LLM is required (set REENACT_LLM_API_KEY)")?;
         match std::env::var("REENACT_FIX_MODEL") {
             Ok(m) => Llm::new(base.base_url.clone(), base.api_key.clone(), m),
             Err(_) => base,
         }
     };
 
-    anyhow::ensure!(git(&a.repo, &["status", "--porcelain"])?.is_empty(), "the repo has uncommitted changes; commit or stash first");
-    let issue = case.report.number.map(|n| n.to_string()).unwrap_or_else(|| case.id.clone());
+    anyhow::ensure!(
+        git(&a.repo, &["status", "--porcelain"])?.is_empty(),
+        "the repo has uncommitted changes; commit or stash first"
+    );
+    let issue = case
+        .report
+        .number
+        .map(|n| n.to_string())
+        .unwrap_or_else(|| case.id.clone());
     let branch = format!("reenact/fix-{issue}");
     git(&a.repo, &["checkout", "-B", &branch])?;
 
@@ -258,7 +358,14 @@ pub async fn run(a: FixArgs) -> Result<()> {
         let reply = match propose(&llm, &prompt).await {
             Ok(r) => r,
             Err(e) => {
-                attempts.push(FixAttempt { attempt: n, rationale: "model call failed".into(), files: vec![], applied: false, outcome: None, note: format!("{e:#}") });
+                attempts.push(FixAttempt {
+                    attempt: n,
+                    rationale: "model call failed".into(),
+                    files: vec![],
+                    applied: false,
+                    outcome: None,
+                    note: format!("{e:#}"),
+                });
                 continue;
             }
         };
@@ -266,7 +373,14 @@ pub async fn run(a: FixArgs) -> Result<()> {
             Ok(o) => o,
             Err(e) => {
                 eprintln!("[fix] edit rejected: {e:#}");
-                attempts.push(FixAttempt { attempt: n, rationale: reply.rationale, files: vec![], applied: false, outcome: None, note: format!("edit rejected: {e:#}") });
+                attempts.push(FixAttempt {
+                    attempt: n,
+                    rationale: reply.rationale,
+                    files: vec![],
+                    applied: false,
+                    outcome: None,
+                    note: format!("edit rejected: {e:#}"),
+                });
                 continue;
             }
         };
@@ -284,7 +398,11 @@ pub async fn run(a: FixArgs) -> Result<()> {
             applied: true,
             outcome: Some(rec.verdict.kind),
             note: match &rec.verdict.stuck_at {
-                Some(why) => format!("{}: {} Kane stopped at: {why}", rec.verdict.kind.label(), rec.verdict.headline),
+                Some(why) => format!(
+                    "{}: {} Kane stopped at: {why}",
+                    rec.verdict.kind.label(),
+                    rec.verdict.headline
+                ),
                 None => format!("{}: {}", rec.verdict.kind.label(), rec.verdict.headline),
             },
         });
@@ -299,17 +417,55 @@ pub async fn run(a: FixArgs) -> Result<()> {
     // verify() saved its own copy of the case; reload and add our attempts.
     let mut case = pipeline::load_case(&a.case)?;
     case.fixes = attempts;
-    case.state = if fixed { CaseState::Fixed } else { CaseState::FixFailed };
+    case.state = if fixed {
+        CaseState::Fixed
+    } else {
+        CaseState::FixFailed
+    };
 
     if fixed {
         // Before/after proof.
-        let before = case.runs.iter().rev().find(|r| r.kind == RunKind::Reenact).map(|r| r.run.frames.clone()).unwrap_or_default();
-        let after = case.runs.iter().rev().find(|r| r.kind == RunKind::VerifyFix).map(|r| r.run.frames.clone()).unwrap_or_default();
+        let before = case
+            .runs
+            .iter()
+            .rev()
+            .find(|r| r.kind == RunKind::Reenact)
+            .map(|r| r.run.frames.clone())
+            .unwrap_or_default();
+        let after = case
+            .runs
+            .iter()
+            .rev()
+            .find(|r| r.kind == RunKind::VerifyFix)
+            .map(|r| r.run.frames.clone())
+            .unwrap_or_default();
         if let (Some(b), Some(af)) = (before.last(), after.last()) {
             let rect = strip::trigger_rect(&before);
-            strip::compose_compare(&a.case, b, rect, &a.case, af, (1920, 1080), &a.case.join("compare.png"))?;
-            strip::compose_single(&a.case, b, rect, strip::red(), (1920, 1080), &a.case.join("before.png"))?;
-            strip::compose_single(&a.case, af, rect, strip::green(), (1920, 1080), &a.case.join("after.png"))?;
+            strip::compose_compare(
+                &a.case,
+                b,
+                rect,
+                &a.case,
+                af,
+                (1920, 1080),
+                &a.case.join("compare.png"),
+            )?;
+            strip::compose_single(
+                &a.case,
+                b,
+                rect,
+                strip::red(),
+                (1920, 1080),
+                &a.case.join("before.png"),
+            )?;
+            strip::compose_single(
+                &a.case,
+                af,
+                rect,
+                strip::green(),
+                (1920, 1080),
+                &a.case.join("after.png"),
+            )?;
         }
 
         // Permanent regression test: plain English, committed next to the code.
@@ -318,8 +474,14 @@ pub async fn run(a: FixArgs) -> Result<()> {
         let reg_dir = a.repo.join(&a.regression_dir);
         std::fs::create_dir_all(&reg_dir)?;
         let name = format!("issue-{issue}_test.md");
-        std::fs::write(reg_dir.join(&name), case.test_md.clone().unwrap_or_default())?;
-        std::fs::write(reg_dir.join(".gitignore"), "output-*/\n.testmuai/\n*.evidence\n")?;
+        std::fs::write(
+            reg_dir.join(&name),
+            case.test_md.clone().unwrap_or_default(),
+        )?;
+        std::fs::write(
+            reg_dir.join(".gitignore"),
+            "output-*/\n.testmuai/\n*.evidence\n",
+        )?;
 
         git(&a.repo, &["add", "-A"])?;
         let msg = format!(
@@ -327,7 +489,19 @@ pub async fn run(a: FixArgs) -> Result<()> {
             case.plan.as_ref().map(|p| p.summary.clone()).unwrap_or_default(),
             a.regression_dir
         );
-        git(&a.repo, &["-c", "user.name=Reenact", "-c", "user.email=reenact@users.noreply.github.com", "commit", "-q", "-m", &msg])?;
+        git(
+            &a.repo,
+            &[
+                "-c",
+                "user.name=Reenact",
+                "-c",
+                "user.email=reenact@users.noreply.github.com",
+                "commit",
+                "-q",
+                "-m",
+                &msg,
+            ],
+        )?;
 
         if a.pr {
             git(&a.repo, &["push", "-u", "origin", &branch, "--force"])?;
@@ -337,16 +511,38 @@ pub async fn run(a: FixArgs) -> Result<()> {
                 a.regression_dir,
                 name
             );
-            let out = Command::new("gh").current_dir(&a.repo).args(["pr", "create", "--title", &format!("Fix #{issue}: {}", case.plan.as_ref().map(|p| p.summary.clone()).unwrap_or_default()), "--body", &body]).output()?;
+            let out = Command::new("gh")
+                .current_dir(&a.repo)
+                .args([
+                    "pr",
+                    "create",
+                    "--title",
+                    &format!(
+                        "Fix #{issue}: {}",
+                        case.plan
+                            .as_ref()
+                            .map(|p| p.summary.clone())
+                            .unwrap_or_default()
+                    ),
+                    "--body",
+                    &body,
+                ])
+                .output()?;
             if out.status.success() {
                 case.pr_url = Some(String::from_utf8_lossy(&out.stdout).trim().to_string());
             } else {
                 // A PR for this branch may already exist (re-run): link to it.
-                let view = Command::new("gh").current_dir(&a.repo).args(["pr", "view", &branch, "--json", "url", "-q", ".url"]).output()?;
+                let view = Command::new("gh")
+                    .current_dir(&a.repo)
+                    .args(["pr", "view", &branch, "--json", "url", "-q", ".url"])
+                    .output()?;
                 if view.status.success() {
                     case.pr_url = Some(String::from_utf8_lossy(&view.stdout).trim().to_string());
                 } else {
-                    eprintln!("[fix] gh pr create failed: {}", String::from_utf8_lossy(&out.stderr));
+                    eprintln!(
+                        "[fix] gh pr create failed: {}",
+                        String::from_utf8_lossy(&out.stderr)
+                    );
                 }
             }
         }

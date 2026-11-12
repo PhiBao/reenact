@@ -11,10 +11,20 @@ use std::process::{Command, Stdio};
 
 pub fn parse_issue_url(url: &str) -> Result<(String, String, u64)> {
     let u = url::Url::parse(url).context("not a URL")?;
-    anyhow::ensure!(u.host_str() == Some("github.com"), "only github.com issue URLs are supported");
+    anyhow::ensure!(
+        u.host_str() == Some("github.com"),
+        "only github.com issue URLs are supported"
+    );
     let seg: Vec<&str> = u.path_segments().map(|s| s.collect()).unwrap_or_default();
-    anyhow::ensure!(seg.len() >= 4 && seg[2] == "issues", "expected https://github.com/<owner>/<repo>/issues/<n>");
-    Ok((seg[0].to_string(), seg[1].to_string(), seg[3].parse().context("issue number")?))
+    anyhow::ensure!(
+        seg.len() >= 4 && seg[2] == "issues",
+        "expected https://github.com/<owner>/<repo>/issues/<n>"
+    );
+    Ok((
+        seg[0].to_string(),
+        seg[1].to_string(),
+        seg[3].parse().context("issue number")?,
+    ))
 }
 
 fn gh(args: &[&str], stdin: Option<&str>) -> Result<String> {
@@ -31,7 +41,11 @@ fn gh(args: &[&str], stdin: Option<&str>) -> Result<String> {
     }
     let out = child.wait_with_output()?;
     if !out.status.success() {
-        bail!("gh {} failed: {}", args.join(" "), String::from_utf8_lossy(&out.stderr).trim());
+        bail!(
+            "gh {} failed: {}",
+            args.join(" "),
+            String::from_utf8_lossy(&out.stderr).trim()
+        );
     }
     Ok(String::from_utf8_lossy(&out.stdout).into_owned())
 }
@@ -51,7 +65,14 @@ pub fn fetch_issue(url: &str) -> Result<Report> {
 
 /// Create or update the single Reenact comment for `case_id` on an issue.
 pub fn upsert_comment(repo: &str, number: u64, case_id: &str, body: &str) -> Result<String> {
-    let raw = gh(&["api", &format!("repos/{repo}/issues/{number}/comments"), "--paginate"], None)?;
+    let raw = gh(
+        &[
+            "api",
+            &format!("repos/{repo}/issues/{number}/comments"),
+            "--paginate",
+        ],
+        None,
+    )?;
     // --paginate concatenates JSON arrays: parse leniently.
     let marker = format!("{MARKER_PREFIX}{case_id} -->");
     let mut existing: Option<u64> = None;
@@ -67,8 +88,28 @@ pub fn upsert_comment(repo: &str, number: u64, case_id: &str, body: &str) -> Res
     }
     let payload = json!({ "body": body }).to_string();
     let resp = match existing {
-        Some(id) => gh(&["api", "-X", "PATCH", &format!("repos/{repo}/issues/comments/{id}"), "--input", "-"], Some(&payload))?,
-        None => gh(&["api", "-X", "POST", &format!("repos/{repo}/issues/{number}/comments"), "--input", "-"], Some(&payload))?,
+        Some(id) => gh(
+            &[
+                "api",
+                "-X",
+                "PATCH",
+                &format!("repos/{repo}/issues/comments/{id}"),
+                "--input",
+                "-",
+            ],
+            Some(&payload),
+        )?,
+        None => gh(
+            &[
+                "api",
+                "-X",
+                "POST",
+                &format!("repos/{repo}/issues/{number}/comments"),
+                "--input",
+                "-",
+            ],
+            Some(&payload),
+        )?,
     };
     let v: Value = serde_json::from_str(&resp)?;
     Ok(v["html_url"].as_str().unwrap_or_default().to_string())

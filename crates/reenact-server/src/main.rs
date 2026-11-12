@@ -47,7 +47,11 @@ struct Summary {
 }
 
 fn valid_id(id: &str) -> bool {
-    !id.is_empty() && id.len() <= 64 && id.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    !id.is_empty()
+        && id.len() <= 64
+        && id
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
 }
 
 fn load_case(dir: &Path, id: &str) -> Option<Case> {
@@ -59,7 +63,11 @@ fn load_case(dir: &Path, id: &str) -> Option<Case> {
 }
 
 fn summarize(c: &Case) -> Summary {
-    let last = c.runs.iter().rev().find(|r| r.kind == reenact_core::model::RunKind::Reenact);
+    let last = c
+        .runs
+        .iter()
+        .rev()
+        .find(|r| r.kind == reenact_core::model::RunKind::Reenact);
     Summary {
         id: c.id.clone(),
         title: c.report.title.clone(),
@@ -67,8 +75,13 @@ fn summarize(c: &Case) -> Summary {
         state: c.state,
         headline: last.map(|r| r.verdict.headline.clone()).unwrap_or_default(),
         created_at: c.created_at,
-        has_fix: c.runs.iter().any(|r| r.kind == reenact_core::model::RunKind::VerifyFix),
-        strip: last.and_then(|r| r.run.strip_file.clone()).unwrap_or_else(|| "strip.png".into()),
+        has_fix: c
+            .runs
+            .iter()
+            .any(|r| r.kind == reenact_core::model::RunKind::VerifyFix),
+        strip: last
+            .and_then(|r| r.run.strip_file.clone())
+            .unwrap_or_else(|| "strip.png".into()),
         source_url: c.report.source_url.clone(),
     }
 }
@@ -96,7 +109,10 @@ async fn get_case(State(s): State<AppState>, AxPath(id): AxPath<String>) -> Resp
 }
 
 /// Serve a file from inside a case folder. Only plain relative paths, only images.
-async fn case_file(State(s): State<AppState>, AxPath((id, rel)): AxPath<(String, String)>) -> Response {
+async fn case_file(
+    State(s): State<AppState>,
+    AxPath((id, rel)): AxPath<(String, String)>,
+) -> Response {
     if !valid_id(&id) {
         return StatusCode::NOT_FOUND.into_response();
     }
@@ -110,7 +126,14 @@ async fn case_file(State(s): State<AppState>, AxPath((id, rel)): AxPath<(String,
         _ => return StatusCode::NOT_FOUND.into_response(),
     };
     match std::fs::read(s.cases_dir.join(&id).join(&rel)) {
-        Ok(b) => ([(header::CONTENT_TYPE, ctype), (header::CACHE_CONTROL, "public, max-age=300")], b).into_response(),
+        Ok(b) => (
+            [
+                (header::CONTENT_TYPE, ctype),
+                (header::CACHE_CONTROL, "public, max-age=300"),
+            ],
+            b,
+        )
+            .into_response(),
         Err(_) => StatusCode::NOT_FOUND.into_response(),
     }
 }
@@ -124,8 +147,14 @@ async fn benchmark(State(s): State<AppState>) -> Response {
 
 /// `PUT /api/benchmark` with the results JSON array (CI or a maintainer, bearer token).
 async fn put_benchmark(State(s): State<AppState>, headers: HeaderMap, body: Bytes) -> Response {
-    let Some(token) = &s.upload_token else { return (StatusCode::FORBIDDEN, "uploads are disabled").into_response() };
-    let given = headers.get(header::AUTHORIZATION).and_then(|h| h.to_str().ok()).and_then(|h| h.strip_prefix("Bearer ")).unwrap_or("");
+    let Some(token) = &s.upload_token else {
+        return (StatusCode::FORBIDDEN, "uploads are disabled").into_response();
+    };
+    let given = headers
+        .get(header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|h| h.strip_prefix("Bearer "))
+        .unwrap_or("");
     if !constant_time_eq(given.as_bytes(), token.as_bytes()) {
         return StatusCode::UNAUTHORIZED.into_response();
     }
@@ -151,9 +180,20 @@ fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {
 }
 
 /// `POST /api/cases/:id/bundle` with a zip of the case folder.
-async fn upload_bundle(State(s): State<AppState>, AxPath(id): AxPath<String>, headers: HeaderMap, body: Bytes) -> Response {
-    let Some(token) = &s.upload_token else { return (StatusCode::FORBIDDEN, "uploads are disabled").into_response() };
-    let given = headers.get(header::AUTHORIZATION).and_then(|h| h.to_str().ok()).and_then(|h| h.strip_prefix("Bearer ")).unwrap_or("");
+async fn upload_bundle(
+    State(s): State<AppState>,
+    AxPath(id): AxPath<String>,
+    headers: HeaderMap,
+    body: Bytes,
+) -> Response {
+    let Some(token) = &s.upload_token else {
+        return (StatusCode::FORBIDDEN, "uploads are disabled").into_response();
+    };
+    let given = headers
+        .get(header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .and_then(|h| h.strip_prefix("Bearer "))
+        .unwrap_or("");
     if !constant_time_eq(given.as_bytes(), token.as_bytes()) {
         return StatusCode::UNAUTHORIZED.into_response();
     }
@@ -183,7 +223,11 @@ fn unpack(base: &Path, id: &str, data: &[u8]) -> Result<usize, String> {
             return Err("unsafe path in bundle".into());
         }
         let name = rel.to_string_lossy().to_string();
-        let ok = name == "case.json" || (matches!(rel.extension().and_then(|e| e.to_str()), Some("png" | "jpg")) && (name.starts_with("frames/") || !name.contains('/')));
+        let ok = name == "case.json"
+            || (matches!(
+                rel.extension().and_then(|e| e.to_str()),
+                Some("png" | "jpg")
+            ) && (name.starts_with("frames/") || !name.contains('/')));
         if !ok {
             continue;
         }
@@ -192,9 +236,13 @@ fn unpack(base: &Path, id: &str, data: &[u8]) -> Result<usize, String> {
             return Err("bundle too large".into());
         }
         let mut buf = Vec::new();
-        f.by_ref().take(MAX_UNPACKED).read_to_end(&mut buf).map_err(|e| e.to_string())?;
+        f.by_ref()
+            .take(MAX_UNPACKED)
+            .read_to_end(&mut buf)
+            .map_err(|e| e.to_string())?;
         if name == "case.json" {
-            let c: Case = serde_json::from_slice(&buf).map_err(|_| "case.json is not a valid case".to_string())?;
+            let c: Case = serde_json::from_slice(&buf)
+                .map_err(|_| "case.json is not a valid case".to_string())?;
             if c.id != id {
                 return Err("case id mismatch".into());
             }
@@ -218,13 +266,20 @@ fn unpack(base: &Path, id: &str, data: &[u8]) -> Result<usize, String> {
 }
 
 fn esc(s: &str) -> String {
-    s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;").replace('"', "&quot;")
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
 }
 
 /// The SPA shell, with social-card metadata for case pages.
 async fn index(State(s): State<AppState>, path: Option<AxPath<String>>) -> Response {
     let Ok(mut html) = std::fs::read_to_string(s.web_dir.join("index.html")) else {
-        return (StatusCode::SERVICE_UNAVAILABLE, "web UI is not built. Run `pnpm build` in web/.").into_response();
+        return (
+            StatusCode::SERVICE_UNAVAILABLE,
+            "web UI is not built. Run `pnpm build` in web/.",
+        )
+            .into_response();
     };
     if let Some(AxPath(id)) = path {
         if let Some(c) = load_case(&s.cases_dir, &id) {
@@ -242,40 +297,77 @@ async fn index(State(s): State<AppState>, path: Option<AxPath<String>>) -> Respo
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt().with_env_filter(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into())).init();
-    let cases_dir = PathBuf::from(std::env::var("REENACT_CASES_DIR").unwrap_or_else(|_| "data/cases".into()));
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
+        )
+        .init();
+    let cases_dir =
+        PathBuf::from(std::env::var("REENACT_CASES_DIR").unwrap_or_else(|_| "data/cases".into()));
     std::fs::create_dir_all(&cases_dir)?;
-    let port: u16 = std::env::var("PORT").ok().and_then(|p| p.parse().ok()).unwrap_or(8080);
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|p| p.parse().ok())
+        .unwrap_or(8080);
     let state = AppState {
         cases_dir: Arc::new(cases_dir),
-        web_dir: Arc::new(PathBuf::from(std::env::var("REENACT_WEB_DIR").unwrap_or_else(|_| "web/dist".into()))),
-        benchmark_file: Arc::new(PathBuf::from(std::env::var("REENACT_BENCHMARK_FILE").unwrap_or_else(|_| "benchmark/runs/results.json".into()))),
-        upload_token: std::env::var("REENACT_UPLOAD_TOKEN").ok().filter(|t| t.len() >= 16).map(Arc::new),
-        public_url: Arc::new(std::env::var("REENACT_PUBLIC_URL").unwrap_or_else(|_| format!("http://localhost:{port}"))),
+        web_dir: Arc::new(PathBuf::from(
+            std::env::var("REENACT_WEB_DIR").unwrap_or_else(|_| "web/dist".into()),
+        )),
+        benchmark_file: Arc::new(PathBuf::from(
+            std::env::var("REENACT_BENCHMARK_FILE")
+                .unwrap_or_else(|_| "benchmark/runs/results.json".into()),
+        )),
+        upload_token: std::env::var("REENACT_UPLOAD_TOKEN")
+            .ok()
+            .filter(|t| t.len() >= 16)
+            .map(Arc::new),
+        public_url: Arc::new(
+            std::env::var("REENACT_PUBLIC_URL")
+                .unwrap_or_else(|_| format!("http://localhost:{port}")),
+        ),
     };
     if state.upload_token.is_none() {
-        tracing::warn!("REENACT_UPLOAD_TOKEN is unset or shorter than 16 chars: uploads are disabled");
+        tracing::warn!(
+            "REENACT_UPLOAD_TOKEN is unset or shorter than 16 chars: uploads are disabled"
+        );
     }
 
     let api = Router::new()
         .route("/cases", get(list_cases))
         .route("/cases/{id}", get(get_case))
         .route("/cases/{id}/files/{*rel}", get(case_file))
-        .route("/cases/{id}/bundle", post(upload_bundle).layer(DefaultBodyLimit::max(MAX_BUNDLE)))
-        .route("/benchmark", get(benchmark).put(put_benchmark).layer(DefaultBodyLimit::max(2 * 1024 * 1024)));
+        .route(
+            "/cases/{id}/bundle",
+            post(upload_bundle).layer(DefaultBodyLimit::max(MAX_BUNDLE)),
+        )
+        .route(
+            "/benchmark",
+            get(benchmark)
+                .put(put_benchmark)
+                .layer(DefaultBodyLimit::max(2 * 1024 * 1024)),
+        );
 
-    let spa = Router::new().fallback(get(|s: State<AppState>| index(s, None))).with_state(state.clone());
+    let spa = Router::new()
+        .fallback(get(|s: State<AppState>| index(s, None)))
+        .with_state(state.clone());
     let app = Router::new()
         .route("/healthz", get(|| async { "ok" }))
         .nest("/api", api)
-        .route("/c/{id}", get(|s: State<AppState>, p: AxPath<String>| index(s, Some(p))))
+        .route(
+            "/c/{id}",
+            get(|s: State<AppState>, p: AxPath<String>| index(s, Some(p))),
+        )
         .fallback_service(ServeDir::new(&*state.web_dir).fallback(spa))
         .layer(CompressionLayer::new())
         .layer(TraceLayer::new_for_http())
         .with_state(state.clone());
 
     let listener = tokio::net::TcpListener::bind(("0.0.0.0", port)).await?;
-    tracing::info!("reenact-server on :{port}, cases in {}", state.cases_dir.display());
+    tracing::info!(
+        "reenact-server on :{port}, cases in {}",
+        state.cases_dir.display()
+    );
     axum::serve(listener, app).await?;
     Ok(())
 }
@@ -290,7 +382,8 @@ mod tests {
         {
             let mut w = zip::ZipWriter::new(Cursor::new(&mut buf));
             for (n, b) in files {
-                w.start_file(*n, zip::write::SimpleFileOptions::default()).unwrap();
+                w.start_file(*n, zip::write::SimpleFileOptions::default())
+                    .unwrap();
                 w.write_all(b).unwrap();
             }
             w.finish().unwrap();

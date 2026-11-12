@@ -19,20 +19,39 @@ pub struct SuiteArgs {
 }
 
 pub async fn run(a: SuiteArgs) -> Result<()> {
-    let a = SuiteArgs { dir: std::fs::canonicalize(&a.dir)?, ..a };
+    let a = SuiteArgs {
+        dir: std::fs::canonicalize(&a.dir)?,
+        ..a
+    };
     let ctx = crate::make_ctx(&a.config)?;
     let mut tests: Vec<PathBuf> = std::fs::read_dir(&a.dir)?
         .flatten()
         .map(|e| e.path())
-        .filter(|p| p.file_name().and_then(|n| n.to_str()).is_some_and(|n| n.ends_with("_test.md")))
+        .filter(|p| {
+            p.file_name()
+                .and_then(|n| n.to_str())
+                .is_some_and(|n| n.ends_with("_test.md"))
+        })
         .collect();
     tests.sort();
-    anyhow::ensure!(!tests.is_empty(), "no *_test.md files in {}", a.dir.display());
+    anyhow::ensure!(
+        !tests.is_empty(),
+        "no *_test.md files in {}",
+        a.dir.display()
+    );
 
     let creds = match &ctx.cfg.login {
         Some(l) => vec![
-            ("username".to_string(), std::env::var(&l.username_env)?, false),
-            ("password".to_string(), std::env::var(&l.password_env)?, true),
+            (
+                "username".to_string(),
+                std::env::var(&l.username_env)?,
+                false,
+            ),
+            (
+                "password".to_string(),
+                std::env::var(&l.password_env)?,
+                true,
+            ),
         ],
         None => vec![],
     };

@@ -55,15 +55,20 @@ fn default_pass_env() -> String {
 
 impl Config {
     pub fn load(path: &Path) -> Result<Self> {
-        let raw = std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
-        let cfg: Config = serde_yaml::from_str(&raw).with_context(|| format!("parsing {}", path.display()))?;
+        let raw =
+            std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
+        let cfg: Config =
+            serde_yaml::from_str(&raw).with_context(|| format!("parsing {}", path.display()))?;
         cfg.validate()?;
         Ok(cfg)
     }
 
     pub fn validate(&self) -> Result<()> {
         let u = url::Url::parse(&self.app_url).context("app_url is not a valid URL")?;
-        anyhow::ensure!(matches!(u.scheme(), "http" | "https"), "app_url must be http(s)");
+        anyhow::ensure!(
+            matches!(u.scheme(), "http" | "https"),
+            "app_url must be http(s)"
+        );
         Ok(())
     }
 

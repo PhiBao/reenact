@@ -38,10 +38,17 @@ impl Ctx {
     }
 
     fn credentials(&self) -> Result<Vec<(String, String, bool)>> {
-        let Some(login) = &self.cfg.login else { return Ok(vec![]) };
-        let u = std::env::var(&login.username_env).with_context(|| format!("{} is not set", login.username_env))?;
-        let p = std::env::var(&login.password_env).with_context(|| format!("{} is not set", login.password_env))?;
-        Ok(vec![("username".into(), u, false), ("password".into(), p, true)])
+        let Some(login) = &self.cfg.login else {
+            return Ok(vec![]);
+        };
+        let u = std::env::var(&login.username_env)
+            .with_context(|| format!("{} is not set", login.username_env))?;
+        let p = std::env::var(&login.password_env)
+            .with_context(|| format!("{} is not set", login.password_env))?;
+        Ok(vec![
+            ("username".into(), u, false),
+            ("password".into(), p, true),
+        ])
     }
 }
 
@@ -60,14 +67,18 @@ pub fn save_case(dir: &Path, case: &Case) -> Result<()> {
 }
 
 pub fn load_case(dir: &Path) -> Result<Case> {
-    let raw = std::fs::read(dir.join("case.json")).with_context(|| format!("reading {}/case.json", dir.display()))?;
+    let raw = std::fs::read(dir.join("case.json"))
+        .with_context(|| format!("reading {}/case.json", dir.display()))?;
     Ok(serde_json::from_slice(&raw)?)
 }
 
 /// Forward interesting Kane events as human-readable progress lines.
 fn kane_event_to_progress(ctx: &Ctx, ev: &Value) {
     match ev["type"].as_str().unwrap_or_default() {
-        "test_md_step_start" => ctx.say("step", &format!("Step: {}", ev["heading"].as_str().unwrap_or(""))),
+        "test_md_step_start" => ctx.say(
+            "step",
+            &format!("Step: {}", ev["heading"].as_str().unwrap_or("")),
+        ),
         "step_event" if ev["event"] == "action" => {
             ctx.say("action", ev["detail"].as_str().unwrap_or(""));
         }
@@ -75,7 +86,10 @@ fn kane_event_to_progress(ctx: &Ctx, ev: &Value) {
             "triage",
             &format!(
                 "Kane triage: {}",
-                ev["one_liner"].as_str().or_else(|| ev["bug_title"].as_str()).unwrap_or("")
+                ev["one_liner"]
+                    .as_str()
+                    .or_else(|| ev["bug_title"].as_str())
+                    .unwrap_or("")
             ),
         ),
         _ => {}
@@ -153,21 +167,49 @@ pub async fn run_and_record(
         if shown.len() < 2 {
             shown = run.frames.clone();
         }
-        match strip::compose_strip(dir, &shown, verdict.kind, viewport.unwrap_or((1920, 1080)), &dir.join(&strip_name)) {
+        match strip::compose_strip(
+            dir,
+            &shown,
+            verdict.kind,
+            viewport.unwrap_or((1920, 1080)),
+            &dir.join(&strip_name),
+        ) {
             Ok(()) => run.strip_file = Some(strip_name),
             Err(e) => tracing::warn!("strip failed: {e:#}"),
         }
     }
-    ctx.say("verdict", &format!("{}: {}", verdict.kind.label(), verdict.headline));
-    Ok((RunRecord { kind, label: label.to_string(), started_at, verdict, run }, viewport))
+    ctx.say(
+        "verdict",
+        &format!("{}: {}", verdict.kind.label(), verdict.headline),
+    );
+    Ok((
+        RunRecord {
+            kind,
+            label: label.to_string(),
+            started_at,
+            verdict,
+            run,
+        },
+        viewport,
+    ))
 }
 
 /// Compile a report into a sanitized plan (one LLM call, no browser).
 pub async fn prepare(ctx: &Ctx, report: &Report) -> Result<Plan> {
     ctx.say("compiling", "Reading the report");
-    let llm = ctx.llm.as_ref().context("an LLM is required to compile a report")?;
+    let llm = ctx
+        .llm
+        .as_ref()
+        .context("an LLM is required to compile a report")?;
     let plan = compile_report(llm, &ctx.cfg, report).await?;
-    ctx.say("compiled", &format!("{} steps, confidence {:.0}%", plan.steps.len(), plan.confidence * 100.0));
+    ctx.say(
+        "compiled",
+        &format!(
+            "{} steps, confidence {:.0}%",
+            plan.steps.len(),
+            plan.confidence * 100.0
+        ),
+    );
     Ok(plan)
 }
 
@@ -179,7 +221,12 @@ pub async fn reenact(ctx: &Ctx, base: &Path, report: Report) -> Result<(Case, Pa
 
 /// Run an already-compiled plan. The benchmark uses this to run the SAME plan
 /// against the buggy and the fixed version of an app.
-pub async fn reenact_with_plan(ctx: &Ctx, base: &Path, report: Report, plan: Plan) -> Result<(Case, PathBuf)> {
+pub async fn reenact_with_plan(
+    ctx: &Ctx,
+    base: &Path,
+    report: Report,
+    plan: Plan,
+) -> Result<(Case, PathBuf)> {
     let id = ctx.case_id.clone().unwrap_or_else(new_case_id);
     let dir = case_dir(base, &id);
     let _ = std::fs::remove_dir_all(&dir);
@@ -218,11 +265,17 @@ pub async fn reenact_with_plan(ctx: &Ctx, base: &Path, report: Report, plan: Pla
         });
         case.state = CaseState::NeedsInfo;
         save_case(&dir, &case)?;
-        ctx.say("verdict", &format!("{}: {}", verdict.kind.label(), verdict.headline));
+        ctx.say(
+            "verdict",
+            &format!("{}: {}", verdict.kind.label(), verdict.headline),
+        );
         return Ok((case, dir));
     }
 
-    let tag = report.number.map(|n| format!("issue-{n}")).unwrap_or_else(|| id.clone());
+    let tag = report
+        .number
+        .map(|n| format!("issue-{n}"))
+        .unwrap_or_else(|| id.clone());
     let test_md = render_test_md(&ctx.cfg, &report, &plan, &tag);
     case.test_md = Some(test_md.clone());
     case.state = CaseState::Reenacting;
@@ -232,14 +285,28 @@ pub async fn reenact_with_plan(ctx: &Ctx, base: &Path, report: Report, plan: Pla
     let mut records = vec![first];
     // Browser agents are not perfectly repeatable. One retry for results that
     // say little (infrastructure trouble, or Kane could not finish the steps).
-    if matches!(records[0].verdict.kind, VerdictKind::Inconclusive | VerdictKind::NeedsInfo) {
+    if matches!(
+        records[0].verdict.kind,
+        VerdictKind::Inconclusive | VerdictKind::NeedsInfo
+    ) {
         ctx.say("retry", "Result was not conclusive; running once more");
-        let (second, _) = run_and_record(ctx, &dir, &test_md, RunKind::Reenact, "reenact (retry)", "retry-").await?;
+        let (second, _) = run_and_record(
+            ctx,
+            &dir,
+            &test_md,
+            RunKind::Reenact,
+            "reenact (retry)",
+            "retry-",
+        )
+        .await?;
         records.push(second);
         // Keep the more conclusive run last: everything downstream reads the last Reenact run.
         records.sort_by_key(|r| conclusiveness(r.verdict.kind));
     }
-    case.state = records.last().map(|r| r.verdict.kind.into()).unwrap_or(CaseState::Inconclusive);
+    case.state = records
+        .last()
+        .map(|r| r.verdict.kind.into())
+        .unwrap_or(CaseState::Inconclusive);
     case.runs.extend(records);
     save_case(&dir, &case)?;
     Ok((case, dir))
@@ -258,7 +325,12 @@ fn conclusiveness(k: VerdictKind) -> u8 {
 pub async fn verify(ctx: &Ctx, dir: &Path, label: &str) -> Result<RunRecord> {
     let mut case = load_case(dir)?;
     let md = case.test_md.clone().context("case has no saved test")?;
-    let n = case.runs.iter().filter(|r| r.kind == RunKind::VerifyFix).count() + 1;
+    let n = case
+        .runs
+        .iter()
+        .filter(|r| r.kind == RunKind::VerifyFix)
+        .count()
+        + 1;
     let prefix = format!("fix{n}-");
     let (rec, _) = run_and_record(ctx, dir, &md, RunKind::VerifyFix, label, &prefix).await?;
     case.runs.push(rec.clone());

@@ -36,7 +36,8 @@ Rules:
 pub async fn compile_report(llm: &Llm, cfg: &Config, report: &Report) -> Result<Plan> {
     let title = clean_text(&report.title, 300);
     let body = clean_text(&report.body, MAX_REPORT_LEN);
-    let user = format!(
+    let user =
+        format!(
         "App under test: {}\n\n<report>\nTitle: {}\n\n{}\n</report>\n\nReturn the JSON object now.",
         if cfg.description.is_empty() { "a web app" } else { &cfg.description },
         title,
@@ -58,7 +59,8 @@ pub async fn compile_report(llm: &Llm, cfg: &Config, report: &Report) -> Result<
             }
         }
     }
-    Err(anyhow::anyhow!("compiler returned no usable JSON")).with_context(|| last.chars().take(200).collect::<String>())
+    Err(anyhow::anyhow!("compiler returned no usable JSON"))
+        .with_context(|| last.chars().take(200).collect::<String>())
 }
 
 /// Decide whether a plan is complete enough to spend a browser run on.
@@ -71,7 +73,9 @@ pub fn plan_gap(plan: &Plan) -> Option<String> {
         return Some("The report has no concrete steps to carry out.".into());
     }
     if plan.expected.trim().is_empty() {
-        return Some("The report does not say what should happen, so there is nothing to check.".into());
+        return Some(
+            "The report does not say what should happen, so there is nothing to check.".into(),
+        );
     }
     None
 }

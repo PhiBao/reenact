@@ -131,11 +131,13 @@ impl Acc {
                     self.out.share_url = Some(u.to_string());
                 }
             }
-            t if (t.contains("error") || t.contains("fatal"))
-                && self.out.error.is_none() => {
-                    let msg = ev["message"].as_str().or_else(|| ev["error"].as_str()).unwrap_or(t);
-                    self.out.error = Some(msg.chars().take(300).collect());
-                }
+            t if (t.contains("error") || t.contains("fatal")) && self.out.error.is_none() => {
+                let msg = ev["message"]
+                    .as_str()
+                    .or_else(|| ev["error"].as_str())
+                    .unwrap_or(t);
+                self.out.error = Some(msg.chars().take(300).collect());
+            }
             _ => {}
         }
     }
@@ -181,7 +183,10 @@ pub fn kill_group(pid: u32) {
 }
 
 pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Result<KaneOutcome> {
-    anyhow::ensure!(opts.dir.is_absolute() && opts.test_file.is_absolute(), "kane paths must be absolute");
+    anyhow::ensure!(
+        opts.dir.is_absolute() && opts.test_file.is_absolute(),
+        "kane paths must be absolute"
+    );
     let mut args: Vec<String> = vec![
         "testmd".into(),
         "run".into(),
@@ -204,7 +209,10 @@ pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Re
         for (k, v, secret) in &opts.variables {
             obj.insert(k.clone(), serde_json::json!({"value": v, "secret": secret}));
         }
-        let f = tempfile::Builder::new().prefix("reenact-vars-").suffix(".json").tempfile()?;
+        let f = tempfile::Builder::new()
+            .prefix("reenact-vars-")
+            .suffix(".json")
+            .tempfile()?;
         use std::os::unix::fs::PermissionsExt;
         std::fs::set_permissions(f.path(), std::fs::Permissions::from_mode(0o600))?;
         std::fs::write(f.path(), serde_json::to_vec(&Value::Object(obj))?)?;
@@ -221,7 +229,9 @@ pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Re
         .stderr(Stdio::piped())
         .process_group(0)
         .kill_on_drop(true);
-    let mut child = cmd.spawn().with_context(|| format!("spawning {}", opts.kane_bin))?;
+    let mut child = cmd
+        .spawn()
+        .with_context(|| format!("spawning {}", opts.kane_bin))?;
     let pid = child.id().unwrap_or(0);
 
     let stdout = child.stdout.take().context("no stdout")?;
@@ -260,7 +270,14 @@ pub async fn run_testmd(opts: &RunOpts<'_>, on_event: Option<OnEvent<'_>>) -> Re
     let mut out = acc.finish();
     out.timed_out = timed_out;
     out.exit_code = status.and_then(|s| s.code());
-    out.stderr_tail = stderr_text.chars().rev().take(1500).collect::<String>().chars().rev().collect();
+    out.stderr_tail = stderr_text
+        .chars()
+        .rev()
+        .take(1500)
+        .collect::<String>()
+        .chars()
+        .rev()
+        .collect();
 
     // Locate the sealed evidence pack.
     let ev_dir = opts.dir.join(".testmuai").join("evidence");
@@ -305,7 +322,10 @@ mod tests {
         let s = &o.steps[0];
         assert_eq!(s.heading, "Reproduce reported bug");
         assert_eq!(s.status, "failed");
-        assert_eq!(s.reason_code.as_deref(), Some("assertion_error.confirmed_product_bug"));
+        assert_eq!(
+            s.reason_code.as_deref(),
+            Some("assertion_error.confirmed_product_bug")
+        );
         let b = s.bug.as_ref().unwrap();
         assert!(b.confirmed);
         assert_eq!(b.family.as_deref(), Some("application_issue"));

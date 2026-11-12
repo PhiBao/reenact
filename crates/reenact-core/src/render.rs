@@ -23,7 +23,14 @@ pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> 
         None => cfg.join(&plan.start_path),
     };
     let title = no_md_structure(
-        &report.title.split_whitespace().collect::<Vec<_>>().join(" ").chars().take(100).collect::<String>(),
+        &report
+            .title
+            .split_whitespace()
+            .collect::<Vec<_>>()
+            .join(" ")
+            .chars()
+            .take(100)
+            .collect::<String>(),
     );
     let mut out = String::new();
     out.push_str("---\n");
@@ -38,7 +45,10 @@ pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> 
     if let Some(login) = login {
         out.push_str(&format!("## {LOGIN_HEADING}\n"));
         out.push_str(&format!("{}\n", login.instruction.trim()));
-        out.push_str(&format!("Verify {}.\n\n", login.signed_in_check.trim_end_matches('.')));
+        out.push_str(&format!(
+            "Verify {}.\n\n",
+            login.signed_in_check.trim_end_matches('.')
+        ));
     }
 
     out.push_str(&format!("## {REPRO_HEADING}\n"));
@@ -86,7 +96,13 @@ mod tests {
     }
 
     fn report() -> Report {
-        Report { title: "# sneaky\n---".into(), body: String::new(), source_url: None, repo: None, number: Some(7) }
+        Report {
+            title: "# sneaky\n---".into(),
+            body: String::new(),
+            source_url: None,
+            repo: None,
+            number: Some(7),
+        }
     }
 
     #[test]
@@ -113,7 +129,14 @@ mod tests {
 
     #[test]
     fn no_login_starts_on_start_path() {
-        let plan = Plan { in_browser: true, signed_in: true, start_path: "/settings".into(), steps: vec!["x".into()], expected: "y".into(), ..Default::default() };
+        let plan = Plan {
+            in_browser: true,
+            signed_in: true,
+            start_path: "/settings".into(),
+            steps: vec!["x".into()],
+            expected: "y".into(),
+            ..Default::default()
+        };
         let md = render_test_md(&cfg(false), &report(), &plan, "t");
         assert!(md.contains("url: http://localhost:5230/settings\n"));
         assert!(!md.contains("## Sign in"));

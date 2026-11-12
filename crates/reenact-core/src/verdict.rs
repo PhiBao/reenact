@@ -28,7 +28,10 @@ fn first_line(s: &str) -> String {
 
 pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> Verdict {
     if out.timed_out {
-        return verdict(VerdictKind::Inconclusive, "The browser run hit the time limit before it reached a result.");
+        return verdict(
+            VerdictKind::Inconclusive,
+            "The browser run hit the time limit before it reached a result.",
+        );
     }
     if out.steps.is_empty() {
         let why = out
@@ -43,7 +46,10 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
                     .map(str::to_string)
             })
             .unwrap_or_else(|| "Kane produced no result.".into());
-        return verdict(VerdictKind::Inconclusive, format!("Kane did not run: {why}"));
+        return verdict(
+            VerdictKind::Inconclusive,
+            format!("Kane did not run: {why}"),
+        );
     }
 
     let find = |h: &str| -> Option<&StepOutcome> { out.steps.iter().find(|s| s.heading == h) };
@@ -52,15 +58,27 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
         match find(LOGIN_HEADING) {
             Some(s) if s.status == "passed" => {}
             Some(s) => {
-                let why = s.reason.clone().unwrap_or_else(|| "sign-in did not complete".into());
-                return verdict(VerdictKind::Inconclusive, format!("Could not sign in to the test instance: {}", first_line(&why)));
+                let why = s
+                    .reason
+                    .clone()
+                    .unwrap_or_else(|| "sign-in did not complete".into());
+                return verdict(
+                    VerdictKind::Inconclusive,
+                    format!(
+                        "Could not sign in to the test instance: {}",
+                        first_line(&why)
+                    ),
+                );
             }
             None => return verdict(VerdictKind::Inconclusive, "The sign-in step never started."),
         }
     }
 
     let Some(repro) = find(REPRO_HEADING) else {
-        return verdict(VerdictKind::Inconclusive, "The reproduction step never started.");
+        return verdict(
+            VerdictKind::Inconclusive,
+            "The reproduction step never started.",
+        );
     };
 
     let tri = ex.map(|e| &e.triage);
@@ -76,7 +94,10 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
         }
         "failed" => {
             let confirmed = repro.bug.as_ref().is_some_and(|b| b.confirmed)
-                || repro.reason_code.as_deref().is_some_and(|c| c.contains("confirmed_product_bug"));
+                || repro
+                    .reason_code
+                    .as_deref()
+                    .is_some_and(|c| c.contains("confirmed_product_bug"));
             if confirmed {
                 let bug = repro.bug.clone().unwrap_or_default();
                 let headline = bug
@@ -91,13 +112,19 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
                     stuck_at: None,
                     root_cause: tri.and_then(|t| t.root_cause.clone()),
                     suggested_fix: tri.and_then(|t| t.suggested_fix.clone()),
-                    severity: bug.severity.clone().or_else(|| tri.and_then(|t| t.severity.clone())),
+                    severity: bug
+                        .severity
+                        .clone()
+                        .or_else(|| tri.and_then(|t| t.severity.clone())),
                     confidence: bug.confidence,
                 }
             } else {
                 let code = repro.reason_code.clone().unwrap_or_default();
                 let is_assert = code.starts_with("assertion_error");
-                let reason = repro.reason.clone().unwrap_or_else(|| "the run failed".into());
+                let reason = repro
+                    .reason
+                    .clone()
+                    .unwrap_or_else(|| "the run failed".into());
                 let mut v = if is_assert {
                     verdict(
                         VerdictKind::NeedsInfo,
@@ -113,28 +140,49 @@ pub fn judge(out: &KaneOutcome, ex: Option<&Extracted>, expects_login: bool) -> 
                 v
             }
         }
-        other => verdict(VerdictKind::Inconclusive, format!("The reproduction step ended in an unexpected state: {other}.")),
+        other => verdict(
+            VerdictKind::Inconclusive,
+            format!("The reproduction step ended in an unexpected state: {other}."),
+        ),
     }
 }
 
-pub fn summarize(out: &KaneOutcome, ex: Option<&Extracted>, share_fallback: Option<String>) -> RunSummary {
-    let repro = out.steps.iter().find(|s| s.heading == REPRO_HEADING).or_else(|| out.steps.last());
+pub fn summarize(
+    out: &KaneOutcome,
+    ex: Option<&Extracted>,
+    share_fallback: Option<String>,
+) -> RunSummary {
+    let repro = out
+        .steps
+        .iter()
+        .find(|s| s.heading == REPRO_HEADING)
+        .or_else(|| out.steps.last());
     let bug = repro.and_then(|s| s.bug.clone());
     let tri = ex.map(|e| e.triage.clone()).unwrap_or_default();
     RunSummary {
         exit_code: out.exit_code,
         timed_out: out.timed_out,
-        status: out.overall_status.clone().unwrap_or_else(|| "unknown".into()),
+        status: out
+            .overall_status
+            .clone()
+            .unwrap_or_else(|| "unknown".into()),
         reason: repro.and_then(|s| s.reason.clone()),
         reason_code: repro.and_then(|s| s.reason_code.clone()),
         summary: repro.and_then(|s| s.summary.clone()),
         credits: out.total_credits(),
         duration_s: out.duration_s,
         share_url: out.share_url.clone().or(share_fallback),
-        failed_step_heading: out.steps.iter().find(|s| s.status == "failed").map(|s| s.heading.clone()),
+        failed_step_heading: out
+            .steps
+            .iter()
+            .find(|s| s.status == "failed")
+            .map(|s| s.heading.clone()),
         bug_confirmed: bug.as_ref().map(|b| b.confirmed),
         bug_family: bug.as_ref().and_then(|b| b.family.clone()),
-        bug_title: bug.as_ref().and_then(|b| b.title.clone()).or(tri.title.clone()),
+        bug_title: bug
+            .as_ref()
+            .and_then(|b| b.title.clone())
+            .or(tri.title.clone()),
         frames: ex.map(|e| e.frames.clone()).unwrap_or_default(),
         strip_file: None,
         signals: ex.map(|e| e.signals.clone()).unwrap_or_default(),
@@ -163,22 +211,47 @@ mod tests {
     }
 
     fn out(steps: Vec<StepOutcome>) -> KaneOutcome {
-        KaneOutcome { steps, saw_stream_start: true, ..Default::default() }
+        KaneOutcome {
+            steps,
+            saw_stream_start: true,
+            ..Default::default()
+        }
     }
 
     fn bug(confirmed: bool) -> BugVerdict {
-        BugVerdict { confirmed, family: Some(if confirmed { "application_issue" } else { "automation_bug" }.into()), ..Default::default() }
+        BugVerdict {
+            confirmed,
+            family: Some(
+                if confirmed {
+                    "application_issue"
+                } else {
+                    "automation_bug"
+                }
+                .into(),
+            ),
+            ..Default::default()
+        }
     }
 
     #[test]
     fn confirmed_bug_is_reproduced() {
-        let o = out(vec![step(REPRO_HEADING, "failed", Some("assertion_error.confirmed_product_bug"), Some(bug(true)))]);
+        let o = out(vec![step(
+            REPRO_HEADING,
+            "failed",
+            Some("assertion_error.confirmed_product_bug"),
+            Some(bug(true)),
+        )]);
         assert_eq!(judge(&o, None, false).kind, VerdictKind::Reproduced);
     }
 
     #[test]
     fn failed_assertion_blamed_on_test_is_needs_info() {
-        let o = out(vec![step(REPRO_HEADING, "failed", Some("assertion_error"), Some(bug(false)))]);
+        let o = out(vec![step(
+            REPRO_HEADING,
+            "failed",
+            Some("assertion_error"),
+            Some(bug(false)),
+        )]);
         let v = judge(&o, None, false);
         assert_eq!(v.kind, VerdictKind::NeedsInfo);
         assert!(v.stuck_at.is_some());
@@ -186,7 +259,12 @@ mod tests {
 
     #[test]
     fn stuck_before_check_is_needs_info() {
-        let o = out(vec![step(REPRO_HEADING, "failed", Some("element_not_found"), None)]);
+        let o = out(vec![step(
+            REPRO_HEADING,
+            "failed",
+            Some("element_not_found"),
+            None,
+        )]);
         assert_eq!(judge(&o, None, false).kind, VerdictKind::NeedsInfo);
     }
 

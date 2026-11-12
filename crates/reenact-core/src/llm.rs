@@ -14,19 +14,27 @@ pub struct Llm {
 }
 
 impl Llm {
-    pub fn new(base_url: impl Into<String>, api_key: impl Into<String>, model: impl Into<String>) -> Self {
+    pub fn new(
+        base_url: impl Into<String>,
+        api_key: impl Into<String>,
+        model: impl Into<String>,
+    ) -> Self {
         Self {
             base_url: base_url.into().trim_end_matches('/').to_string(),
             api_key: api_key.into(),
             model: model.into(),
-            http: reqwest::Client::builder().timeout(Duration::from_secs(180)).build().expect("http client"),
+            http: reqwest::Client::builder()
+                .timeout(Duration::from_secs(180))
+                .build()
+                .expect("http client"),
         }
     }
 
     /// `REENACT_LLM_BASE_URL`, `REENACT_LLM_API_KEY`, `REENACT_LLM_MODEL`.
     pub fn from_env() -> Result<Self> {
         let key = std::env::var("REENACT_LLM_API_KEY").context("REENACT_LLM_API_KEY is not set")?;
-        let base = std::env::var("REENACT_LLM_BASE_URL").unwrap_or_else(|_| "https://api.openai.com/v1".into());
+        let base = std::env::var("REENACT_LLM_BASE_URL")
+            .unwrap_or_else(|_| "https://api.openai.com/v1".into());
         let model = std::env::var("REENACT_LLM_MODEL").unwrap_or_else(|_| "gpt-5.4-mini".into());
         Ok(Self::new(base, key, model))
     }
@@ -52,7 +60,10 @@ impl Llm {
             match resp {
                 Ok(r) if r.status().is_success() => {
                     let v: Value = r.json().await.context("decoding LLM response")?;
-                    let text = v["choices"][0]["message"]["content"].as_str().unwrap_or_default().to_string();
+                    let text = v["choices"][0]["message"]["content"]
+                        .as_str()
+                        .unwrap_or_default()
+                        .to_string();
                     if text.trim().is_empty() {
                         last_err = Some(anyhow::anyhow!("empty LLM response"));
                     } else {
@@ -63,7 +74,10 @@ impl Llm {
                     let status = r.status();
                     let txt = r.text().await.unwrap_or_default();
                     if status.is_client_error() && status.as_u16() != 429 {
-                        bail!("LLM request failed ({status}): {}", txt.chars().take(300).collect::<String>());
+                        bail!(
+                            "LLM request failed ({status}): {}",
+                            txt.chars().take(300).collect::<String>()
+                        );
                     }
                     last_err = Some(anyhow::anyhow!("LLM {status}"));
                 }
@@ -116,7 +130,10 @@ mod tests {
     #[test]
     fn extracts_json_from_fenced_reply() {
         let r = "Sure!\n```json\n{\"a\": \"}\", \"b\": {\"c\": 1}}\n```\nbye";
-        assert_eq!(extract_json_object(r), Some("{\"a\": \"}\", \"b\": {\"c\": 1}}"));
+        assert_eq!(
+            extract_json_object(r),
+            Some("{\"a\": \"}\", \"b\": {\"c\": 1}}")
+        );
     }
 
     #[test]

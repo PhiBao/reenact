@@ -85,7 +85,11 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
     let names: Vec<String> = z.file_names().map(|s| s.to_string()).collect();
     let test_dir = names
         .iter()
-        .find_map(|n| n.strip_prefix("tests/").and_then(|r| r.split('/').next()).map(|id| format!("tests/{id}")))
+        .find_map(|n| {
+            n.strip_prefix("tests/")
+                .and_then(|r| r.split('/').next())
+                .map(|id| format!("tests/{id}"))
+        })
         .context("no tests/ directory in evidence pack")?;
 
     let mut out = Extracted::default();
@@ -116,17 +120,25 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
 
     for dir in step_dirs {
         let base = format!("{step_prefix}{dir}");
-        let Some(sj) = read_entry(&mut z, &format!("{base}/step.json")) else { continue };
-        let Ok(step): Result<StepJson, _> = serde_json::from_slice(&sj) else { continue };
-        let ordinal = step.ordinal.or_else(|| dir.split('-').next().and_then(|s| s.parse().ok())).unwrap_or(0);
-
-        let (shot_name, shot) = if let Some(b) = read_entry(&mut z, &format!("{base}/screenshot.jpg")) {
-            ("jpg", Some(b))
-        } else if let Some(b) = read_entry(&mut z, &format!("{base}/screenshot.png")) {
-            ("png", Some(b))
-        } else {
-            ("", None)
+        let Some(sj) = read_entry(&mut z, &format!("{base}/step.json")) else {
+            continue;
         };
+        let Ok(step): Result<StepJson, _> = serde_json::from_slice(&sj) else {
+            continue;
+        };
+        let ordinal = step
+            .ordinal
+            .or_else(|| dir.split('-').next().and_then(|s| s.parse().ok()))
+            .unwrap_or(0);
+
+        let (shot_name, shot) =
+            if let Some(b) = read_entry(&mut z, &format!("{base}/screenshot.jpg")) {
+                ("jpg", Some(b))
+            } else if let Some(b) = read_entry(&mut z, &format!("{base}/screenshot.png")) {
+                ("png", Some(b))
+            } else {
+                ("", None)
+            };
         let Some(shot) = shot else { continue };
         let file = format!("{name_prefix}frame-{ordinal:02}.{shot_name}");
         std::fs::write(out_dir.join(&file), shot)?;
@@ -146,7 +158,10 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
         out.frames.push(Frame {
             ordinal,
             kind: step.kind.clone().unwrap_or_default(),
-            label: clean_label(step.kind.as_deref().unwrap_or(""), &step.summary.clone().unwrap_or_default()),
+            label: clean_label(
+                step.kind.as_deref().unwrap_or(""),
+                &step.summary.clone().unwrap_or_default(),
+            ),
             status,
             file,
             annotated_file,
@@ -157,15 +172,40 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
         // Triage lives next to the failing step.
         if let Some(fb) = read_entry(&mut z, &format!("{base}/failure.yaml")) {
             if let Ok(v) = serde_yaml::from_slice::<Value>(&fb) {
-                let s = |p: &Value| p.as_str().map(|s| s.split_whitespace().collect::<Vec<_>>().join(" "));
-                out.triage.error_message = out.triage.error_message.take().or_else(|| s(&v["error"]["message"]));
+                let s = |p: &Value| {
+                    p.as_str()
+                        .map(|s| s.split_whitespace().collect::<Vec<_>>().join(" "))
+                };
+                out.triage.error_message = out
+                    .triage
+                    .error_message
+                    .take()
+                    .or_else(|| s(&v["error"]["message"]));
                 out.triage.title = out.triage.title.take().or_else(|| s(&v["title"]));
-                out.triage.root_cause = out.triage.root_cause.take().or_else(|| s(&v["triage"]["rca"]["root_cause"]));
-                out.triage.category = out.triage.category.take().or_else(|| s(&v["triage"]["rca"]["category"]));
-                out.triage.confidence = out.triage.confidence.or_else(|| v["triage"]["rca"]["confidence"].as_f64());
-                out.triage.severity = out.triage.severity.take().or_else(|| s(&v["triage"]["severity"]));
-                out.triage.suggested_fix =
-                    out.triage.suggested_fix.take().or_else(|| s(&v["triage"]["suggested_fix"]["summary"]));
+                out.triage.root_cause = out
+                    .triage
+                    .root_cause
+                    .take()
+                    .or_else(|| s(&v["triage"]["rca"]["root_cause"]));
+                out.triage.category = out
+                    .triage
+                    .category
+                    .take()
+                    .or_else(|| s(&v["triage"]["rca"]["category"]));
+                out.triage.confidence = out
+                    .triage
+                    .confidence
+                    .or_else(|| v["triage"]["rca"]["confidence"].as_f64());
+                out.triage.severity = out
+                    .triage
+                    .severity
+                    .take()
+                    .or_else(|| s(&v["triage"]["severity"]));
+                out.triage.suggested_fix = out
+                    .triage
+                    .suggested_fix
+                    .take()
+                    .or_else(|| s(&v["triage"]["suggested_fix"]["summary"]));
             }
         }
     }
@@ -198,10 +238,15 @@ pub fn extract(pack: &Path, out_dir: &Path, name_prefix: &str) -> Result<Extract
                 for e in entries {
                     let status = e["response"]["status"].as_u64().unwrap_or(0);
                     let url = e["request"]["url"].as_str().unwrap_or_default();
-                    if status >= 400 && !url.ends_with("/favicon.ico") && out.signals.failed_requests.len() < 8 {
+                    if status >= 400
+                        && !url.ends_with("/favicon.ico")
+                        && out.signals.failed_requests.len() < 8
+                    {
                         let method = e["request"]["method"].as_str().unwrap_or("GET");
                         let short: String = url.chars().take(120).collect();
-                        out.signals.failed_requests.push(format!("{status} {method} {short}"));
+                        out.signals
+                            .failed_requests
+                            .push(format!("{status} {method} {short}"));
                     }
                 }
             }
@@ -217,9 +262,24 @@ mod tests {
 
     #[test]
     fn cleans_planner_labels() {
-        assert_eq!(clean_label("click", "click: PRIMARY: Open the cart; role=button | HINTS: x"), "Open the cart");
-        assert_eq!(clean_label("analyze", "analyze: ANALYZE(textual_visual, 'the total shows $20', key='t')"), "Checked: the total shows $20");
-        assert_eq!(clean_label("click", "click: Clicking Save"), "Clicking Save");
+        assert_eq!(
+            clean_label(
+                "click",
+                "click: PRIMARY: Open the cart; role=button | HINTS: x"
+            ),
+            "Open the cart"
+        );
+        assert_eq!(
+            clean_label(
+                "analyze",
+                "analyze: ANALYZE(textual_visual, 'the total shows $20', key='t')"
+            ),
+            "Checked: the total shows $20"
+        );
+        assert_eq!(
+            clean_label("click", "click: Clicking Save"),
+            "Clicking Save"
+        );
     }
 
     #[test]
@@ -229,11 +289,19 @@ mod tests {
         let ex = extract(&pack, dir.path(), "").unwrap();
         assert!(ex.frames.len() >= 4, "frames: {}", ex.frames.len());
         assert_eq!(ex.viewport, Some((1920, 1080)));
-        assert!(ex.triage.root_cause.as_deref().unwrap().contains("wrong direction"));
+        assert!(ex
+            .triage
+            .root_cause
+            .as_deref()
+            .unwrap()
+            .contains("wrong direction"));
         assert_eq!(ex.triage.severity.as_deref(), Some("major"));
         assert!(ex.triage.suggested_fix.is_some());
         // The click on the coupon button carries an element rect.
-        assert!(ex.frames.iter().any(|f| f.kind == "click" && f.rect.is_some()));
+        assert!(ex
+            .frames
+            .iter()
+            .any(|f| f.kind == "click" && f.rect.is_some()));
         for f in &ex.frames {
             assert!(dir.path().join(&f.file).exists());
         }

@@ -22,7 +22,10 @@ pub const MAX_REPORT_LEN: usize = 6000;
 
 fn url_re() -> &'static Regex {
     static RE: OnceLock<Regex> = OnceLock::new();
-    RE.get_or_init(|| Regex::new(r#"(?i)\b(?:https?|ftp|file|javascript|data):[^\s)\]>"']*|www\.[^\s)\]>"']+"#).unwrap())
+    RE.get_or_init(|| {
+        Regex::new(r#"(?i)\b(?:https?|ftp|file|javascript|data):[^\s)\]>"']*|www\.[^\s)\]>"']+"#)
+            .unwrap()
+    })
 }
 
 /// Remove control characters, bidi overrides and zero-width characters, then cap length.
@@ -72,7 +75,8 @@ pub fn safe_path(raw: &str) -> String {
     let ok = p.starts_with('/')
         && !p.starts_with("//")
         && p.len() <= 200
-        && p.chars().all(|c| c.is_ascii_alphanumeric() || "/-_.~%?=&#:@+,".contains(c))
+        && p.chars()
+            .all(|c| c.is_ascii_alphanumeric() || "/-_.~%?=&#:@+,".contains(c))
         && !p.contains("..");
     if ok {
         p.to_string()
@@ -85,7 +89,10 @@ pub fn safe_path(raw: &str) -> String {
 /// secrets reach the browser agent) and `@import`. Reporter text must never be
 /// able to name a variable or pull in a file.
 fn neutralize_kane_syntax(s: &str) -> String {
-    s.replace("{{", "").replace("}}", "").replace("${", "").replace("@import", "import")
+    s.replace("{{", "")
+        .replace("}}", "")
+        .replace("${", "")
+        .replace("@import", "import")
 }
 
 fn clean_line(s: &str, allowed_hosts: &[String]) -> String {
@@ -114,7 +121,10 @@ pub fn sanitize_plan(plan: &Plan, allowed_hosts: &[String]) -> Plan {
         reported_actual: clean_line(&plan.reported_actual, allowed_hosts),
         missing: take(&plan.missing, 6),
         confidence: plan.confidence.clamp(0.0, 1.0),
-        summary: clean_line(&plan.summary, allowed_hosts).chars().take(140).collect(),
+        summary: clean_line(&plan.summary, allowed_hosts)
+            .chars()
+            .take(140)
+            .collect(),
         signed_in: plan.signed_in,
     }
 }
@@ -167,7 +177,9 @@ mod tests {
         let plan = Plan {
             in_browser: true,
             start_path: "https://evil.com".into(),
-            steps: (0..40).map(|i| format!("step {i} https://evil.com/steal?c=1")).collect(),
+            steps: (0..40)
+                .map(|i| format!("step {i} https://evil.com/steal?c=1"))
+                .collect(),
             expected: "x".repeat(2000),
             ..Default::default()
         };

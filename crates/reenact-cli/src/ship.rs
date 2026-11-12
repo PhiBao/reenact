@@ -35,8 +35,14 @@ fn token() -> Result<String> {
             }
         }
     }
-    let out = Command::new("gh").args(["auth", "token"]).output().context("gh auth token")?;
-    anyhow::ensure!(out.status.success(), "no GitHub token available (set GH_TOKEN)");
+    let out = Command::new("gh")
+        .args(["auth", "token"])
+        .output()
+        .context("gh auth token")?;
+    anyhow::ensure!(
+        out.status.success(),
+        "no GitHub token available (set GH_TOKEN)"
+    );
     Ok(String::from_utf8_lossy(&out.stdout).trim().to_string())
 }
 
@@ -53,7 +59,11 @@ fn git(dir: &Path, token: &str, args: &[&str]) -> Result<String> {
         .output()
         .context("git")?;
     if !out.status.success() {
-        bail!("git {} failed: {}", args.first().unwrap_or(&""), String::from_utf8_lossy(&out.stderr).replace(&b64, "***"));
+        bail!(
+            "git {} failed: {}",
+            args.first().unwrap_or(&""),
+            String::from_utf8_lossy(&out.stderr).replace(&b64, "***")
+        );
     }
     Ok(String::from_utf8_lossy(&out.stdout).trim().to_string())
 }
@@ -84,7 +94,14 @@ pub fn publish_branch(case_dir: &Path, case_id: &str, repo: &str, branch: &str) 
     let token = token()?;
     let tmp = tempfile::tempdir()?;
     let url = format!("https://github.com/{repo}.git");
-    let cloned = git(tmp.path(), &token, &["clone", "--quiet", "--depth", "1", "--branch", branch, &url, "."]).is_ok();
+    let cloned = git(
+        tmp.path(),
+        &token,
+        &[
+            "clone", "--quiet", "--depth", "1", "--branch", branch, &url, ".",
+        ],
+    )
+    .is_ok();
     if !cloned {
         git(tmp.path(), &token, &["init", "--quiet", "-b", branch])?;
         git(tmp.path(), &token, &["remote", "add", "origin", &url])?;
@@ -98,23 +115,51 @@ pub fn publish_branch(case_dir: &Path, case_id: &str, repo: &str, branch: &str) 
     }
     git(tmp.path(), &token, &["add", "-A"])?;
     if git(tmp.path(), &token, &["status", "--porcelain"])?.is_empty() {
-        return Ok(format!("https://raw.githubusercontent.com/{repo}/{branch}/{case_id}"));
+        return Ok(format!(
+            "https://raw.githubusercontent.com/{repo}/{branch}/{case_id}"
+        ));
     }
-    let id = ["-c", "user.name=Reenact", "-c", "user.email=reenact@users.noreply.github.com"];
+    let id = [
+        "-c",
+        "user.name=Reenact",
+        "-c",
+        "user.email=reenact@users.noreply.github.com",
+    ];
     let msg = format!("evidence for {case_id}");
     let commit = [id.as_slice(), &["commit", "--quiet", "-m", msg.as_str()]].concat();
     git(tmp.path(), &token, &commit)?;
-    let mut pushed = git(tmp.path(), &token, &["push", "--quiet", "origin", &format!("HEAD:{branch}")]).is_ok();
+    let mut pushed = git(
+        tmp.path(),
+        &token,
+        &["push", "--quiet", "origin", &format!("HEAD:{branch}")],
+    )
+    .is_ok();
     if !pushed {
         // Another job pushed first: rebase once and retry.
-        let _ = git(tmp.path(), &token, &["pull", "--quiet", "--rebase", "origin", branch]);
-        pushed = git(tmp.path(), &token, &["push", "--quiet", "origin", &format!("HEAD:{branch}")]).is_ok();
+        let _ = git(
+            tmp.path(),
+            &token,
+            &["pull", "--quiet", "--rebase", "origin", branch],
+        );
+        pushed = git(
+            tmp.path(),
+            &token,
+            &["push", "--quiet", "origin", &format!("HEAD:{branch}")],
+        )
+        .is_ok();
     }
     anyhow::ensure!(pushed, "could not push the evidence branch");
-    Ok(format!("https://raw.githubusercontent.com/{repo}/{branch}/{case_id}"))
+    Ok(format!(
+        "https://raw.githubusercontent.com/{repo}/{branch}/{case_id}"
+    ))
 }
 
-pub async fn upload_bundle(case_dir: &Path, case_id: &str, server: &str, token: &str) -> Result<()> {
+pub async fn upload_bundle(
+    case_dir: &Path,
+    case_id: &str,
+    server: &str,
+    token: &str,
+) -> Result<()> {
     let mut buf = Vec::new();
     {
         let mut w = zip::ZipWriter::new(std::io::Cursor::new(&mut buf));
@@ -124,8 +169,17 @@ pub async fn upload_bundle(case_dir: &Path, case_id: &str, server: &str, token: 
         }
         w.finish()?;
     }
-    let url = format!("{}/api/cases/{}/bundle", server.trim_end_matches('/'), case_id);
-    let r = reqwest::Client::new().post(url).bearer_auth(token).body(buf).send().await?;
+    let url = format!(
+        "{}/api/cases/{}/bundle",
+        server.trim_end_matches('/'),
+        case_id
+    );
+    let r = reqwest::Client::new()
+        .post(url)
+        .bearer_auth(token)
+        .body(buf)
+        .send()
+        .await?;
     anyhow::ensure!(r.status().is_success(), "upload failed: {}", r.status());
     Ok(())
 }
@@ -151,7 +205,12 @@ pub async fn ship(case_dir: &Path, a: &ShipArgs) -> Result<()> {
         let (Some(repo), Some(n)) = (case.report.repo.clone(), case.report.number) else {
             bail!("--post needs a case created with --issue");
         };
-        let img = |name: &str| asset_base.as_ref().filter(|_| case_dir.join(name).exists()).map(|b| format!("{b}/{name}"));
+        let img = |name: &str| {
+            asset_base
+                .as_ref()
+                .filter(|_| case_dir.join(name).exists())
+                .map(|b| format!("{b}/{name}"))
+        };
         let strip_name = case
             .runs
             .iter()
@@ -161,7 +220,14 @@ pub async fn ship(case_dir: &Path, a: &ShipArgs) -> Result<()> {
             .unwrap_or_else(|| "strip.png".into());
         let strip = img(&strip_name);
         let compare = img("compare.png");
-        let body = render_comment(&case, &Links { strip_url: strip.as_deref(), compare_url: compare.as_deref(), case_url: case_url.as_deref() });
+        let body = render_comment(
+            &case,
+            &Links {
+                strip_url: strip.as_deref(),
+                compare_url: compare.as_deref(),
+                case_url: case_url.as_deref(),
+            },
+        );
         let url = github::upsert_comment(&repo, n, &case.id, &body)?;
         eprintln!("[ship] comment: {url}");
     }
