@@ -9,6 +9,7 @@ output-*/
 *.db
 *.db-*
 !crates/**/fixtures/*.evidence
-benchmark/runs/**/frames/
-benchmark/runs/**/.testmuai/
+benchmark/**/frames/
+benchmark/**/.testmuai/
 data/
+benchmark/**/output-*/
