@@ -1,0 +1,693 @@
+{
+  "id": "c-e0128ab6",
+  "created_at": "2026-11-12T20:28:14.826174821Z",
+  "report": {
+    "title": "v0.26.0 Unable to update member - Update user: [invalid_argument] rpc error: code = InvalidArgument desc = invalid user name: invalid request \"\"",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\n```\nUpdate user: [invalid_argument] rpc error: code = InvalidArgument desc = invalid user name: invalid request \"\"\n```\n\n### Steps to Reproduce\n\n1. Go to <https://demo.usememos.com/setting#member>\n2. Create a member.\n3. Edit the new user, change username or password, save.\n4. You will got the error message.\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n<img width=\"1459\" height=\"654\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/def5847d-f78e-47f9-8b74-34df673b109d\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5564",
+    "repo": null,
+    "number": 5564
+  },
+  "app_url": "http://localhost:16211",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/setting#member",
+    "preconditions": [
+      "the signed-in test user has permission to manage members in settings"
+    ],
+    "steps": [
+      "Open the Settings page and go to the Member section",
+      "Click the button to create a new member",
+      "Fill in a username and password for the new member and confirm creation",
+      "In the member list, open the edit option for the newly created member",
+      "Change the username or password of the member",
+      "Click Save"
+    ],
+    "expected": "The member edit is saved and no error message containing 'invalid user name' is visible on the page.",
+    "reported_actual": "An error message appears: 'Update user: [invalid_argument] rpc error: code = InvalidArgument desc = invalid user name: invalid request \"\"'",
+    "missing": [
+      "What username and password values were used for the new member?",
+      "Was the username or the password changed (or both) when the error occurred?",
+      "What is the expected behavior (reporter left it blank)?",
+      "assumed: the Member section is reachable from the Settings page of the app instance",
+      "assumed: the expected behavior is that the update saves successfully without an error"
+    ],
+    "confidence": 0.55,
+    "summary": "Editing a newly created member's username or password shows an invalid user name error",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16211/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5564]\n---\n\n# v0.26.0 Unable to update member - Update user: [invalid_argument] rpc error: code = InvalidArgument\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16211/setting#member.\nStay on localhost:16211 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the Settings page and go to the Member section\n2. Click the button to create a new member\n3. Fill in a username and password for the new member and confirm creation\n4. In the member list, open the edit option for the newly created member\n5. Change the username or password of the member\n6. Click Save\nThe reporter says the correct behavior is that The member edit is saved and no error message containing 'invalid user name' is visible on the page. Verify that The member edit is saved and no error message containing 'invalid user name' is visible on the page.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:28:14.826511734Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Opened the Settings page and selected the Member section.\nCreated a new member with a username and password, then opened that member’s edit option.\nUpdated the member details and saved the changes.\nThe page confirmed that the member edit was saved, and no “invalid user name” message was shown.",
+        "credits": 42.24816,
+        "duration_s": 142.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78Q4SHRX287Y0SDRBSPY96H/dashboard/share/US_TUR87ZX8O3AO9JNNS83L5T7RDZBXL57EEFF2RS2H9TATNS1SWTKCREBKKP3NXUJT?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16211/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "The memo app's main page is shown.",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown.",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16211/setting#member",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Create in the member list top-right",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1372.0,
+              45.0,
+              78.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 12,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Confirm\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Type \"membertest\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              774.0,
+              471.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"memberpass\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              774.0,
+              541.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Click \"Confirm\"",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1091.0,
+              638.0,
+              55.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking the Edit option for the newly created member",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              1425.0,
+              140.0,
+              16.0,
+              26.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Clicking Update in the member menu",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              1321.0,
+              180.0,
+              115.0,
+              20.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Entering membertest2 into the username field",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              774.0,
+              471.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Clicking Save to confirm changes",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              1091.0,
+              638.0,
+              55.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 20,
+            "kind": "analyze",
+            "label": "Checked: invalid user name",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 21,
+            "kind": "assert",
+            "label": "The member edit is saved and no error message containing 'invalid user name' is",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:16211/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:16211/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:31:02.510796451Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Opened Settings and navigated to the Member section.\nCreated a new member with a username and password, then opened that member’s edit option.\nChanged the member’s details and saved the edit.\nThe page confirmed that the member edit was saved, and no “invalid user name” error was shown.",
+        "credits": 28.284387499999998,
+        "duration_s": 141.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78Q4SHRX287Y0SDRBSPY96H/dashboard/share/US_42AP08L1XF5BSBPN23FDU4221WEFWNZPZDE4JS05Q79QBQ53E7KISQW4QLILS1KG?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16211/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in with username and password in the sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16211/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16211/setting#member",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "Settings page Member section is open",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking Create to add a new member",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              1372.0,
+              45.0,
+              78.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Confirm\"",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"member20261112\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": [
+              774.0,
+              471.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 15,
+            "kind": "type",
+            "label": "Type \"MemberPass123!\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": "frames/retry-frame-15-annotated.png",
+            "rect": [
+              774.0,
+              541.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Click \"Confirm\"",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": "frames/retry-frame-16-annotated.png",
+            "rect": [
+              1091.0,
+              638.0,
+              55.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 17,
+            "kind": "wait",
+            "label": "verify creation of the new member",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Clicking the edit option for the newly created member",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": "frames/retry-frame-18-annotated.png",
+            "rect": [
+              1425.0,
+              140.0,
+              16.0,
+              26.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Clicking Update in the member actions menu",
+            "status": "passed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": "frames/retry-frame-19-annotated.png",
+            "rect": [
+              1321.0,
+              180.0,
+              115.0,
+              20.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 20,
+            "kind": "type",
+            "label": "Typing member20261113 into the Username field",
+            "status": "passed",
+            "file": "frames/retry-frame-20.jpg",
+            "annotated_file": "frames/retry-frame-20-annotated.png",
+            "rect": [
+              774.0,
+              471.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 21,
+            "kind": "click",
+            "label": "Clicking Confirm",
+            "status": "passed",
+            "file": "frames/retry-frame-21.jpg",
+            "annotated_file": "frames/retry-frame-21-annotated.png",
+            "rect": [
+              1091.0,
+              638.0,
+              55.0,
+              32.0
+            ],
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 22,
+            "kind": "analyze",
+            "label": "Checked: invalid user name",
+            "status": "passed",
+            "file": "frames/retry-frame-22.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          },
+          {
+            "ordinal": 23,
+            "kind": "assert",
+            "label": "The member edit is saved and no error message containing 'invalid user name' is",
+            "status": "passed",
+            "file": "frames/retry-frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16211/setting#member"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:16211/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:16211/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

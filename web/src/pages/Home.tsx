@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getBenchmark, listCases, caseFile } from '../api';
-import type { BenchRow, CaseSummary } from '../types';
+import type { BenchSet, CaseSummary } from '../types';
 import { Stamp, kindFromLabel } from '../components/Stamp';
 import { Compare } from '../components/Compare';
 
@@ -12,15 +12,19 @@ const STEPS = [
   { n: '04', t: 'The fix', d: 'An agent edits the code. The same test has to pass, or it tries again.' },
 ];
 
-function benchTotals(rows: BenchRow[]) {
-  const done = rows.filter((r) => r.buggy && r.fixed);
-  const ok = done.filter((r) => r.buggy!.correct && r.fixed!.correct).length;
-  return { ok, total: done.length };
+function headline(sets: BenchSet[]) {
+  const rows = sets[0].rows.filter((r) => r.kind === 'bug' && r.buggy && r.fixed);
+  return {
+    title: sets[0].title,
+    bugs: rows.length,
+    found: rows.filter((r) => r.buggy!.verdict === 'Reproduced').length,
+    falseOnFixed: rows.filter((r) => r.fixed!.verdict === 'Reproduced').length,
+  };
 }
 
 export function Home() {
   const [cases, setCases] = useState<CaseSummary[] | null>(null);
-  const [bench, setBench] = useState<BenchRow[] | null>(null);
+  const [bench, setBench] = useState<BenchSet[] | null>(null);
 
   useEffect(() => {
     listCases().then(setCases).catch(() => setCases([]));
@@ -29,7 +33,7 @@ export function Home() {
 
   const featured =
     cases?.find((c) => c.has_fix && (c.source_url ?? '').includes('usememos/memos')) ?? cases?.find((c) => c.has_fix) ?? cases?.[0];
-  const totals = bench ? benchTotals(bench) : null;
+  const totals = bench && bench.length ? headline(bench) : null;
 
   return (
     <>
@@ -78,13 +82,13 @@ export function Home() {
         </ol>
       </section>
 
-      {totals && totals.total > 0 && (
+      {totals && totals.bugs > 0 && (
         <section className="bench-line">
           <p>
             <strong>
-              {totals.ok} of {totals.total}
+              {totals.found} of {totals.bugs}
             </strong>{' '}
-            historical Memos issues judged correctly on both the buggy and the fixed release.
+            real Memos bugs reproduced on unseen reports; {totals.falseOnFixed} wrongly reproduced on the fixed release. The misses are published.
           </p>
           <Link to="/benchmark">See every case →</Link>
         </section>

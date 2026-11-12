@@ -1,0 +1,110 @@
+[
+  {
+    "number": 6553,
+    "title": "Support OAuth 2.1 authorization for the built-in MCP server (ChatGPT custom connectors)",
+    "url": "https://github.com/usememos/memos/issues/6553",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6553",
+    "credits": 0.0
+  },
+  {
+    "number": 6550,
+    "title": "Numbered lists >10 overflow to the next line",
+    "url": "https://github.com/usememos/memos/issues/6550",
+    "verdict": "Not reproduced",
+    "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+    "case_id": "sweep-6550",
+    "credits": 61.313437500000006
+  },
+  {
+    "number": 6547,
+    "title": "Safari: first Chinese Input Method Editor composition in an empty memo editor is not committed / 中文输入法在空白输入框无法输入",
+    "url": "https://github.com/usememos/memos/issues/6547",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6547",
+    "credits": 0.0
+  },
+  {
+    "number": 6539,
+    "title": "Option to hide the Tags section in the sidebar (hide display only, tag functionality unchanged)",
+    "url": "https://github.com/usememos/memos/issues/6539",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6539",
+    "credits": 0.0
+  },
+  {
+    "number": 6538,
+    "title": "docs: --trusted-proxies and --rate-limit are missing from the environment variables reference",
+    "url": "https://github.com/usememos/memos/issues/6538",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6538",
+    "credits": 0.0
+  },
+  {
+    "number": 6535,
+    "title": "Year and month navigation in calendar page",
+    "url": "https://github.com/usememos/memos/issues/6535",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6535",
+    "credits": 0.0
+  },
+  {
+    "number": 6530,
+    "title": "Custom URI links are not clickable",
+    "url": "https://github.com/usememos/memos/issues/6530",
+    "verdict": "Reproduced",
+    "headline": "The memo saved successfully, but the custom URI is displayed as ordinary text rather than a clickable link.",
+    "case_id": "sweep-6530",
+    "credits": 29.270192499999997
+  },
+  {
+    "number": 6529,
+    "title": "Selecting multiple photos from \"Photo\" picker doesn't inline images into memo body, breaking thumbnail grid display",
+    "url": "https://github.com/usememos/memos/issues/6529",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6529",
+    "credits": 0.0
+  },
+  {
+    "number": 6527,
+    "title": "Add a \"reblur\" and move the \"unblur\" button to a more fixed position",
+    "url": "https://github.com/usememos/memos/issues/6527",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6527",
+    "credits": 0.0
+  },
+  {
+    "number": 6521,
+    "title": "WIP: A way to reflect on notes",
+    "url": "https://github.com/usememos/memos/issues/6521",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6521",
+    "credits": 0.0
+  },
+  {
+    "number": 6520,
+    "title": "Feature Request: Automatically Convert HEIC/HEIF Images to JPEG on Upload",
+    "url": "https://github.com/usememos/memos/issues/6520",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6520",
+    "credits": 0.0
+  },
+  {
+    "number": 6501,
+    "title": "Option to automatically enter Focus Mode when starting to edit a memo",
+    "url": "https://github.com/usememos/memos/issues/6501",
+    "verdict": "Needs info",
+    "headline": "This does not look like something visible in a desktop browser UI.",
+    "case_id": "sweep-6501",
+    "credits": 0.0
+  }
+]

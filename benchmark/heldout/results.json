@@ -1,0 +1,274 @@
+[
+  {
+    "id": "calendar-title-not-translated",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5578",
+    "title": "Change the translation message of calendar title immediately when change language",
+    "plan_steps": 5,
+    "plan_expected": "The calendar title month and year text is displayed in the newly selected language immediately, without refreshing the page.",
+    "buggy": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 80.1351765,
+      "duration_s": 149.0,
+      "case_id": "c-115d2d56",
+      "correct": false,
+      "first_run": "Not reproduced"
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 74.0202275,
+      "duration_s": 144.0,
+      "case_id": "c-cf20fd27",
+      "correct": true,
+      "first_run": "Not reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-chinese-username",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/5594",
+    "title": "Username Registration Does Not Support Chinese Characters",
+    "plan_steps": 6,
+    "plan_expected": "No \"invalid username\" error is shown, and the registration succeeds with the username 隧道 so the user leaves the sign-up page.",
+    "buggy": {
+      "tag": "0.26.0",
+      "verdict": "Reproduced",
+      "headline": "Sign-up incorrectly rejects the requested username 隧道 and keeps the user on the sign-up page.",
+      "credits": 25.5623125,
+      "duration_s": 81.0,
+      "case_id": "c-3216cc60",
+      "correct": false,
+      "first_run": "Reproduced"
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Reproduced",
+      "headline": "Sign-up rejects the username 隧道 as invalid instead of creating the account.",
+      "credits": 26.6069275,
+      "duration_s": 73.0,
+      "case_id": "c-e202cd44",
+      "correct": false,
+      "first_run": "Reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-pin-in-explore",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/5223",
+    "title": "Pinning memos in the \"Explore section\" not working",
+    "plan_steps": 7,
+    "plan_expected": "After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer memo\" and is marked as pinned.",
+    "buggy": {
+      "tag": "0.25.2",
+      "verdict": "Reproduced",
+      "headline": "Pinning the older memo marks it as pinned but does not move it above the newer memo in the Explore list.",
+      "credits": 42.2920525,
+      "duration_s": 150.0,
+      "case_id": "c-9a21cc58",
+      "correct": false,
+      "first_run": "Reproduced"
+    },
+    "fixed": {
+      "tag": "0.25.3",
+      "verdict": "Needs info",
+      "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+      "credits": 55.09523,
+      "duration_s": 80.0,
+      "case_id": "c-76c2afec",
+      "correct": false,
+      "first_run": "Needs info"
+    },
+    "error": null
+  },
+  {
+    "id": "edit-member-dialog-fails",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5564",
+    "title": "v0.26.0 Unable to update member - Update user: [invalid_argument] rpc error: code = InvalidArgument desc = invalid user name: invalid request \"\"",
+    "plan_steps": 6,
+    "plan_expected": "The member edit is saved and no error message containing 'invalid user name' is visible on the page.",
+    "buggy": {
+      "tag": "0.26.0",
+      "verdict": "Reproduced",
+      "headline": "Saving a valid edited member name fails because the update request is sent with no username.",
+      "credits": 39.31467,
+      "duration_s": 167.0,
+      "case_id": "c-26f94709",
+      "correct": true,
+      "first_run": "Reproduced"
+    },
+    "fixed": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 70.53254749999999,
+      "duration_s": 141.0,
+      "case_id": "c-e0128ab6",
+      "correct": true,
+      "first_run": "Not reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "layout-select-not-updating",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5194",
+    "title": "Selecting a layout doesn't update the selection or layout until the page is refreshed",
+    "plan_steps": 2,
+    "plan_expected": "After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page.",
+    "buggy": {
+      "tag": "0.25.2",
+      "verdict": "Reproduced",
+      "headline": "The layout selector was clicked, but it did not open and no Masonry choice was available.",
+      "credits": 53.125280000000004,
+      "duration_s": 116.0,
+      "case_id": "c-e5df8ae2",
+      "correct": true,
+      "first_run": "Needs info"
+    },
+    "fixed": {
+      "tag": "0.25.3",
+      "verdict": "Needs info",
+      "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+      "credits": 79.66942750000001,
+      "duration_s": 119.0,
+      "case_id": "c-ea3196fd",
+      "correct": false,
+      "first_run": "Needs info"
+    },
+    "error": null
+  },
+  {
+    "id": "link-search-drops-spaces",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/4767",
+    "title": "Can't use spaces when searching to reference a memo",
+    "plan_steps": 3,
+    "plan_expected": "the search field shows 'hello world' including the space, and the list of memos is narrowed to the matching memo",
+    "buggy": null,
+    "fixed": null,
+    "error": "could not create the first user on 0.24.4: 401 Unauthorized"
+  },
+  {
+    "id": "list-enter-cursor-misplaced",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5236",
+    "title": "Markdown List Auto-Completion Adds Symbol to Current Line Instead of New Line",
+    "plan_steps": 3,
+    "plan_expected": "The first line of the editor still reads \"- 123\" with nothing appended, and a new second line begins with \"- \" to continue the list.",
+    "buggy": {
+      "tag": "0.25.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 57.2174665,
+      "duration_s": 87.0,
+      "case_id": "c-1c85c638",
+      "correct": false,
+      "first_run": "Not reproduced"
+    },
+    "fixed": {
+      "tag": "0.25.3",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 55.903414999999995,
+      "duration_s": 89.0,
+      "case_id": "c-7fb73512",
+      "correct": true,
+      "first_run": "Not reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "setext-heading-from-hr",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5314",
+    "title": "Inconsistent markdown rendering",
+    "plan_steps": 11,
+    "plan_expected": "In the saved memo, \"Top\" and \"Bolded words\" appear as regular body-sized text (not as large heading text), with \"Bolded\" in bold, and \"more, same bolded\" in bold followed by \"regular text\".",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Reproduced",
+      "headline": "Saving the memo retained only the final formatted line instead of the requested full memo.",
+      "credits": 43.434035,
+      "duration_s": 153.0,
+      "case_id": "c-b746253b",
+      "correct": true,
+      "first_run": "Reproduced"
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Reproduced",
+      "headline": "The memo did not retain the requested regular-text and bold formatting after it was saved.",
+      "credits": 37.0675175,
+      "duration_s": 148.0,
+      "case_id": "c-688380d8",
+      "correct": false,
+      "first_run": "Reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "subtag-filter-excludes-children",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5110",
+    "title": "Filtering with tags no longer shows sub-tagged Memos",
+    "plan_steps": 4,
+    "plan_expected": "After filtering by the tag \"Tag\", the memo containing \"#Tag/Subtag\" is visible in the memo list.",
+    "buggy": {
+      "tag": "0.25.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 61.417787499999996,
+      "duration_s": 112.0,
+      "case_id": "c-a5f1995e",
+      "correct": false,
+      "first_run": "Not reproduced"
+    },
+    "fixed": {
+      "tag": "0.25.3",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 65.766135,
+      "duration_s": 125.0,
+      "case_id": "c-8e361fed",
+      "correct": true,
+      "first_run": "Not reproduced"
+    },
+    "error": null
+  },
+  {
+    "id": "todo-command-does-nothing",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5324",
+    "title": "Todo command doesn't work in some desktop browsers",
+    "plan_steps": 5,
+    "plan_expected": "The editor's empty line shows the text '- [ ] ' after selecting the todo command, and the slash-command menu is closed",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Reproduced",
+      "headline": "Pressing Enter on the highlighted /todo command left the command menu open instead of inserting the todo text.",
+      "credits": 36.5945975,
+      "duration_s": 131.0,
+      "case_id": "c-5d717752",
+      "correct": true,
+      "first_run": "Reproduced"
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 59.3761405,
+      "duration_s": 112.0,
+      "case_id": "c-01f8b281",
+      "correct": true,
+      "first_run": "Not reproduced"
+    },
+    "error": null
+  }
+]

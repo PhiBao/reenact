@@ -1,0 +1,333 @@
+{
+  "id": "c-9a21cc58",
+  "created_at": "2026-11-12T20:32:18.276908728Z",
+  "report": {
+    "title": "Pinning memos in the \"Explore section\" not working",
+    "body": "### Describe the bug\n\nPinning a memo in your personal area works just fine, however when pinning a memo in the explore section (e.g. a protected post) it has no effect.\n\n### Steps to reproduce\n\ncreate two posts, pin the older one in the explore section. Pinning it has no effect.\n\n### The version of Memos you're using\n\n\n0.25 (canary)\n\n### Screenshots or additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5223",
+    "repo": null,
+    "number": 5223
+  },
+  "app_url": "http://localhost:16216",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "two memos exist, the older one and a newer one",
+      "the Explore section lists the memos"
+    ],
+    "steps": [
+      "Type \"older memo\" into the memo editor on the home page",
+      "Click the Save button to create the first memo",
+      "Type \"newer memo\" into the memo editor",
+      "Click the Save button to create the second memo",
+      "Open the Explore section from the navigation",
+      "Open the menu on the \"older memo\" entry in the Explore list",
+      "Click Pin in the menu"
+    ],
+    "expected": "After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer memo\" and is marked as pinned.",
+    "reported_actual": "Pinning a memo in the Explore section has no effect; the memo is not pinned and the order does not change.",
+    "missing": [
+      "Does the Pin option appear in the memo menu in Explore for the reporter, and for which memo visibility (public, protected)?",
+      "What visibility were the two posts created with?",
+      "assumed: memos are created with default visibility and the content \"older memo\" and \"newer memo\" since the reporter gave no content",
+      "assumed: pinned memos are expected to move to the top of the Explore list",
+      "assumed: the menu is a three-dot or similar menu on the memo card"
+    ],
+    "confidence": 0.4,
+    "summary": "Pinning a memo from the Explore section has no effect, while pinning in the personal area works",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16216/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5223]\n---\n\n# Pinning memos in the \"Explore section\" not working\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16216/.\nStay on localhost:16216 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Type \"older memo\" into the memo editor on the home page\n2. Click the Save button to create the first memo\n3. Type \"newer memo\" into the memo editor\n4. Click the Save button to create the second memo\n5. Open the Explore section from the navigation\n6. Open the menu on the \"older memo\" entry in the Explore list\n7. Click Pin in the menu\nThe reporter says the correct behavior is that After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer memo\" and is marked as pinned. Verify that After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer memo\" and is marked as pinned.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:32:18.277290169Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "Pinning the older memo marks it as pinned but does not move it above the newer memo in the Explore list.",
+        "stuck_at": null,
+        "root_cause": "The pin action was accepted, but the Explore list did not put the pinned memo first as required.",
+        "suggested_fix": "Update Explore sorting so pinned memos are displayed before unpinned memos immediately after a memo is pinned.",
+        "severity": "major",
+        "confidence": 0.96
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer memo\" and is marked as pinned.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The pin action was accepted, but the Explore list did not put the pinned memo first as required.\nUpdate Explore sorting so pinned memos are displayed before unpinned memos immediately after a memo is pinned.\nevidence: objective_contradiction: Final verification failed: \"After pinning, the \"older memo\" entry appears at the top of the Explore list above \"newer me\nevidence: objective_contradiction: [step 1-10] (OK) : analyze: After pinning, the \"older memo\" entry is marked as pinned.",
+        "credits": 42.2920525,
+        "duration_s": 150.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78QC8JVY8JEJ893F83T82YG/dashboard/share/US_RF47YRJDV6RNPOZIKQWSKDAZQCAND1XDLAUS28Y6FIIWF2VBEVKMDNSVRHAKTQF3?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Pinned memo remains below newer memo in Explore",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16216/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in with username and password button",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16216/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16216/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Save button",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1384.0,
+              73.0,
+              62.0,
+              32.0
+            ],
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the Save button",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1384.0,
+              73.0,
+              62.0,
+              32.0
+            ],
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking Explore in the navigation bar",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              21.0,
+              131.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:16216/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "",
+            "label": "Clicking menu on the \"older memo\" entry in the Explore list",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1295.0,
+              144.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:16216/explore"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "menu on the \"older memo\" entry in the Explore list",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16216/explore"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Pinning the memo from the Explore list menu",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              1196.0,
+              174.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:16216/explore"
+          },
+          {
+            "ordinal": 18,
+            "kind": "analyze",
+            "label": "After pinning, the \"older memo\" entry is marked as pinned.",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/explore"
+          },
+          {
+            "ordinal": 19,
+            "kind": "assert",
+            "label": "After pinning, the \"older memo\" entry appears at the top of the Explore list abo",
+            "status": "failed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16216/explore"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "The pin action was accepted, but the Explore list did not put the pinned memo first as required.",
+        "suggested_fix": "Update Explore sorting so pinned memos are displayed before unpinned memos immediately after a memo is pinned.",
+        "severity": "major",
+        "bug_confidence": 0.96
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

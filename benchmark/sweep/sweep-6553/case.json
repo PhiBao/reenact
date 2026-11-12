@@ -1,0 +1,75 @@
+{
+  "id": "sweep-6553",
+  "created_at": "2026-11-12T20:52:59.078637535Z",
+  "report": {
+    "title": "Support OAuth 2.1 authorization for the built-in MCP server (ChatGPT custom connectors)",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate. #6372 is a broader Home Assistant request that was auto-closed as stale; #6495 fixed the well-known HTML fallback. Neither asks for native OAuth for the ChatGPT connector flow.\n\n### What problem would this solve?\n\nThe MCP endpoint only accepts a static PAT (`Authorization: Bearer <PAT>`), but ChatGPT's custom connector offers only \"OAuth\" or \"No auth\" — there is no field for a static header, and putting a token in the URL is rejected. So ChatGPT cannot connect to a self-hosted Memos unless the instance is left unauthenticated.\n\nOn **26.11.0** (`neosmemo/memos:26.11.0`), an unauthenticated `POST /mcp` returns **HTTP 200**: `tools/list` gets the full 36-tool catalog, `tools/call` gets `{\"isError\": true, \"text\": \"401 Unauthorized\"}`. There is no `WWW-Authenticate` header and `/.well-known/oauth-protected-resource` is 404. ChatGPT starts the OAuth flow only on **401 + `WWW-Authenticate: Bearer resource_metadata=...`**, so the linking UI never appears and every tool call fails at the JSON-RPC layer. Reporting auth failures as HTTP 200 also confuses other spec-compliant clients.\n\n### What would you like to happen?\n\nAdd OAuth 2.1 authorization to the built-in MCP server, **keeping static PAT support unchanged**:\n\n1. **Minimum (small change, biggest win)**: return 401 + `WWW-Authenticate: Bearer resource_metadata=...` for unauthenticated `/mcp`, serve RFC 9728 Protected Resource Metadata, and return 404 (not SPA HTML) on `/oauth/*`. Optionally allow pointing at an external authorization server (Authentik, Keycloak, ...) so Memos only validates tokens.\n2. **Full**: a built-in authorization server — RFC 8414 metadata, RFC 7591 Dynamic Client Registration, an authorize/consent screen reusing the Memos session, PKCE S256 + refresh tokens, `resource` (RFC 8707) and `iss` (RFC 9207), tokens mapped to existing user/PAT permissions, behind an off-by-default toggle.\n\n### Additional context\n\n- Memos 26.11.0, official Docker image, self-hosted behind HTTPS; the behavior above was measured against the container directly (no proxy).\n",
+    "source_url": "https://github.com/usememos/memos/issues/6553",
+    "repo": "usememos/memos",
+    "number": 6553
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": false,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [],
+    "expected": "",
+    "reported_actual": "An unauthenticated POST to the /mcp endpoint returns HTTP 200 instead of 401 with a WWW-Authenticate header, and /.well-known/oauth-protected-resource returns 404, so ChatGPT custom connectors cannot start an OAuth flow.",
+    "missing": [
+      "This is a feature request for OAuth 2.1 support on the MCP server and concerns API/HTTP behavior, not something visible in the browser UI"
+    ],
+    "confidence": 0.02,
+    "summary": "Feature request: OAuth 2.1 authorization and 401 challenge for built-in MCP server",
+    "signed_in": true
+  },
+  "test_md": null,
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "intake",
+      "started_at": "2026-11-12T20:52:59.078646465Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "This does not look like something visible in a desktop browser UI.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": false,
+        "status": "not_run",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 0.0,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

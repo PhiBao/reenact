@@ -36,10 +36,500 @@
     "signed_in": true
   },
   "test_md": "---\nmode: testing\nurl: http://localhost:16205/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5110]\n---\n\n# Filtering with tags no longer shows sub-tagged Memos\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16205/.\nStay on localhost:16205 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor on the home page\n2. Type \"#Tag/Subtag\" into the memo editor\n3. Click the Save button to create the memo\n4. In the tag list in the sidebar, click the \"Tag\" tag to filter memos by it\nThe reporter says the correct behavior is that After filtering by the tag \"Tag\", the memo containing \"#Tag/Subtag\" is visible in the memo list. Verify that After filtering by the tag \"Tag\", the memo containing \"#Tag/Subtag\" is visible in the memo list.\n",
-  "runs": [],
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:21:18.023506211Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a memo containing “#Tag/Subtag” on the Memos home page.\nSelected the “Tag” entry in the sidebar to filter the memo list.\nThe filtered list showed the saved “#Tag/Subtag” memo.",
+        "credits": 35.4547875,
+        "duration_s": 123.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78PR34N0V0R2E0R4CTV4NSM/dashboard/share/US_40VLMC3RBW02CR1AS0FAF6QOME73DW703I5PMZFD0NK6YOUKXMOFV0HB2IZBY5HL?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16205/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16205/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "analyze",
+            "label": "the app behaves unexpectedly",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing #Tag/Subtag in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the Save button",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "",
+            "label": "Clicking the \"Tag\" tag to filter memos by it",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              84.0,
+              350.0,
+              93.0,
+              24.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "the \"Tag\" tag to filter memos by it",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/?filter=tagSearch%3Atag%252Fsubtag"
+          },
+          {
+            "ordinal": 17,
+            "kind": "assert",
+            "label": "After filtering by the tag \"Tag\", the memo containing \"#Tag/Subtag\" is visible i",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/?filter=tagSearch%3Atag%252Fsubtag"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:23:46.691794068Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created a memo containing “#Tag/Subtag” on the localhost memo app.\nSelected the “Tag” entry in the sidebar to filter the memo list.\nThe filtered list displayed the memo containing “#Tag/Subtag”.",
+        "credits": 30.311347500000004,
+        "duration_s": 125.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78PR34N0V0R2E0R4CTV4NSM/dashboard/share/US_CTPSC7Y1335PSRVNXYDK4GYAN9LIW6NWXI05ASCYW05JHPZEVOM0Y98C194WXF37?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16205/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16205/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16205/",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "analyze",
+            "label": "the app behaves unexpectedly",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking the memo editor on the home page",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing #Tag/Subtag into the memo editor",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking Save to create the memo",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": "frames/retry-frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "",
+            "label": "Clicking In the tag list in the sidebar, click the \"Tag\" tag to filter memos by it",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": [
+              84.0,
+              350.0,
+              115.0,
+              24.0
+            ],
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "In the tag list in the sidebar, click the \"Tag\" tag to filter memos by",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": "frames/retry-frame-15-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16205/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/?filter=tagSearch%3Atag%252Fsubtag"
+          },
+          {
+            "ordinal": 17,
+            "kind": "assert",
+            "label": "After filtering by the tag \"Tag\", the memo containing \"#Tag/Subtag\" is visible i",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16205/?filter=tagSearch%3Atag%252Fsubtag"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
   "fixes": [],
   "pr_url": null,
-  "state": "reenacting",
+  "state": "not_reproduced",
   "fix_agent": null,
   "fix_diff": null,
   "reference_diff": null

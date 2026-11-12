@@ -172,12 +172,26 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
             out.push_str("<details><summary>Fix attempts</summary>\n\n");
             for a in &case.fixes {
                 let o = a.outcome.map(|o| o.label()).unwrap_or("not verified");
-                out.push_str(&format!(
-                    "- Attempt {}: {} Result: {}.\n",
+                let mut line = format!(
+                    "- Attempt {}: {} Result: {}.",
                     a.attempt,
                     a.rationale.replace('\n', " "),
                     o
-                ));
+                );
+                if a.suite_checked > 0 && a.regressions.is_empty() {
+                    line.push_str(&format!(
+                        " {} earlier saved test(s) re-run live and still hold.",
+                        a.suite_checked
+                    ));
+                }
+                if !a.regressions.is_empty() {
+                    line.push_str(&format!(
+                        " Rejected: it broke {} earlier fix(es).",
+                        a.regressions.len()
+                    ));
+                }
+                out.push_str(&line);
+                out.push('\n');
             }
             out.push_str("\n</details>\n\n");
         }
@@ -278,6 +292,47 @@ mod tests {
         assert!(c.contains("/reenact fix"));
         assert!(c.contains("![Kane's run"));
         assert!(c.contains("Apply \\| coupon"));
+    }
+
+    #[test]
+    fn fix_attempts_report_the_suite() {
+        let mut c = case(VerdictKind::Reproduced);
+        let mut run = c.runs[0].clone();
+        run.kind = RunKind::VerifyFix;
+        run.verdict.kind = VerdictKind::NotReproduced;
+        c.runs.push(run);
+        c.fixes = vec![
+            FixAttempt {
+                attempt: 1,
+                rationale: "Clamp it.".into(),
+                files: vec![],
+                applied: true,
+                outcome: Some(VerdictKind::NotReproduced),
+                note: String::new(),
+                regressions: vec!["issue-1_test.md: total up".into()],
+                suite_checked: 2,
+            },
+            FixAttempt {
+                attempt: 2,
+                rationale: "Clamp it differently.".into(),
+                files: vec![],
+                applied: true,
+                outcome: Some(VerdictKind::NotReproduced),
+                note: String::new(),
+                regressions: vec![],
+                suite_checked: 2,
+            },
+        ];
+        let md = render_comment(
+            &c,
+            &Links {
+                strip_url: None,
+                compare_url: None,
+                case_url: None,
+            },
+        );
+        assert!(md.contains("Rejected: it broke 1 earlier fix"));
+        assert!(md.contains("2 earlier saved test(s) re-run live and still hold"));
     }
 
     #[test]

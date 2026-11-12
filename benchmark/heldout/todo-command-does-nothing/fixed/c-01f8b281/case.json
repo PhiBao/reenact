@@ -1,0 +1,482 @@
+{
+  "id": "c-01f8b281",
+  "created_at": "2026-11-12T20:28:58.929732943Z",
+  "report": {
+    "title": "Todo command doesn't work in some desktop browsers",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nWhen i use `/todo` command it doesn't work in most **desktop** browsers.\n\n### Steps to Reproduce\n\n1. In Google Сhrome browser open a note in edit mode\n2. Press `/` in the very beginning of an empty line\n3. Press enter while `/todo` is highlighted\n\n### Expected\n\n`- [ ] ` to appear\n\n### Actual\n\nThe line remains empty\n\n### Additional Context\n\n**Client envs**:\n- Desktop Google Chrome browser\n- Desktop Firefox browser\n- Desktop Brave browser\n\n**Notes**:\n1. The feature works when the line is not empty.\n2. The feature works as expected in Android Chrome browser\n",
+    "source_url": "https://github.com/usememos/memos/issues/5324",
+    "repo": null,
+    "number": 5324
+  },
+  "app_url": "http://localhost:16215",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the memo editor is available on the home page",
+      "the editor slash-command menu includes a /todo option"
+    ],
+    "steps": [
+      "Click the memo editor on the home page to focus it",
+      "Make sure the cursor is at the very beginning of an empty line",
+      "Press the / key",
+      "Wait for the slash-command menu to appear with todo highlighted",
+      "Press Enter while the todo option is highlighted"
+    ],
+    "expected": "The editor's empty line shows the text '- [ ] ' after selecting the todo command, and the slash-command menu is closed",
+    "reported_actual": "The line remains empty after pressing Enter on the highlighted /todo command",
+    "missing": [
+      "assumed: the report says 'open a note in edit mode'; since the instance has no data, the new-memo editor on the home page is used instead of editing an existing memo",
+      "assumed: the todo option is the highlighted item in the slash menu when it first opens; if not, it may need to be navigated to or typed as 'todo'",
+      "Does the bug also occur in the new-memo editor, or only when editing an existing memo?",
+      "Is the empty line the only line in the editor, or does it follow other content?"
+    ],
+    "confidence": 0.55,
+    "summary": "Selecting /todo on an empty line in the editor on desktop inserts nothing instead of '- [ ] '",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16215/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5324]\n---\n\n# Todo command doesn't work in some desktop browsers\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16215/.\nStay on localhost:16215 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor on the home page to focus it\n2. Make sure the cursor is at the very beginning of an empty line\n3. Press the / key\n4. Wait for the slash-command menu to appear with todo highlighted\n5. Press Enter while the todo option is highlighted\nThe reporter says the correct behavior is that The editor's empty line shows the text '- [ ] ' after selecting the todo command, and the slash-command menu is closed. Verify that The editor's empty line shows the text '- [ ] ' after selecting the todo command, and the slash-command menu is closed.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:28:58.930138272Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Requested insertion of a todo item using the memo editor’s slash-command menu.\nFocused the memo editor, opened the slash-command menu with “/”, and selected the highlighted todo option.\nThe editor now shows “- [ ] ” on the empty line, and the slash-command menu is closed.",
+        "credits": 30.018417499999998,
+        "duration_s": 108.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78Q6513X3X9QX4Q63QB07VT/dashboard/share/US_487MIILH6HTT99JKZRZT1HSBCFRZE2NS5XM47LNVX1ZCCMUCTQF18BUADK0KJ5PQ?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16215/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16215/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "click",
+            "label": "Clicking the memo editor in the main composer",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "press_key",
+            "label": "Press the / key",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "wait",
+            "label": "wait for the slash-command menu to appear with todo highlighted",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter while the todo option is highlighted",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "The slash-command menu is closed.",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "assert",
+            "label": "The editor's empty line shows the text '- [ ] ' after selecting the todo command",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:16215/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:16215/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:31:09.636464298Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "You asked to insert a todo item using the memo editor’s slash command.\nThe memo editor was focused, the slash command menu was opened, and the highlighted todo option was selected.\nThe editor now shows an empty todo line as “- [ ] ”, and the slash-command menu is closed.",
+        "credits": 29.357723,
+        "duration_s": 112.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78Q6513X3X9QX4Q63QB07VT/dashboard/share/US_K712QNHD5SGKDQ9TGF1J4KRWTAOVJVKS3FELSWI1069Y5YE9YGJTZCUMS80AJF7E?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16215/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16215/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16215/",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "click",
+            "label": "Clicking the memo editor and focusing at the start of an empty line",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": "frames/retry-frame-10-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "press_key",
+            "label": "Press the / key",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "wait",
+            "label": "Wait for the slash-command menu to appear with todo highlighted",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter while the todo option is highlighted",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "The slash-command menu is closed.",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "assert",
+            "label": "The editor's empty line shows the text '- [ ] ' after selecting the todo command",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16215/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:16215/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:16215/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

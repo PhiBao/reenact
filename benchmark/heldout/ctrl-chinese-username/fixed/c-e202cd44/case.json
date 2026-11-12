@@ -1,0 +1,170 @@
+{
+  "id": "c-e202cd44",
+  "created_at": "2026-11-12T20:35:14.455685903Z",
+  "report": {
+    "title": "Username Registration Does Not Support Chinese Characters",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26\n\n### Bug Description\n\nWhen attempting to register a new username, the system returns an error if the username contains Chinese characters. For example, entering \"隧道\" (meaning \"tunnel\") results in the error:\nrpc error: code = InvalidArgument desc = invalid username: 隧道  \n\n### Steps to Reproduce\n\nGo to the registration page (or API endpoint).\n\nEnter a username containing Chinese characters (e.g., \"隧道\").\n\nSubmit the registration.\n\nObserve the error.\n\n### Expected Behavior\n\nUsernames containing Chinese characters (or other Unicode characters) should be accepted if the system claims to support international usernames.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5594",
+    "repo": null,
+    "number": 5594
+  },
+  "app_url": "http://localhost:16219",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/auth/signup",
+    "preconditions": [
+      "the sign-up page is available and user registration is enabled",
+      "the browser is signed out"
+    ],
+    "steps": [
+      "Open the sign-up page",
+      "Click the username field",
+      "Type \"隧道\" into the username field",
+      "Click the password field",
+      "Type \"TestPass123!\" into the password field",
+      "Click the Sign up button"
+    ],
+    "expected": "No \"invalid username\" error is shown, and the registration succeeds with the username 隧道 so the user leaves the sign-up page.",
+    "reported_actual": "Registration fails with the error: rpc error: code = InvalidArgument desc = invalid username: 隧道",
+    "missing": [
+      "assumed: the password \"TestPass123!\" is acceptable because the report does not give one",
+      "assumed: the registration page is the standard sign-up page, not the API endpoint",
+      "Is user registration enabled on the instance?",
+      "Does the sign-up form have other required fields, such as a confirm-password field?",
+      "Does the reporter see the error on the page, such as in a toast, or only through the API?"
+    ],
+    "confidence": 0.6,
+    "summary": "Sign-up rejects usernames with Chinese characters as 'invalid username'",
+    "signed_in": false
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16219/auth/signup\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5594]\n---\n\n# Username Registration Does Not Support Chinese Characters\n\n## Reproduce the report\nOpen http://localhost:16219/auth/signup.\nStay on localhost:16219 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the sign-up page\n2. Click the username field\n3. Type \"隧道\" into the username field\n4. Click the password field\n5. Type \"TestPass123!\" into the password field\n6. Click the Sign up button\nThe reporter says the correct behavior is that No \"invalid username\" error is shown, and the registration succeeds with the username 隧道 so the user leaves the sign-up page. Verify that No \"invalid username\" error is shown, and the registration succeeds with the username 隧道 so the user leaves the sign-up page.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:35:14.456055668Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "Sign-up rejects the username 隧道 as invalid instead of creating the account.",
+        "stuck_at": null,
+        "root_cause": "The sign-up service treats the provided Chinese-character username as invalid, so registration is refused and the user remains on the sign-up page.",
+        "suggested_fix": "Update username validation to allow Chinese characters such as 隧道, then confirm that successful registration navigates away from the sign-up page.",
+        "severity": "major",
+        "confidence": 0.99
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"No \"invalid username\" error is shown, and the registration succeeds with the username 隧道 so the user leaves the sign-up page.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The sign-up service treats the provided Chinese-character username as invalid, so registration is refused and the user remains on the sign-up page.\nUpdate username validation to allow Chinese characters such as 隧道, then confirm that successful registration navigates away from the sign-up page.\nevidence: http_error_response: {\"code\":\"invalid_argument\",\"message\":\"rpc error: code = InvalidArgument desc = invalid username: 隧道\"}\nevidence: console_error: [invalid_argument] rpc error: code = InvalidArgument desc = invalid username: 隧道",
+        "credits": 26.6069275,
+        "duration_s": 73.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78QHKGJ6XZAYRSHZW6AKSEX/dashboard/share/US_GT578SGAGEUYCVFV6TL93DU9NIPD1RLMJ9LSO08ZUGJQ9PSL2YKMSDZ6SBA6CAQP?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Sign-up rejects Chinese-character usernames",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16219/auth/signup",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16219/auth/signup"
+          },
+          {
+            "ordinal": 2,
+            "kind": "type",
+            "label": "Typing username value into username field",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": "frames/frame-02-annotated.png",
+            "rect": [
+              813.0,
+              487.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16219/auth/signup"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Typing the password in the password field",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              575.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16219/auth/signup"
+          },
+          {
+            "ordinal": 4,
+            "kind": "click",
+            "label": "Clicking Sign up button",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              812.0,
+              634.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16219/auth/signup"
+          },
+          {
+            "ordinal": 5,
+            "kind": "analyze",
+            "label": "The registration succeeds with the username 隧道.",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16219/auth/signup"
+          },
+          {
+            "ordinal": 6,
+            "kind": "assert",
+            "label": "No \"invalid username\" error is shown, and the registration succeeds with the use",
+            "status": "failed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16219/auth/signup"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+            "[invalid_argument] rpc error: code = InvalidArgument desc = invalid username: 隧道"
+          ],
+          "failed_requests": [
+            "400 POST http://localhost:16219/memos.api.v1.UserService/CreateUser"
+          ]
+        },
+        "root_cause": "The sign-up service treats the provided Chinese-character username as invalid, so registration is refused and the user remains on the sign-up page.",
+        "suggested_fix": "Update username validation to allow Chinese characters such as 隧道, then confirm that successful registration navigates away from the sign-up page.",
+        "severity": "major",
+        "bug_confidence": 0.99
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

@@ -1,0 +1,284 @@
+{
+  "id": "sweep-6530",
+  "created_at": "2026-11-12T20:53:16.700148682Z",
+  "report": {
+    "title": "Custom URI links are not clickable",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nFirst of all, thanks for the software!\n\nPasting a URI with a custom scheme (such as `obsidian://` or `slack://`) into a memo does not turn it into a link. \n\nAdding it using the \"link\" button makes it appear as a link, but you can't click it. \"Open link\" is greyed out.\n\n### Steps to reproduce\n\n**WYSIWYG (markdown mode off):**\n1. Start editing a memo.\n2. Paste a custom URI, such as `obsidian://`, `slack://`, etc.\n\n**Expected:** The URI becomes a clickable link.\n**Actual:** It appears as plain text.\n\n**Using the GUI:**\n1. Select some text and click the \"link\" button.\n2. Enter the custom URI.\n\n**Expected:** A clickable link is created.\n**Actual:** The text appears as a link, but \"Open link\" is greyed out.\n\n**Workaround:**\nUse a service such as [LinkOpen](https://linkopen.app/) to create a `https` URI.\n\n### Memos version\n\n26.11.0\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6530",
+    "repo": "usememos/memos",
+    "number": 6530
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click the memo editor to start writing a new memo",
+      "Type the text `obsidian://open?vault=test` into the memo editor",
+      "Save the memo",
+      "Look at the saved memo content"
+    ],
+    "expected": "The custom URI `obsidian://open?vault=test` is shown as a clickable link in the memo",
+    "reported_actual": "The custom URI appears as plain text and is not turned into a link; when added via the link button, the text looks like a link but 'Open link' is greyed out.",
+    "missing": [
+      "assumed: the reporter's WYSIWYG/markdown-off editor mode is not present in the default editor, so the URI is typed into the standard memo editor and saved",
+      "assumed: pasting was replaced by typing since the browser agent may not have clipboard access",
+      "assumed: the URI `obsidian://open?vault=test` was used since the report only gives scheme examples like `obsidian://`",
+      "Which editor/UI exposes the WYSIWYG mode and the 'link' button with 'Open link'?",
+      "Is the issue visible in rendered memo view or only in the editor?"
+    ],
+    "confidence": 0.3,
+    "summary": "Custom-scheme URIs like obsidian:// are not rendered as clickable links in memos",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:18090/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6530]\n---\n\n# Custom URI links are not clickable\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:18090/.\nStay on localhost:18090 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor to start writing a new memo\n2. Type the text `obsidian://open?vault=test` into the memo editor\n3. Save the memo\n4. Look at the saved memo content\nThe reporter says the correct behavior is that The custom URI `obsidian://open?vault=test` is shown as a clickable link in the memo. Verify that The custom URI `obsidian://open?vault=test` is shown as a clickable link in the memo.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:53:16.700368511Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The memo saved successfully, but the custom URI is displayed as ordinary text rather than a clickable link.",
+        "stuck_at": null,
+        "root_cause": "The memo display does not turn the supported custom URI into a link after it is saved.",
+        "suggested_fix": "Update memo rendering to recognize the obsidian custom URI scheme and show this saved URI as a clickable link.",
+        "severity": "minor",
+        "confidence": 0.93
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"The custom URI `obsidian://open?vault=test` is shown as a clickable link in the memo.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo display does not turn the supported custom URI into a link after it is saved.\nUpdate memo rendering to recognize the obsidian custom URI scheme and show this saved URI as a clickable link.\nevidence: objective_contradiction: The custom URI `obsidian://open?vault=test` is shown as a clickable link in the memo.",
+        "credits": 29.270192499999997,
+        "duration_s": 110.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78RJM6TTRYGNTPQC6AC42XK/dashboard/share/US_UX5UJWXM2TO3UOUQ2265MVECEUBKFYWW7Q6E3P1TDI9HB6K5NRLG2ORMPAXBQJIO?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Custom URI is saved as plain text instead of a clickable link",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              822.0,
+              507.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              822.0,
+              575.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              821.0,
+              618.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Skipping onboarding by clicking the Skip button",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              776.0,
+              784.0,
+              27.0,
+              28.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking New memo in the sidebar",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              216.0,
+              13.0,
+              26.0,
+              26.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Typing a new memo in the editor",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              601.0,
+              89.0,
+              718.0,
+              898.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking Save button in the memo dialog",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              1279.0,
+              1003.0,
+              31.0,
+              28.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "The custom URI `obsidian://open?vault=test` is shown as a clickable link in the",
+            "status": "failed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:18090/memos.api.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The memo display does not turn the supported custom URI into a link after it is saved.",
+        "suggested_fix": "Update memo rendering to recognize the obsidian custom URI scheme and show this saved URI as a clickable link.",
+        "severity": "minor",
+        "bug_confidence": 0.93
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

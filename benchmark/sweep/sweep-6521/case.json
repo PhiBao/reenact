@@ -1,0 +1,77 @@
+{
+  "id": "sweep-6521",
+  "created_at": "2026-11-12T20:55:34.333314090Z",
+  "report": {
+    "title": "WIP: A way to reflect on notes",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### What problem would this solve?\n\nI have been loving memos lately, i use it for brainstorming, writing notes everything, however there is just one problem:\n\nIts hard to reflect on the notes i created. like i got a cool new thought, i capture it in memos, but after that? it gets buried in the gallery of notes.\n\n### What would you like to happen?\n\nThere must be a form of feature that lets a user reflect on the notes they created recently, or a lot of time ago.\nBecause often these \"cool thoughts\" i get, don't get thought about ever again and it misses the entire point of me writing down a thought at all.\n\n### Additional context\n\nOne way i could think of maybe: Have a button in the toolbar when writing the note that lets us set a reminder. and have a page for reviewing these reminded notes, so i can come back to those notes later on.",
+    "source_url": "https://github.com/usememos/memos/issues/6521",
+    "repo": "usememos/memos",
+    "number": 6521
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": false,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [],
+    "expected": "",
+    "reported_actual": "Notes created in Memos get buried in the list of notes and there is no way to reflect on or revisit them later.",
+    "missing": [
+      "This is a feature request, not a bug: there is no existing behavior to reproduce",
+      "What exact behavior should the reminder or review feature have (notification, review page, schedule)?",
+      "assumed: the reporter's suggested reminder button and review page do not exist in the current version"
+    ],
+    "confidence": 0.02,
+    "summary": "Feature request: reminders and a review page to revisit past memos",
+    "signed_in": true
+  },
+  "test_md": null,
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "intake",
+      "started_at": "2026-11-12T20:55:34.333320686Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "This does not look like something visible in a desktop browser UI.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": false,
+        "status": "not_run",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 0.0,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

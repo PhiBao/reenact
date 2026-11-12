@@ -159,7 +159,7 @@ async fn put_benchmark(State(s): State<AppState>, headers: HeaderMap, body: Byte
         return StatusCode::UNAUTHORIZED.into_response();
     }
     match serde_json::from_slice::<serde_json::Value>(&body) {
-        Ok(v) if v.is_array() => {
+        Ok(v) if v.is_array() || v.get("sets").is_some_and(|s| s.is_array()) => {
             if let Some(p) = s.benchmark_file.parent() {
                 let _ = std::fs::create_dir_all(p);
             }
@@ -168,7 +168,11 @@ async fn put_benchmark(State(s): State<AppState>, headers: HeaderMap, body: Byte
                 Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
             }
         }
-        _ => (StatusCode::BAD_REQUEST, "expected a JSON array").into_response(),
+        _ => (
+            StatusCode::BAD_REQUEST,
+            "expected a JSON array or {\"sets\": [...]}",
+        )
+            .into_response(),
     }
 }
 

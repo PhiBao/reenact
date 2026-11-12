@@ -35,10 +35,385 @@
     "signed_in": true
   },
   "test_md": "---\nmode: testing\nurl: http://localhost:16206/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5194]\n---\n\n# Selecting a layout doesn't update the selection or layout until the page is refreshed\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16206/.\nStay on localhost:16206 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the layout selector\n2. Select the Masonry layout\nThe reporter says the correct behavior is that After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page. Verify that After selecting Masonry, the layout selector shows Masonry as the selected layout and the memo list is displayed in the masonry layout without refreshing the page.\n",
-  "runs": [],
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:22:40.269914530Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "The layout-selector trigger remains closed after the single permitted click, so Masonry cannot be selected.",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The layout-selector trigger remains closed after the single permitted click, so Masonry cannot be selected.",
+        "reason_code": "assertion_error.step_not_achievable",
+        "summary": "The automation mistook other unlabeled icon buttons for the layout selector. The annotated evidence shows clicks on the search-field settings/filter icon and the upper-left icon, while the layout selector did not open.\nUpdate the automation to use a stable locator for the actual layout-selector control and verify that its menu appears before attempting to choose Masonry.",
+        "credits": 29.4174025,
+        "duration_s": 115.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78PTJT409AAMTFGZTR81CB6/dashboard/share/US_72A5Q50K2PV4CEYRP45M5EQ7Z6Z8JPS6Y5IVZX80T4P6HBL7H1KXFWCY3LR0STUY?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Layout selector target was misidentified",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16206/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16206/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "",
+            "label": "Clicking Open the layout selector",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              315.0,
+              32.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Open the layout selector",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "",
+            "label": "Waiting after opening the layout selector",
+            "status": "failed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "The automation mistook other unlabeled icon buttons for the layout selector. The annotated evidence shows clicks on the search-field settings/filter icon and the upper-left icon, while the layout selector did not open.",
+        "suggested_fix": "Update the automation to use a stable locator for the actual layout-selector control and verify that its menu appears before attempting to choose Masonry.",
+        "severity": "minor",
+        "bug_confidence": 0.93
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:25:02.934213400Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The layout selector was clicked, but it did not open and no Masonry choice was available.",
+        "stuck_at": null,
+        "root_cause": "The layout-selector control did not respond to the requested user action, so Masonry could not be selected or verified.",
+        "suggested_fix": "Fix the layout-selector control so one click opens its choices, including Masonry, and confirm that selecting it updates the list without a page refresh.",
+        "severity": "major",
+        "confidence": 0.91
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The layout selector click had no effect and no Masonry option is present; retrying would violate the constraint.",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The layout-selector control did not respond to the requested user action, so Masonry could not be selected or verified.\nFix the layout-selector control so one click opens its choices, including Masonry, and confirm that selecting it updates the list without a page refresh.\nevidence: objective_contradiction: The layout selector click had no effect and no Masonry option is present; retrying would violate the constraint.",
+        "credits": 23.707877500000002,
+        "duration_s": 116.0,
+        "share_url": null,
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Layout selector does not open Masonry options",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16206/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16206/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16206/",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "",
+            "label": "Clicking Open the layout selector",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": "frames/retry-frame-10-annotated.png",
+            "rect": [
+              315.0,
+              32.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Open the layout selector",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16206/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "",
+            "label": "Waiting after the layout selector click",
+            "status": "failed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": null,
+            "url": "http://localhost:16206/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "The layout-selector control did not respond to the requested user action, so Masonry could not be selected or verified.",
+        "suggested_fix": "Fix the layout-selector control so one click opens its choices, including Masonry, and confirm that selecting it updates the list without a page refresh.",
+        "severity": "major",
+        "bug_confidence": 0.91
+      }
+    }
+  ],
   "fixes": [],
   "pr_url": null,
-  "state": "reenacting",
+  "state": "reproduced",
   "fix_agent": null,
   "fix_diff": null,
   "reference_diff": null

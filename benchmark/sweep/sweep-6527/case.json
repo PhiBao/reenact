@@ -1,0 +1,77 @@
+{
+  "id": "sweep-6527",
+  "created_at": "2026-11-12T20:55:30.470211791Z",
+  "report": {
+    "title": "Add a \"reblur\" and move the \"unblur\" button to a more fixed position",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### What problem would this solve?\n\n1. After using the note that are blurred, they are visible to everyone. \n2. In a long note, to unblur the content, one has to scroll down to ublur.\n\n### What would you like to happen?\n\n1. Add a \"blur\" button potentially on the memos' top right icon to reblur to unblurred content. \npotentially somewhere here:\n<img width=\"240\" height=\"238\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/bfd7a7e7-eacf-4af0-a2e1-27b9aee80ed3\" />\n\n2. In a long note, to unblur the content, one has to scroll down to ublur. Potentially move the \"click to show sensitive content\" button to a fixed position closer to the top, so that it's not determined by how long the memos are. \n\n<img width=\"781\" height=\"830\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/4f50fa87-d58f-48d4-aa7c-81c43ab77b19\" />\n\n### Additional context\n\nAt the moment, I use this JS script for the whole memos instance as a workaround, but need to be improve, the button obscure the existing button.\n```\nconst sensitiveTags = [\"#secret\", \"#sensitive\"];\n\nfunction blurIfSensitive(article) {\n  if (article.dataset.blurChecked) return;\n  article.dataset.blurChecked = \"true\";\n\n  setTimeout(() => {\n    const text = article.innerText.toLowerCase();\n    const isSensitive = sensitiveTags.some(tag => text.includes(tag));\n\n    if (isSensitive) {\n      // Apply blur\n      Object.assign(article.style, {\n        filter: \"blur(8px)\",\n        userSelect: \"none\",\n        transition: \"filter 0.3s ease\",\n        cursor: \"pointer\",\n        position: \"relative\",\n      });\n\n      // Create re-blur button (hidden initially)\n      const reBlurBtn = document.createElement(\"button\");\n      reBlurBtn.innerText = \"🔒 Blur again\";\n      Object.assign(reBlurBtn.style, {\n        position: \"absolute\",\n        top: \"8px\",\n        right: \"8px\",\n        zIndex: \"999\",\n        display: \"none\",\n        padding: \"2px 8px\",\n        fontSize: \"11px\",\n        borderRadius: \"6px\",\n        border: \"1px solid #ccc\",\n        background: \"#fff\",\n        cursor: \"pointer\",\n        opacity: \"0.85\",\n      });\n      article.appendChild(reBlurBtn);\n\n      // Click article to unblur\n      article.addEventListener(\"click\", (e) => {\n        if (e.target === reBlurBtn) return; // let button handle its own click\n        if (article.style.filter !== \"none\") {\n          article.style.filter = \"none\";\n          article.style.userSelect = \"auto\";\n          article.style.cursor = \"default\";\n          reBlurBtn.style.display = \"block\";\n        }\n      });\n\n      // Click button to re-blur\n      reBlurBtn.addEventListener(\"click\", (e) => {\n        e.stopPropagation();\n        article.style.filter = \"blur(8px)\";\n        article.style.userSelect = \"none\";\n        article.style.cursor = \"pointer\";\n        reBlurBtn.style.display = \"none\";\n      });\n    }\n  }, 300);\n}\n\nconst main = document.getElementsByTagName(\"main\")[0];\nArray.from(main.getElementsByTagName(\"article\")).forEach(blurIfSensitive);\n\nconst observer = new MutationObserver(mutations => {\n  mutations.forEach(mutation => {\n    mutation.addedNodes.forEach(node => {\n      if (node.nodeType !== Node.ELEMENT_NODE) return;\n      if (node.tagName === \"ARTICLE\") blurIfSensitive(node);\n      node.querySelectorAll(\"article\").forEach(blurIfSensitive);\n    });\n  });\n});\n\nobserver.observe(main, { childList: true, subtree: true });\n\n```",
+    "source_url": "https://github.com/usememos/memos/issues/6527",
+    "repo": "usememos/memos",
+    "number": 6527
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": false,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [],
+    "expected": "",
+    "reported_actual": "Once a sensitive memo has been unblurred it cannot be blurred again, and in a long memo the 'click to show sensitive content' button sits at the bottom, so the user has to scroll down to reach it.",
+    "missing": [
+      "This is a feature request, not a bug report, so there is no defect to reproduce.",
+      "How is a memo marked sensitive in this version of Memos (which tag or setting)? The report does not say.",
+      "Where exactly should the re-blur button and the relocated unblur button go? The screenshots are the only description of the intended placement."
+    ],
+    "confidence": 0.1,
+    "summary": "Feature request: add a re-blur button and move the unblur control for sensitive memos",
+    "signed_in": true
+  },
+  "test_md": null,
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "intake",
+      "started_at": "2026-11-12T20:55:30.470225328Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "This does not look like something visible in a desktop browser UI.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": false,
+        "status": "not_run",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 0.0,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

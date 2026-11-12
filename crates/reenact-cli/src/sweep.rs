@@ -21,7 +21,7 @@ pub struct SweepArgs {
     /// owner/repo whose open issues are triaged.
     #[arg(long)]
     repo: String,
-    /// Only issues with this label.
+    /// Only issues with this label. Empty means every open issue (projects that do not label bugs).
     #[arg(long, default_value = "bug")]
     label: String,
     /// How many issues to try, newest first.
@@ -57,8 +57,13 @@ fn open_issues(a: &SweepArgs) -> Result<Vec<Report>> {
         .args([
             "api",
             &format!(
-                "repos/{}/issues?state=open&labels={}&per_page=100&sort=created&direction=desc",
-                a.repo, a.label
+                "repos/{}/issues?state=open&per_page=100&sort=created&direction=desc{}",
+                a.repo,
+                if a.label.is_empty() {
+                    String::new()
+                } else {
+                    format!("&labels={}", a.label)
+                }
             ),
         ])
         .output()
@@ -163,8 +168,8 @@ pub async fn run(a: SweepArgs) -> Result<()> {
         .clone()
         .unwrap_or_else(|| "the instance under test".into());
     let mut md = format!(
-        "# Open `{label}` issues of {repo}, triaged on {version}\n\nRead-only: nothing was posted to the project. Each row is one Kane run (two if the first did not reproduce).\n\n| Issue | Verdict | What Kane saw |\n|---|---|---|\n",
-        label = a.label,
+        "# Open {label}issues of {repo}, triaged on {version}\n\nRead-only: nothing was posted to the project. Each row is one Kane run (two if the first did not reproduce).\n\n| Issue | Verdict | What Kane saw |\n|---|---|---|\n",
+        label = if a.label.is_empty() { String::new() } else { format!("`{}` ", a.label) },
         repo = a.repo
     );
     for r in &rows {

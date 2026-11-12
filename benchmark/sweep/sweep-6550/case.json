@@ -1,0 +1,507 @@
+{
+  "id": "sweep-6550",
+  "created_at": "2026-11-12T20:53:00.920955586Z",
+  "report": {
+    "title": "Numbered lists >10 overflow to the next line",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### Describe the bug\n\nDue to the fixed pixel value for mbe-indent-size, the numbered list marker becomes too large when the number is more than a single digit. This results in the list appearing broken.\n\nExpected: The width of the span containing the marker is scaled with the item number.\n\n### Steps to reproduce\n\n[Post on demo instance.](https://demo.usememos.com/memos/oTkdPies2SrkHyhHffyiT6)\n\n### Memos version\n\nv26.11.0\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6550",
+    "repo": "usememos/memos",
+    "number": 6550
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click the memo editor on the home page to focus it",
+      "Type a numbered list with at least 10 items, one per line: '1. one', '2. two', '3. three', '4. four', '5. five', '6. six', '7. seven', '8. eight', '9. nine', '10. ten', '11. eleven'",
+      "Click the Save button to post the memo",
+      "Look at the rendered numbered list in the posted memo, specifically items 10 and 11"
+    ],
+    "expected": "In the rendered memo, the numbered list items 10 and 11 each show their number marker and their text on the same line, and the list does not look broken",
+    "reported_actual": "When list numbers have more than one digit, the marker becomes too wide because of the fixed pixel indent size, so it overflows and the item text wraps to the next line, making the list look broken",
+    "missing": [
+      "The report only links to a demo memo and gives no steps; the exact list content is unknown",
+      "assumed: a numbered list with 11 items reproduces the issue, since the title says more than 10",
+      "assumed: the item text is short filler text such as 'one', 'two', etc.",
+      "assumed: the multi-line content can be entered in the editor with line breaks between items"
+    ],
+    "confidence": 0.5,
+    "summary": "Numbered list markers with multiple digits overflow and break the list layout in rendered memos",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:18090/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-6550]\n---\n\n# Numbered lists >10 overflow to the next line\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:18090/.\nStay on localhost:18090 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor on the home page to focus it\n2. Type a numbered list with at least 10 items, one per line: '1. one', '2. two', '3. three', '4. four', '5. five', '6. six', '7. seven', '8. eight', '9. nine', '10. ten', '11. eleven'\n3. Click the Save button to post the memo\n4. Look at the rendered numbered list in the posted memo, specifically items 10 and 11\nThe reporter says the correct behavior is that In the rendered memo, the numbered list items 10 and 11 each show their number marker and their text on the same line, and the list does not look broken. Verify that In the rendered memo, the numbered list items 10 and 11 each show their number marker and their text on the same line, and the list does not look broken.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:53:00.921213090Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and posted a memo on the local home page containing an 11-item numbered list, from “1. one” through “11. eleven.”\nConfirmed that the posted list displayed correctly: items 10 and 11 kept their number and text on the same line, and the list did not appear broken.",
+        "credits": 30.5262675,
+        "duration_s": 148.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78RJ5KBTR4FJHHQDBP6C2RQ/dashboard/share/US_E2T7JRK3N5L97AYYU9Z21DUYY267ASL82GBGV1WJX3CMHJ78U5OCYG64TOOD5DCT?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              822.0,
+              507.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              822.0,
+              575.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking the Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              821.0,
+              618.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Skip in the onboarding dialog",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              776.0,
+              784.0,
+              27.0,
+              28.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking the memo editor on the home page to focus it",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              769.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "type",
+            "label": "Typing a numbered list in the main composer textbox",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              769.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking the Save button to post the memo",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              1367.0,
+              317.0,
+              31.0,
+              28.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "analyze",
+            "label": "In the rendered memo, the numbered list does not look broken.",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "assert",
+            "label": "In the rendered memo, the numbered list items 10 and 11 each show their number m",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:18090/memos.api.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:55:58.058660466Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a memo on the localhost home page containing numbered items 1 through 11.\nChecked the posted memo: items 10 and 11 each displayed their number and text on the same line.\nThe rendered numbered list appeared intact and not broken.",
+        "credits": 30.787170000000003,
+        "duration_s": 237.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78RJ5KBTR4FJHHQDBP6C2RQ/dashboard/share/US_J5MXJWMNRP5G8I9JLGJLCB3LT1SQU8KGMELPMV1AM4H2ZG570Y1FHKT7ZTIQ9SZD?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              822.0,
+              507.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              822.0,
+              575.0,
+              276.0,
+              22.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              821.0,
+              618.0,
+              278.0,
+              32.0
+            ],
+            "url": "http://localhost:18090/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:18090/",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking the memo editor on the home page to focus it",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              769.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing into the numbered list text box",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              769.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the Save button to post the memo",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": "frames/retry-frame-13-annotated.png",
+            "rect": [
+              1367.0,
+              317.0,
+              31.0,
+              28.0
+            ],
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "In the rendered memo, the numbered list does not look broken.",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "assert",
+            "label": "In the rendered memo, the numbered list items 10 and 11 each show their number m",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:18090/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:18090/memos.api.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

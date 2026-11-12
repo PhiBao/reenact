@@ -1,0 +1,639 @@
+{
+  "id": "c-cf20fd27",
+  "created_at": "2026-11-12T20:39:24.769944744Z",
+  "report": {
+    "title": "Change the translation message of calendar title immediately when change language",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nDemo site (demo.usememos.com)\n\n### Memos Version\n\nv0.26.0\n\n### Bug Description\n\nLook the title \"February 2026\" of calendar:\n\n![Image](https://github.com/user-attachments/assets/efb417b7-70ce-44d6-bcaa-b36698e720f2)\n\nWhen we change the language, other translation message changed immediately, but the title not changed, just need refresh the webpage.\n\nhttps://github.com/user-attachments/assets/ac210ff7-c6df-4353-8774-70efb11586b9\n\n### Steps to Reproduce\n\nJust visit the bug video.\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5578",
+    "repo": null,
+    "number": 5578
+  },
+  "app_url": "http://localhost:16209",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the home page shows a calendar with a month and year title such as 'February 2026'"
+    ],
+    "steps": [
+      "Open the home page and note the calendar title (month and year) in the sidebar",
+      "Open the Settings page (My Account / Preferences)",
+      "Find the language selector in the preferences",
+      "Select a different language from the language selector, such as Chinese or another non-English language",
+      "Return to the home page and look at the calendar title"
+    ],
+    "expected": "The calendar title month and year text is displayed in the newly selected language immediately, without refreshing the page.",
+    "reported_actual": "After changing the language, other UI text changes immediately but the calendar title (e.g. 'February 2026') stays in the old language until the page is refreshed.",
+    "missing": [
+      "Exact steps and which language was selected (the report only points to a video)",
+      "Where the language setting was changed (settings page or a language dropdown elsewhere)",
+      "Whether the calendar title is visible while changing the language or only after navigating back",
+      "assumed: language is changed via the language selector in Settings preferences",
+      "assumed: the calendar is on the home page sidebar",
+      "assumed: the target language is any non-English language"
+    ],
+    "confidence": 0.5,
+    "summary": "Calendar month/year title does not update to the new language until page refresh",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:16209/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5578]\n---\n\n# Change the translation message of calendar title immediately when change language\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:16209/.\nStay on localhost:16209 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the home page and note the calendar title (month and year) in the sidebar\n2. Open the Settings page (My Account / Preferences)\n3. Find the language selector in the preferences\n4. Select a different language from the language selector, such as Chinese or another non-English language\n5. Return to the home page and look at the calendar title\nThe reporter says the correct behavior is that The calendar title month and year text is displayed in the newly selected language immediately, without refreshing the page. Verify that The calendar title month and year text is displayed in the newly selected language immediately, without refreshing the page.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T20:39:24.770247994Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Checked the calendar title on the home page, then opened account preferences to change the app language.\nSelected and saved Simplified Chinese as the language preference.\nReturned to the home page and confirmed the calendar title updated immediately to “2026年11月” in Simplified Chinese.",
+        "credits": 41.5093075,
+        "duration_s": 154.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78QS7WEHQW77FD16JXTQDK3/dashboard/share/US_4XR54UFH9BS0Q97A7XKNOZNSA5D6BC5VXBJSQCZ2O0ZTL4YIT9XFE5SIXOQS5OM6?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16209/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16209/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "calendar title month and year in the sidebar",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking My Account Preferences in the top-right header",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              19.0,
+              1040.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking Settings in the account menu",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              29.0,
+              973.0,
+              117.0,
+              20.0
+            ],
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking Preferences in the settings sidebar to find the language selector",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              533.0,
+              103.0,
+              118.0,
+              32.0
+            ],
+            "url": "http://localhost:16209/setting"
+          },
+          {
+            "ordinal": 15,
+            "kind": "wait",
+            "label": "language selector in the preferences",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking the Language selector in Basic preferences",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              1355.0,
+              82.0,
+              98.0,
+              22.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 17,
+            "kind": "scroll",
+            "label": "Scrolling near the bottom to find the language selector options",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Selecting Chinese from the language selector",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              1359.0,
+              1011.0,
+              134.0,
+              20.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 19,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 20,
+            "kind": "click",
+            "label": "Clicking the home link to return to the home page and view the calendar title",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": "frames/frame-20-annotated.png",
+            "rect": [
+              21.0,
+              81.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 21,
+            "kind": "wait",
+            "label": "Return to the home page and look at the calendar title",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "assert",
+            "label": "The calendar title month and year text is displayed in {{selected_language}} imm",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T20:42:24.131221382Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "The requested language-change check was completed on the local calendar app.\nOpened account preferences and changed the language selector to 日本語 (Japanese).\nReturned to the home page and confirmed that the calendar title immediately displayed the year and month in Japanese format, without a page refresh.",
+        "credits": 32.51092,
+        "duration_s": 144.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78QS7WEHQW77FD16JXTQDK3/dashboard/share/US_Z26379ART0M774AGLSQ3OLCNR6NY76HC7CNWZ3V6QH93VDOXISB66SE7SQE0LRKO?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16209/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:16209/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:16209/",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking the Settings page in the left sidebar",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              19.0,
+              1040.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking 设置 in the account menu in the lower left sidebar",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              29.0,
+              973.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking 偏好设置 in the settings sidebar",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": "frames/retry-frame-13-annotated.png",
+            "rect": [
+              533.0,
+              103.0,
+              62.0,
+              32.0
+            ],
+            "url": "http://localhost:16209/setting"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking the language selector in preferences",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": [
+              1372.0,
+              82.0,
+              81.0,
+              22.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Selecting a different language from the language selector, such as Japanese",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": "frames/retry-frame-15-annotated.png",
+            "rect": [
+              1376.0,
+              511.0,
+              134.0,
+              20.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 16,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Clicking the home page link to view the calendar title",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": "frames/retry-frame-17-annotated.png",
+            "rect": [
+              21.0,
+              81.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:16209/setting#preference"
+          },
+          {
+            "ordinal": 18,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "assert",
+            "label": "The calendar title month and year text is displayed in {{selected_language}} imm",
+            "status": "passed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:16209/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

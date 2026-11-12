@@ -10,6 +10,8 @@ NAME=memos-reenact-$PORT
 docker rm -f "$NAME" >/dev/null 2>&1
 docker run -d --name "$NAME" -p "$PORT:5230" "ghcr.io/usememos/memos:$TAG" >/dev/null || exit 1
 for _ in $(seq 1 90); do curl -fs -o /dev/null "http://localhost:$PORT/" && break; sleep 1; done
-# 0.26+ takes a flat body; 0.25.x needs the nested one.
-curl -s -X POST "http://localhost:$PORT/api/v1/users" -H 'content-type: application/json' \
-  -d '{"username":"admin","password":"Passw0rd!"}' >/dev/null
+# 0.26 to 0.31 take a flat body on /api/v1/users; 26.x moved REST to /api/users.
+for path in api/v1/users api/users; do
+  curl -s -X POST "http://localhost:$PORT/$path" -H 'content-type: application/json' \
+    -d '{"username":"admin","password":"Passw0rd!"}' >/dev/null
+done

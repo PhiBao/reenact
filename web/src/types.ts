@@ -98,6 +98,7 @@ export interface BenchSide {
   duration_s: number;
   case_id: string;
   correct: boolean;
+  first_run?: string;
 }
 
 export interface BenchRow {
@@ -116,3 +117,10 @@ export const VERDICT_LABEL: Record<VerdictKind, string> = {
   needs_info: 'Needs info',
   inconclusive: 'Inconclusive',
 };
+
+export interface BenchSet {
+  id: string;
+  title: string;
+  note: string;
+  rows: BenchRow[];
+}

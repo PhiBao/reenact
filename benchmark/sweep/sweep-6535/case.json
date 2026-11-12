@@ -1,0 +1,77 @@
+{
+  "id": "sweep-6535",
+  "created_at": "2026-11-12T20:53:11.530030059Z",
+  "report": {
+    "title": "Year and month navigation in calendar page",
+    "body": "### Check before submitting\n\n- [x] I searched existing issues and did not find a duplicate\n\n### What problem would this solve?\n\nI fill Memos with data scattered over the years. It's hard to switch between years and months using the built-in switch.\n\n\n\n\n### What would you like to happen?\n\n<img width=\"1159\" height=\"145\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/bd7f9a8d-2243-4d9e-a00f-496711c389a4\" />\n\nFor the convenience of filling in the calendar display, it will be good to arrange the output of years and months in a row - there is enough empty space for easy navigation.\nThese may be the years for which records exist. And use labels (dots) for months which contain entries.\n\n### Additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/6535",
+    "repo": "usememos/memos",
+    "number": 6535
+  },
+  "app_url": "http://localhost:18090",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": false,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [],
+    "expected": "",
+    "reported_actual": "Switching between years and months in the calendar is hard when memos are scattered over many years.",
+    "missing": [
+      "This is a feature request (a new year/month navigation layout), not a bug with observable incorrect behavior",
+      "Which exact page or component is the 'calendar page'?",
+      "What is the current behavior the reporter considers inconvenient, beyond the attached screenshot?"
+    ],
+    "confidence": 0.05,
+    "summary": "Feature request: easier year/month navigation in the calendar with dots for months that have entries",
+    "signed_in": true
+  },
+  "test_md": null,
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "intake",
+      "started_at": "2026-11-12T20:53:11.530037997Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "This does not look like something visible in a desktop browser UI.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": null,
+        "timed_out": false,
+        "status": "not_run",
+        "reason": null,
+        "reason_code": null,
+        "summary": null,
+        "credits": 0.0,
+        "duration_s": 0.0,
+        "share_url": null,
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [],
+        "strip_file": null,
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info",
+  "fix_agent": null,
+  "fix_diff": null,
+  "reference_diff": null
+}

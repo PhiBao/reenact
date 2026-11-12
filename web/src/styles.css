@@ -165,3 +165,9 @@ td { padding: 14px 12px 14px 0; border-bottom: 1px solid var(--rule); vertical-a
 .reference { margin: 14px 0 0; max-width: var(--measure); color: var(--green); font-weight: 500; }
 .feed-src { display: block; font: 11px var(--mono); color: var(--graphite); margin-top: 2px; }
 @media (max-width: 880px) { .diffs { grid-template-columns: 1fr; } }
+
+/* ---------- benchmark tabs ---------- */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 8px; }
+.tabs button { font: 500 12px var(--mono); letter-spacing: 0.04em; padding: 8px 12px; border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+.tabs button.on, .tabs button:hover { background: var(--ink); color: var(--paper); }
+.bench-note { max-width: 70ch; margin: 8px 0 0; }
