@@ -1,0 +1,294 @@
+{
+  "id": "c-5d244f67",
+  "created_at": "2026-11-12T15:33:32.354455494Z",
+  "report": {
+    "title": "标签与内容之间有多个空格时，只保留了一个空格",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nDemo site (demo.usememos.com)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\n标签与内容之间有多个空格时，只保留了一个空格\n\n### Steps to Reproduce\n\n1. 输入，发布\n```\n#tag content\n```\n2. 输入，标签与内容之间有多个空格，发布\n```\n#tag                        content\n```\n渲染结果多个空格消失了，不符合预期: \n<img width=\"803\" height=\"175\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/6ef7e025-c169-4d86-b718-81a86c6f7b64\" />\n\n### Expected Behavior\n\n期望输入与实际渲染一致\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5382",
+    "repo": null,
+    "number": 5382
+  },
+  "app_url": "http://localhost:15326",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the memo editor is available on the home page",
+      "no memos exist yet on the fresh install"
+    ],
+    "steps": [
+      "Click the memo editor input box on the home page",
+      "Type \"#tag content\" (one space between the tag and the word)",
+      "Click the Save/Publish button to publish the memo",
+      "Click the memo editor input box again",
+      "Type \"#tag\" followed by 24 space characters and then \"content\"",
+      "Click the Save/Publish button to publish the memo",
+      "Look at how the second published memo is rendered in the memo list, comparing the gap between \"#tag\" and \"content\" with the first memo"
+    ],
+    "expected": "In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than in the first memo, so the multiple spaces typed are preserved.",
+    "reported_actual": "The multiple spaces between the tag and the content are collapsed into a single space in the rendered memo, so it looks the same as the single-space memo.",
+    "missing": [
+      "assumed: the number of spaces in the reporter's second example is 24",
+      "assumed: the reporter used the default memo editor on the home page and the memo was visible in the memo list after publishing",
+      "Does the rendered memo keep the extra spaces after re-opening it in edit mode (is it only a rendering issue)?",
+      "Does the same collapsing happen between plain words, or only after a tag?"
+    ],
+    "confidence": 0.55,
+    "summary": "Multiple spaces between a #tag and following text render as a single space in the memo",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15326/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5382]\n---\n\n# 标签与内容之间有多个空格时，只保留了一个空格\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15326/.\nStay on localhost:15326 for the whole run and do not open any other website.\nDo these in order:\n1. Click the memo editor input box on the home page\n2. Type \"#tag content\" (one space between the tag and the word)\n3. Click the Save/Publish button to publish the memo\n4. Click the memo editor input box again\n5. Type \"#tag\" followed by 24 space characters and then \"content\"\n6. Click the Save/Publish button to publish the memo\n7. Look at how the second published memo is rendered in the memo list, comparing the gap between \"#tag\" and \"content\" with the first memo\nThe reporter says the correct behavior is that In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than in the first memo, so the multiple spaces typed are preserved. Verify that In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than in the first memo, so the multiple spaces typed are preserved.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:33:32.354706906Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The second memo was entered with a much wider gap after #tag, but its published version shows the same single-space gap as the first memo.",
+        "stuck_at": null,
+        "root_cause": "The memo list changes a run of spaces into one normal space when it displays a saved memo, so the formatting the user entered is lost.",
+        "suggested_fix": "Preserve consecutive spaces when saved memo text is rendered in the memo list, then add a check that compares a one-space memo with a memo containing many spaces.",
+        "severity": "major",
+        "confidence": 0.96
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than in the first memo, so the multiple spaces typed are preserved.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo list changes a run of spaces into one normal space when it displays a saved memo, so the formatting the user entered is lost.\nPreserve consecutive spaces when saved memo text is rendered in the memo list, then add a check that compares a one-space memo with a memo containing many spaces.\nevidence: objective_contradiction: Final verification failed: \"In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than i",
+        "credits": 33.9497625,
+        "duration_s": 131.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78695XN03B9KJW6TP7FH9K1/dashboard/share/US_S6OV3XDY90MQNEP8VJ43W73KKT0XVJG52NZKT1WLPRE2ZCPBLZTPE9UP11R1ZZV3?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Published memos collapse consecutive spaces",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15326/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15326/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15326/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"#tag content\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Typing #tag in the memo editor input box",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking Save button in memo composer",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "assert",
+            "label": "In the second published memo, \"content\" appears after \"#tag\" with a visibly wide",
+            "status": "failed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15326/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to initialize user store: /memos.api.v1.AuthService/GetCurrentSession UNAUTHENTICATED: user not found"
+          ],
+          "failed_requests": []
+        },
+        "root_cause": "The memo list changes a run of spaces into one normal space when it displays a saved memo, so the formatting the user entered is lost.",
+        "suggested_fix": "Preserve consecutive spaces when saved memo text is rendered in the memo list, then add a check that compares a one-space memo with a memo containing many spaces.",
+        "severity": "major",
+        "bug_confidence": 0.96
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

@@ -1,0 +1,414 @@
+{
+  "id": "c-6c1ef01c",
+  "created_at": "2026-11-12T15:27:46.871179476Z",
+  "report": {
+    "title": "Checkbox state interference between todo lists separated by horizontal rules",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nWhen creating multiple todo lists separated by horizontal rules (`---`), checking/unchecking items in one list incorrectly affects the state of items in the other list. The checkbox interaction seems to have index conflicts across separated sections.\n\n### Steps to Reproduce\n\nCreate a new memo with the following content:\n\n```markdown\n## test todo checkbox\n\n- [ ] todo 1-1\n- [ ] todo 1-2\n\n---\n\n- [ ] todo 2-1\n- [ ] todo 2-2\n```\nSave the memo\nClick on the checkbox of \"todo 1-2\" to mark it as completed\nObserve the state of items in the second list (after the ---)\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5635",
+    "repo": null,
+    "number": 5635
+  },
+  "app_url": "http://localhost:15330",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click on the memo editor input on the home page",
+      "Type the line '## test todo checkbox' and press Enter twice",
+      "Type '- [ ] todo 1-1' and press Enter",
+      "Type '- [ ] todo 1-2'",
+      "Press Enter twice to leave the list, then type '---'",
+      "Press Enter twice, then type '- [ ] todo 2-1'",
+      "Press Enter and type '- [ ] todo 2-2'",
+      "Click the Save button to save the memo",
+      "Click the checkbox next to 'todo 1-2' in the saved memo to mark it completed",
+      "Look at the checkboxes next to 'todo 2-1' and 'todo 2-2' in the second list"
+    ],
+    "expected": "After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked",
+    "reported_actual": "Checking an item in the first list incorrectly affects the checkbox state of items in the second list (after the ---)",
+    "missing": [
+      "What exactly happens to the second list (which items change state)? The report does not say",
+      "What is the expected behavior? The report left it empty",
+      "assumed: expected behavior is that only the clicked checkbox changes and the other list is unaffected",
+      "assumed: the editor's list auto-continuation may insert '- [ ] ' automatically on Enter; the content should end up matching the markdown in the report exactly"
+    ],
+    "confidence": 0.7,
+    "summary": "Checking a todo in one list affects checkboxes in another list separated by a horizontal rule",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15330/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5635]\n---\n\n# Checkbox state interference between todo lists separated by horizontal rules\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15330/.\nStay on localhost:15330 for the whole run and do not open any other website.\nDo these in order:\n1. Click on the memo editor input on the home page\n2. Type the line '## test todo checkbox' and press Enter twice\n3. Type '- [ ] todo 1-1' and press Enter\n4. Type '- [ ] todo 1-2'\n5. Press Enter twice to leave the list, then type '---'\n6. Press Enter twice, then type '- [ ] todo 2-1'\n7. Press Enter and type '- [ ] todo 2-2'\n8. Click the Save button to save the memo\n9. Click the checkbox next to 'todo 1-2' in the saved memo to mark it completed\n10. Look at the checkboxes next to 'todo 2-1' and 'todo 2-2' in the second list\nThe reporter says the correct behavior is that After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked. Verify that After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:27:46.871429204Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a memo titled \"test todo checkbox\" with two checkbox lists separated by a horizontal rule.\nMarked \"todo 1-2\" as completed in the saved memo.\nConfirmed that only \"todo 1-2\" was checked; \"todo 1-1\", \"todo 2-1\", and \"todo 2-2\" remained unchecked.",
+        "credits": 39.269235,
+        "duration_s": 169.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M785YMCPK2S4ZW5T69S6NWDJ/dashboard/share/US_X5906Y7CZ5NQD7WFGSMM03QNL7Q61R5NFJXRT3LF605CDUL4RDE8ABFQBNZBI3YH?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing in memo editor input",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "press_key",
+            "label": "press the Enter key",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "press_key",
+            "label": "press the Enter key",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "queued plan (8 steps): type \"Any thoughts...\"; press_key \"Any thoughts...\"; type",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              72.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-2\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "type",
+            "label": "Type \"---\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "type",
+            "label": "Typing in the memo editor input field",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": "frames/frame-22-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              72.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "click",
+            "label": "Clicking Save button",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": "frames/frame-23-annotated.png",
+            "rect": [
+              1408.0,
+              277.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 24,
+            "kind": "click",
+            "label": "Clicking checkbox next to todo 1-2 in the saved memo",
+            "status": "passed",
+            "file": "frames/frame-24.jpg",
+            "annotated_file": "frames/frame-24-annotated.png",
+            "rect": [
+              818.0,
+              267.0,
+              14.0,
+              14.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 25,
+            "kind": "analyze",
+            "label": "'todo 1-2' appears checked.",
+            "status": "passed",
+            "file": "frames/frame-25.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 26,
+            "kind": "assert",
+            "label": "After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-",
+            "status": "passed",
+            "file": "frames/frame-26.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 27,
+            "kind": "",
+            "label": "Waiting observe the checkboxes next to 'todo 2-1' and 'todo 2-2' in the second list",
+            "status": "passed",
+            "file": "frames/frame-27.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

@@ -1,0 +1,434 @@
+[
+  {
+    "id": "checkbox-after-codeblock",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5319",
+    "title": "Wrong checkbox checked when it's preceded by checkbox in a codeblock",
+    "plan_steps": 7,
+    "plan_expected": "The code block still shows '-[ ] foo' unchanged, and the checkbox next to 'bar' is shown as checked.",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 41.698387499999995,
+      "duration_s": 143.0,
+      "case_id": "c-f9411672",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 27.1268925,
+      "duration_s": 138.0,
+      "case_id": "c-26da7b97",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "comment-delete-no-refresh",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5640",
+    "title": "Comment reactions and comment deletion don’t update the UI until page refresh",
+    "plan_steps": 11,
+    "plan_expected": "After selecting a reaction, the reaction appears on the comment immediately without a page refresh; after confirming deletion, the comment \"Test comment\" is no longer visible in the comments list without a page refresh.",
+    "buggy": {
+      "tag": "0.26.1",
+      "verdict": "Needs info",
+      "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+      "credits": 45.5515125,
+      "duration_s": 303.0,
+      "case_id": "c-8e6bf21c",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Reproduced",
+      "headline": "The comment has no reaction selector, so a reaction cannot be added or checked without refreshing the page.",
+      "credits": 56.094692499999994,
+      "duration_s": 238.0,
+      "case_id": "c-dabce90c",
+      "correct": false
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-hr-separated-todo-lists",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/5635",
+    "title": "Checkbox state interference between todo lists separated by horizontal rules",
+    "plan_steps": 10,
+    "plan_expected": "After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked",
+    "buggy": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 39.269235,
+      "duration_s": 169.0,
+      "case_id": "c-6c1ef01c",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 32.4473,
+      "duration_s": 161.0,
+      "case_id": "c-8c90ce2c",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-multiple-spaces-after-tag",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/5382",
+    "title": "标签与内容之间有多个空格时，只保留了一个空格",
+    "plan_steps": 7,
+    "plan_expected": "In the second published memo, \"content\" appears after \"#tag\" with a visibly wider gap than in the first memo, so the multiple spaces typed are preserved.",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Reproduced",
+      "headline": "The second memo was entered with a much wider gap after #tag, but its published version shows the same single-space gap as the first memo.",
+      "credits": 33.9497625,
+      "duration_s": 131.0,
+      "case_id": "c-5d244f67",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 34.141355000000004,
+      "duration_s": 133.0,
+      "case_id": "c-2d1363eb",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-object-object-sidebar",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/5368",
+    "title": "Memos Detail Sidebar renders values as [object Object]",
+    "plan_steps": 4,
+    "plan_expected": "the sidebar on the memo detail page shows the memo's dates as readable date/time text, and the text \"[object Object]\" does not appear anywhere in the sidebar",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 31.81427,
+      "duration_s": 193.0,
+      "case_id": "c-72cb830b",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 31.44216,
+      "duration_s": 143.0,
+      "case_id": "c-6d0df49c",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "ctrl-underscore-italics",
+    "kind": "control",
+    "issue_url": "https://github.com/usememos/memos/issues/4926",
+    "title": "Underscore character stripped out in memo, replaced with italics",
+    "plan_steps": 0,
+    "plan_expected": "",
+    "buggy": {
+      "tag": "0.25.0",
+      "verdict": "Needs info",
+      "headline": "The report has no concrete steps to carry out.",
+      "credits": 0.0,
+      "duration_s": 0.0,
+      "case_id": "c-7832e3fa",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.25.1",
+      "verdict": "Needs info",
+      "headline": "The report has no concrete steps to carry out.",
+      "credits": 0.0,
+      "duration_s": 0.0,
+      "case_id": "c-304ba74a",
+      "correct": false
+    },
+    "error": null
+  },
+  {
+    "id": "currency-parsed-as-math",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/6325",
+    "title": "Using dollar sign causes improper formatting",
+    "plan_steps": 4,
+    "plan_expected": "the rendered memo shows the text exactly as typed: \"with the local markets... $22 for the smallest bit of rice and fried chicken.\" with the dollar amount and ellipsis displayed as plain text and no broken or math-style formatting",
+    "buggy": {
+      "tag": "0.30.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 28.3609225,
+      "duration_s": 186.0,
+      "case_id": "c-0f1b2af0",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.31.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 24.8195175,
+      "duration_s": 93.0,
+      "case_id": "c-7c11d805",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "default-visibility-resets",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5622",
+    "title": "Visibility selection in the submission form becomes \"Private\" after the post",
+    "plan_steps": 7,
+    "plan_expected": "after the memo is saved, the visibility selector in the memo editor still shows 'Public' (the selected default), not 'Private'",
+    "buggy": {
+      "tag": "0.26.1",
+      "verdict": "Reproduced",
+      "headline": "Saving a memo resets the editor visibility from the selected Public default to Private.",
+      "credits": 39.329415,
+      "duration_s": 223.0,
+      "case_id": "c-9d71f53f",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 39.83432749999999,
+      "duration_s": 290.0,
+      "case_id": "c-7960bb21",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "login-theme-language-stuck",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5440",
+    "title": "Bug: Login screen Theme and Language settings stuck (v0.25.3)",
+    "plan_steps": 4,
+    "plan_expected": "After selecting a different language, the Sign In page text is displayed in that language, and after clicking the theme toggle the page switches between light and dark appearance immediately.",
+    "buggy": {
+      "tag": "0.25.3",
+      "verdict": "Reproduced",
+      "headline": "Choosing Spanish, German, or a keyboard-confirmed language closes the menu but leaves the Sign In page in English.",
+      "credits": 36.26097,
+      "duration_s": 262.0,
+      "case_id": "c-020d0469",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 18.814605,
+      "duration_s": 48.0,
+      "case_id": "c-a653fea1",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "memo-detail-stale-after-edit",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5659",
+    "title": "Memo detail page not refresh after editing and saving the content",
+    "plan_steps": 7,
+    "plan_expected": "After saving, the memo detail page shows the new text 'edited content' and no longer shows 'original content', without a browser refresh.",
+    "buggy": {
+      "tag": "0.26.2",
+      "verdict": "Reproduced",
+      "headline": "Saving a memo after changing its content returns to the detail page with the original text instead of the edited text.",
+      "credits": 69.17178500000001,
+      "duration_s": 7042.0,
+      "case_id": "c-b8c075bd",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.27.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 41.107645000000005,
+      "duration_s": 194.0,
+      "case_id": "c-0f57eb28",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "nested-checklist-levels",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5575",
+    "title": "The nested checklist cannot display levels correctly",
+    "plan_steps": 8,
+    "plan_expected": "The rendered memo shows the checklist items nested by level: task1.1 and task1.2 are indented under task1, task 1.1.1 is indented further under task1.1, and task2 is at the top level.",
+    "buggy": {
+      "tag": "0.26.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 36.15002,
+      "duration_s": 174.0,
+      "case_id": "c-fca9c1e0",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 38.256094999999995,
+      "duration_s": 242.0,
+      "case_id": "c-4c1047f2",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "search-case-cyrillic",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5559",
+    "title": "Search is not case-idependent in non-EN locale",
+    "plan_steps": 6,
+    "plan_expected": "the memo containing \"Блины\" is shown in the search results when searching for lowercase \"блины\"",
+    "buggy": {
+      "tag": "0.26.0",
+      "verdict": "Reproduced",
+      "headline": "Searching for lowercase “блины” does not find the saved memo containing “Блины”.",
+      "credits": 27.0512325,
+      "duration_s": 96.0,
+      "case_id": "c-bddecfbd",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 33.498565,
+      "duration_s": 185.0,
+      "case_id": "c-329ade64",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "search-filter-persists-shortcut",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5462",
+    "title": "Search filter persists after clicking Shortcuts even when search box is empty",
+    "plan_steps": 10,
+    "plan_expected": "After clicking the \"Bananas\" shortcut, the search box is empty and the memo list shows the \"banana bread\" memo (only the shortcut filter applies, so the earlier \"apple\" search no longer hides it).",
+    "buggy": {
+      "tag": "0.26.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 66.7169475,
+      "duration_s": 298.0,
+      "case_id": "c-3e891d1d",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.27.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 41.434415,
+      "duration_s": 203.0,
+      "case_id": "c-09e66e8d",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "shortcut-edit-opens-create",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5576",
+    "title": "Click shortcut edit button is not pop a edit dialog",
+    "plan_steps": 6,
+    "plan_expected": "after choosing Edit, a dialog titled for editing a shortcut (not creating one) is visible, showing the existing shortcut's title and filter",
+    "buggy": {
+      "tag": "0.26.0",
+      "verdict": "Inconclusive",
+      "headline": "The browser run hit the time limit before it reached a result.",
+      "credits": 6.46238,
+      "duration_s": 0.0,
+      "case_id": "c-662968c9",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.26.1",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 51.70160399999999,
+      "duration_s": 341.0,
+      "case_id": "c-be3ef31f",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "tag-with-ampersand",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/5620",
+    "title": "Tags with & in them are now broken (won't display correctly) and can no longher be created",
+    "plan_steps": 4,
+    "plan_expected": "the saved memo shows the entire string \"#science&tech\" as a single tag, rather than only \"#science\" as a tag followed by plain text \"&tech\"",
+    "buggy": {
+      "tag": "0.26.1",
+      "verdict": "Reproduced",
+      "headline": "A memo containing #science&tech is saved with only #science treated as a tag and &tech left as ordinary text.",
+      "credits": 29.198610000000002,
+      "duration_s": 185.0,
+      "case_id": "c-69cd2878",
+      "correct": true
+    },
+    "fixed": {
+      "tag": "0.26.2",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 26.0494025,
+      "duration_s": 138.0,
+      "case_id": "c-e4667588",
+      "correct": true
+    },
+    "error": null
+  },
+  {
+    "id": "tel-sms-links",
+    "kind": "bug",
+    "issue_url": "https://github.com/usememos/memos/issues/6340",
+    "title": "tel: and sms: URI schemes not supported in links.",
+    "plan_steps": 4,
+    "plan_expected": "the rendered memo shows the text 'phone me' as a clickable link (styled as a hyperlink) that opens a dialer/tel prompt when clicked, rather than as plain unlinked text",
+    "buggy": {
+      "tag": "0.30.0",
+      "verdict": "Needs info",
+      "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+      "credits": 30.0812225,
+      "duration_s": 191.0,
+      "case_id": "c-3865d639",
+      "correct": false
+    },
+    "fixed": {
+      "tag": "0.31.0",
+      "verdict": "Not reproduced",
+      "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+      "credits": 29.1817275,
+      "duration_s": 188.0,
+      "case_id": "c-e7b3bdb1",
+      "correct": true
+    },
+    "error": null
+  }
+]

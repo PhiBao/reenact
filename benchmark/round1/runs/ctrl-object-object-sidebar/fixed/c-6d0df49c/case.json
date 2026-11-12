@@ -1,0 +1,270 @@
+{
+  "id": "c-6d0df49c",
+  "created_at": "2026-11-12T15:31:24.185738534Z",
+  "report": {
+    "title": "Memos Detail Sidebar renders values as [object Object]",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nDemo site (demo.usememos.com)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nOpening the Memo Detail page shows the sidebar with data and tag information, the dates however are rendered as `[object Object]`\n\n<img width=\"488\" height=\"342\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/47a2027a-8845-4039-8833-7877f166c954\" />\n\nThe alt text on the posted time (the one under the username, e.g. `2 minutes ago`) does however show a date, so some time information seems to exist.\n\nFurthermore the protobuf message yielded from the `GetMemo` API endpoint does not seem to contain any datetime information:\n\n`ChxtZW1vcy9SdmlweXdnTDVGUmVtR0xQVzVjQWVmEAEaB3VzZXJzLzEiBgjLh5vKBioGCLaQm8oGMgYItpCbygY6MGRvIHRhZ3MgbmVzdD8KI3Jvb3QvY2hpbGQvbGVhZiAjcm9vdC9icmFuY2gvaXRlbUgBUg9yb290L2NoaWxkL2xlYWZSEHJvb3QvYnJhbmNoL2l0ZW1qZQoyChxtZW1vcy9lVjNUejNmQlA3dmlqUHBrVk1uNW15EhJsb29rcyBsaWtlIHRoZXkgZG8SLQocbWVtb3MvUnZpcHl3Z0w1RlJlbUdMUFc1Y0FlZhINZG8gdGFncyBuZXN0PxgCegCKAQ1kbyB0YWdzIG5lc3Q/`\n\n### Steps to Reproduce\n\n1. Post a Memo\n2. Open the Memo detail view\n3. Observe the sidebar widget\n\n### Expected Behavior\n\nI expected the time information in the Memo Detail Sidebar to be rendered properly\n\n### Screenshots & Additional Context\n\n- Browser: Firefox\n- OS: Linux\n\n<img width=\"1543\" height=\"778\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/022631e9-bcce-47e6-ab19-5d0daa6f4b30\" />",
+    "source_url": "https://github.com/usememos/memos/issues/5368",
+    "repo": null,
+    "number": 5368
+  },
+  "app_url": "http://localhost:15329",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the signed-in user has no memos yet"
+    ],
+    "steps": [
+      "Type \"do tags nest?\" into the memo editor on the home page",
+      "Click the Save button to post the memo",
+      "Click the newly posted memo's timestamp (or open the memo) to open its detail page",
+      "Look at the detail sidebar on the memo detail page"
+    ],
+    "expected": "the sidebar on the memo detail page shows the memo's dates as readable date/time text, and the text \"[object Object]\" does not appear anywhere in the sidebar",
+    "reported_actual": "The dates in the Memo Detail sidebar are rendered as the literal text [object Object], while the hover/alt text on the posted time under the username shows a date",
+    "missing": [
+      "assumed: memo content is arbitrary since the report says only 'Post a Memo'; used the text 'do tags nest?' visible in the pasted API payload",
+      "assumed: the sidebar is the one shown on the memo detail page at a desktop width; narrower widths may hide it",
+      "Which exact sidebar labels show [object Object] (created, updated, etc.) is not stated in text, only in a screenshot",
+      "Is the bug reproducible on versions other than v0.25.3?"
+    ],
+    "confidence": 0.6,
+    "summary": "Memo detail sidebar shows dates as [object Object] instead of formatted date/time",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15329/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5368]\n---\n\n# Memos Detail Sidebar renders values as [object Object]\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15329/.\nStay on localhost:15329 for the whole run and do not open any other website.\nDo these in order:\n1. Type \"do tags nest?\" into the memo editor on the home page\n2. Click the Save button to post the memo\n3. Click the newly posted memo's timestamp (or open the memo) to open its detail page\n4. Look at the detail sidebar on the memo detail page\nThe reporter says the correct behavior is that the sidebar on the memo detail page shows the memo's dates as readable date/time text, and the text \"[object Object]\" does not appear anywhere in the sidebar. Verify that the sidebar on the memo detail page shows the memo's dates as readable date/time text, and the text \"[object Object]\" does not appear anywhere in the sidebar.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:31:24.186023411Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Entered the memo “do tags nest?” on the home page and saved it.\nOpened the newly posted memo’s detail page.\nChecked the detail sidebar: its dates were shown as readable date/time text, and “[object Object]” was not displayed.",
+        "credits": 31.44216,
+        "duration_s": 143.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M78658FQJQSDKAQP5D0AZFG2/dashboard/share/US_MS9MUT31A7VMKTXTZ462TQZKBOO57XHN55PV27XOH4QP3W0E2CJXD0IZKOQAV0DG?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15329/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15329/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15329/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing do tags nest? into the memo editor",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Save to save the memo",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Opening the newly posted memo details page",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              151.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15329/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "look at the detail sidebar on the memo detail page",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/memos/e7Ds95EB5pX97d9UNjF3ac"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/memos/e7Ds95EB5pX97d9UNjF3ac"
+          },
+          {
+            "ordinal": 15,
+            "kind": "assert",
+            "label": "the sidebar on the memo detail page shows the memo's dates as readable date/time",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15329/memos/e7Ds95EB5pX97d9UNjF3ac"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15329/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15329/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

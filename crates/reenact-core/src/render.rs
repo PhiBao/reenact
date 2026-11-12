@@ -49,7 +49,10 @@ pub fn render_test_md(cfg: &Config, report: &Report, plan: &Plan, tag: &str) -> 
     ));
     // Preconditions are deliberately NOT rendered: Kane turns them into checkpoints
     // that run before the steps that create the state, and fail the run.
-    out.push_str("Do these in order:\n");
+    out.push_str(
+        "Do each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\n",
+    );
+    out.push_str("Steps:\n");
     for (i, s) in plan.steps.iter().enumerate() {
         out.push_str(&format!("{}. {}\n", i + 1, no_md_structure(s)));
     }
