@@ -1,0 +1,708 @@
+{
+  "id": "c-cc924ea3",
+  "created_at": "2026-11-12T16:00:45.762363780Z",
+  "report": {
+    "title": "Comment reactions and comment deletion don’t update the UI until page refresh",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\n- Demo site (demo.usememos.com)\n- Self-hosted instance\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nOn the memo detail page, comment-related actions (adding/removing a reaction on a comment, or deleting a comment) succeed on the server but the UI does not update until the page is refreshed.\nThe comments list and individual comment cards are driven by a React Query cache that is not invalidated when these actions run, so the client shows stale data.\n\n### Steps to Reproduce\n\n1. Open a memo that has at least one comment (or add a comment).\n1. **Reaction:** On one of the comments, add a reaction (e.g. via the reaction selector in the comment header).\n    - **Observe:** The new reaction does not appear on the comment until you refresh the page.\n1. **Delete:** Open the action menu (⋮) on a comment and choose “Delete”, then confirm.\n    - **Observe:** The comment remains visible in the list until you refresh the page.\n\n### Expected Behavior\n\nAfter adding or removing a reaction on a comment, the comment’s reactions update immediately.\nAfter deleting a comment, the comment disappears from the list immediately.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5640",
+    "repo": null,
+    "number": 5640
+  },
+  "app_url": "http://localhost:15319",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo exists that has at least one comment"
+    ],
+    "steps": [
+      "Create a new memo with the text 'test memo' and save it",
+      "Open the newly created memo to view its detail page",
+      "In the comment box on the memo detail page, type 'test comment' and submit the comment",
+      "On the 'test comment' comment, open the reaction selector in the comment header",
+      "Choose a reaction (for example the first emoji shown) in the reaction selector",
+      "Observe the comment card without refreshing the page",
+      "Click the action menu (⋮) on the 'test comment' comment",
+      "Click 'Delete'",
+      "Confirm the deletion in the confirmation dialog"
+    ],
+    "expected": "After the deletion is confirmed, the 'test comment' comment is no longer visible in the comments list without refreshing the page (and after choosing a reaction, the chosen reaction is visible on the comment immediately).",
+    "reported_actual": "The new reaction does not appear on the comment, and a deleted comment remains visible in the list, until the page is refreshed.",
+    "missing": [
+      "assumed: no existing memo or comment exists on the fresh install, so a memo 'test memo' and comment 'test comment' are created",
+      "assumed: any emoji reaction is acceptable, since the reporter said 'e.g.'",
+      "Does removing an existing reaction also fail to update immediately?",
+      "Is the delete confirmation a dialog with a confirm button?"
+    ],
+    "confidence": 0.7,
+    "summary": "On memo detail page, comment reactions and deletions don't update UI until page refresh",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15319/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5640]\n---\n\n# Comment reactions and comment deletion don’t update the UI until page refresh\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15319/.\nStay on localhost:15319 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Create a new memo with the text 'test memo' and save it\n2. Open the newly created memo to view its detail page\n3. In the comment box on the memo detail page, type 'test comment' and submit the comment\n4. On the 'test comment' comment, open the reaction selector in the comment header\n5. Choose a reaction (for example the first emoji shown) in the reaction selector\n6. Observe the comment card without refreshing the page\n7. Click the action menu (⋮) on the 'test comment' comment\n8. Click 'Delete'\n9. Confirm the deletion in the confirmation dialog\nThe reporter says the correct behavior is that After the deletion is confirmed, the 'test comment' comment is no longer visible in the comments list without refreshing the page (and after choosing a reaction, the chosen reaction is visible on the comment immediately). Verify that After the deletion is confirmed, the 'test comment' comment is no longer visible in the comments list without refreshing the page (and after choosing a reaction, the chosen reaction is visible on the comment immediately).\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:00:45.762670881Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "The opened comment-header menu has no reaction selector or emoji choices, only Edit, Copy, and Delete.",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The opened comment-header menu has no reaction selector or emoji choices, only Edit, Copy, and Delete.",
+        "reason_code": "assertion_error.step_not_achievable",
+        "summary": "The agent selected the wrong control in the comment header. The opened menu was the separate action menu, which normally contains Edit, Copy, and Delete, rather than the reaction selector required by the test.\nUpdate the automation to distinguish the reaction selector from the ⋮ action menu, then run the prescribed flow once from a fresh memo.",
+        "credits": 34.79047249999999,
+        "duration_s": 181.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M787V0G20J33FN7QCKF7VX8J/dashboard/share/US_KE3WG706N0FPFG9NYXF86I8HD88FRANYR9XZO779PDIS67P6QIHPVJ4B0U1WDH0E?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Reaction-selector step opened the comment action menu",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15319/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Username\"; type \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": "frames/frame-05-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "wait",
+            "label": "wait for the memo app main page to finish loading",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the sign-in form is gone",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15319/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing test memo in the memo composer text box",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Save in the main memo composer",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking the newly created memo to open its detail page",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              143.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Submitting test comment in the memo comment box",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              795.0,
+              179.0,
+              152.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Typing test comment in the comment box",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              521.0,
+              168.0,
+              702.0,
+              24.0
+            ],
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking Save in the comment box",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1176.0,
+              208.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          },
+          {
+            "ordinal": 16,
+            "kind": "",
+            "label": "Clicking On the 'test comment' comment, open the reaction selector in the comment header",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              1207.0,
+              220.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "On the 'test comment' comment, open the reaction selector in the commen",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          },
+          {
+            "ordinal": 18,
+            "kind": "",
+            "label": "Waiting reaction selector on the test comment comment",
+            "status": "failed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/memos/ZsFDQfBtcZFrM8sm2d8FjL"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": "The agent selected the wrong control in the comment header. The opened menu was the separate action menu, which normally contains Edit, Copy, and Delete, rather than the reaction selector required by the test.",
+        "suggested_fix": "Update the automation to distinguish the reaction selector from the ⋮ action menu, then run the prescribed flow once from a fresh memo.",
+        "severity": "minor",
+        "bug_confidence": 0.94
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T16:04:14.713229442Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "The test comment’s reaction trigger is display:none with zero dimensions, so it cannot be opened through the visible UI.",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The test comment’s reaction trigger is display:none with zero dimensions, so it cannot be opened through the visible UI.",
+        "reason_code": "assertion_error.step_not_achievable",
+        "summary": "The automation repeatedly targeted a reaction control with no visible size. The supplied screenshots show the comment and its action menu, but no visible reaction selector to click, so the recorded target does not match the usable page control.\nUpdate the test to locate the current visible reaction entry point, including any required hover or action-menu step, and require that the target is visible and has usable dimensions before clicking it.",
+        "credits": 68.418825,
+        "duration_s": 383.0,
+        "share_url": null,
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Reaction-selector locator targets hidden element",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15319/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15319/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15319/",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"test memo\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": "frames/retry-frame-12-annotated.png",
+            "rect": [
+              817.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": "frames/retry-frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking the newly created memo to open its detail page",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": [
+              817.0,
+              143.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking Write a comment button",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": "frames/retry-frame-15-annotated.png",
+            "rect": [
+              795.0,
+              179.0,
+              152.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 16,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Add your comment here...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 17,
+            "kind": "type",
+            "label": "Type \"test comment\" into \"Add your comment here...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": "frames/retry-frame-17-annotated.png",
+            "rect": [
+              521.0,
+              168.0,
+              702.0,
+              24.0
+            ],
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": "frames/retry-frame-18-annotated.png",
+            "rect": [
+              1176.0,
+              208.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 19,
+            "kind": "",
+            "label": "Waiting after submitting the comment",
+            "status": "passed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 20,
+            "kind": "",
+            "label": "Clicking Open the reaction selector in the header of the 'test comment' comment",
+            "status": "passed",
+            "file": "frames/retry-frame-20.jpg",
+            "annotated_file": "frames/retry-frame-20-annotated.png",
+            "rect": [
+              1207.0,
+              220.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 21,
+            "kind": "click",
+            "label": "Open the reaction selector in the header of the 'test comment' comment",
+            "status": "passed",
+            "file": "frames/retry-frame-21.jpg",
+            "annotated_file": "frames/retry-frame-21-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 22,
+            "kind": "press_key",
+            "label": "press the Escape key",
+            "status": "passed",
+            "file": "frames/retry-frame-22.jpg",
+            "annotated_file": "frames/retry-frame-22-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 23,
+            "kind": "",
+            "label": "Clicking Open the reaction selector in the header of the 'test comment' comment",
+            "status": "passed",
+            "file": "frames/retry-frame-23.jpg",
+            "annotated_file": "frames/retry-frame-23-annotated.png",
+            "rect": [
+              561.0,
+              230.0,
+              79.0,
+              15.0
+            ],
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 24,
+            "kind": "click",
+            "label": "Open the reaction selector in the header of the 'test comment' comment",
+            "status": "passed",
+            "file": "frames/retry-frame-24.jpg",
+            "annotated_file": "frames/retry-frame-24-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ"
+          },
+          {
+            "ordinal": 25,
+            "kind": "click",
+            "label": "open the test memo",
+            "status": "passed",
+            "file": "frames/retry-frame-25.jpg",
+            "annotated_file": "frames/retry-frame-25-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/u/admin"
+          },
+          {
+            "ordinal": 26,
+            "kind": "press_key",
+            "label": "press the Enter key",
+            "status": "passed",
+            "file": "frames/retry-frame-26.jpg",
+            "annotated_file": "frames/retry-frame-26-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 27,
+            "kind": "click",
+            "label": "Clicking open the test memo comments",
+            "status": "passed",
+            "file": "frames/retry-frame-27.jpg",
+            "annotated_file": "frames/retry-frame-27-annotated.png",
+            "rect": [
+              1401.0,
+              143.0,
+              25.0,
+              16.0
+            ],
+            "url": "http://localhost:15319/"
+          },
+          {
+            "ordinal": 28,
+            "kind": "click",
+            "label": "Open the reaction selector in the header of the 'test comment' comment",
+            "status": "passed",
+            "file": "frames/retry-frame-28.jpg",
+            "annotated_file": "frames/retry-frame-28-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ#comments"
+          },
+          {
+            "ordinal": 29,
+            "kind": "",
+            "label": "Waiting after checking the reaction selector",
+            "status": "failed",
+            "file": "frames/retry-frame-29.jpg",
+            "annotated_file": "frames/retry-frame-29-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15319/memos/jtC3vQccDDcHaz5MJFGWoJ#comments"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": "The automation repeatedly targeted a reaction control with no visible size. The supplied screenshots show the comment and its action menu, but no visible reaction selector to click, so the recorded target does not match the usable page control.",
+        "suggested_fix": "Update the test to locate the current visible reaction entry point, including any required hover or action-menu step, and require that the target is visible and has usable dimensions before clicking it.",
+        "severity": "minor",
+        "bug_confidence": 0.91
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "needs_info"
+}

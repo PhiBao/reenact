@@ -1,0 +1,354 @@
+{
+  "id": "c-8563d798",
+  "created_at": "2026-11-12T15:55:28.909728143Z",
+  "report": {
+    "title": "Visibility selection in the submission form becomes \"Private\" after the post",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nWhen `Default memo visibility` preference is not `Private` (`Protected` or `Public`), Visibility selection in the submission form becomes `Private` after submission.\n\n### Steps to Reproduce\n\n1. Set `Default memo visibility` to `Protected` or `Public`\n1. Access to the top page. Visibility in the submission form is set to the specified default setting.\n1. Write some memo and post it (click the `Save` button or Ctrl+Enter)\n1. The memo is posted with specified visibility (no problem).\n1. However, **Visibility in the form suddenly becomes `Private` after the post.**\n1. Reload the page and the Visibility is returned to the specified default setting.\n\n### Expected Behavior\n\nThe Visibility settings in the form should retain its selected value.\n\n### Screenshots & Additional Context\n\n![Image](https://github.com/user-attachments/assets/5aa6fe12-ac3d-4d42-ad9c-72df0abb7c1b)\n\n- Browser: Google Chrome | 144.0.7559.133 (Official Build) (64-bit) (cohort: Stable)\n- OS: Microsoft Windows [Version 10.0.26200.7705]\n- Environment: Docker and the Demo site",
+    "source_url": "https://github.com/usememos/memos/issues/5622",
+    "repo": null,
+    "number": 5622
+  },
+  "app_url": "http://localhost:15316",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "the Default memo visibility preference is not Private (Protected or Public)"
+    ],
+    "steps": [
+      "Open the Settings page",
+      "In the preferences settings, set 'Default memo visibility' to 'Public'",
+      "Open the top page (/)",
+      "Observe that the Visibility selector in the memo editor shows 'Public'",
+      "Click the memo editor text area",
+      "Type 'test memo'",
+      "Click the 'Save' button",
+      "Observe the Visibility selector in the memo editor after the memo is posted"
+    ],
+    "expected": "After the memo is saved, the Visibility selector in the memo editor still shows 'Public' (the chosen default) and not 'Private'",
+    "reported_actual": "After posting a memo, the Visibility selector in the form switches to 'Private'; the memo itself is posted with the correct visibility. Reloading the page restores the default visibility.",
+    "missing": [
+      "assumed: 'Public' was chosen for the default visibility (the report allows Protected or Public)",
+      "assumed: the memo content 'test memo' since the reporter said 'some memo'",
+      "assumed: the Default memo visibility setting is found in the Settings page under preferences",
+      "assumed: posting via the Save button rather than Ctrl+Enter"
+    ],
+    "confidence": 0.8,
+    "summary": "Editor visibility selector resets to Private after saving a memo when default is Protected/Public",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15316/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5622]\n---\n\n# Visibility selection in the submission form becomes \"Private\" after the post\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15316/.\nStay on localhost:15316 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Open the Settings page\n2. In the preferences settings, set 'Default memo visibility' to 'Public'\n3. Open the top page (/)\n4. Observe that the Visibility selector in the memo editor shows 'Public'\n5. Click the memo editor text area\n6. Type 'test memo'\n7. Click the 'Save' button\n8. Observe the Visibility selector in the memo editor after the memo is posted\nThe reporter says the correct behavior is that After the memo is saved, the Visibility selector in the memo editor still shows 'Public' (the chosen default) and not 'Private'. Verify that After the memo is saved, the Visibility selector in the memo editor still shows 'Public' (the chosen default) and not 'Private'.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:55:28.910036709Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "After a user sets the default memo visibility to Public, saving a memo resets the editor’s visibility selector to Private.",
+        "stuck_at": null,
+        "root_cause": "The saved preference is applied when the memo editor first opens, but the editor is reset to Private after the memo is posted instead of using the chosen default.",
+        "suggested_fix": "Update the post-save editor reset behavior so it reloads the user’s Default memo visibility setting and keeps Public selected when Public is the saved default.",
+        "severity": "major",
+        "confidence": 0.98
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"After the memo is saved, the Visibility selector in the memo editor still shows 'Public' (the chosen default) and not 'Private'.\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The saved preference is applied when the memo editor first opens, but the editor is reset to Private after the memo is posted instead of using the chosen default.\nUpdate the post-save editor reset behavior so it reloads the user’s Default memo visibility setting and keeps Public selected when Public is the saved default.\nevidence: objective_contradiction: click: Selecting Public for Default memo visibility in preferences\nevidence: objective_contradiction: Final verification failed: \"After the memo is saved, the Visibility selector in the memo editor still shows 'Public' (th",
+        "credits": 35.6333475,
+        "duration_s": 222.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M787HB5P4G8MA86ET671XB1A/dashboard/share/US_7YIAHAFPBRE6JEWGKUDWBEBVYAA55655EB37H39NTS2E32748B2XXSRJMVZ0J0K1?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Memo editor resets visibility to Private after saving",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15316/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in the sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15316/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15316/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking Settings in the left navigation sidebar",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              19.0,
+              1040.0,
+              24.0,
+              24.0
+            ],
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking Settings in the account menu in the lower-left sidebar",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              29.0,
+              973.0,
+              117.0,
+              20.0
+            ],
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking Preferences in the settings sidebar",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              533.0,
+              103.0,
+              118.0,
+              32.0
+            ],
+            "url": "http://localhost:15316/setting"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking Default memo visibility to switch it to Public",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              1357.0,
+              239.0,
+              96.0,
+              22.0
+            ],
+            "url": "http://localhost:15316/setting#preference"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Selecting Public for Default memo visibility in preferences",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1361.0,
+              345.0,
+              78.0,
+              20.0
+            ],
+            "url": "http://localhost:15316/setting#preference"
+          },
+          {
+            "ordinal": 16,
+            "kind": "navigate",
+            "label": "Open the top page (/)",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/setting#preference"
+          },
+          {
+            "ordinal": 17,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"test memo\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "assert",
+            "label": "After the memo is saved, the Visibility selector in the memo editor still shows",
+            "status": "failed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15316/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15316/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15316/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The saved preference is applied when the memo editor first opens, but the editor is reset to Private after the memo is posted instead of using the chosen default.",
+        "suggested_fix": "Update the post-save editor reset behavior so it reloads the user’s Default memo visibility setting and keeps Public selected when Public is the saved default.",
+        "severity": "major",
+        "bug_confidence": 0.98
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

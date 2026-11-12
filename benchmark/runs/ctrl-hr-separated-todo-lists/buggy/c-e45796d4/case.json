@@ -1,0 +1,592 @@
+{
+  "id": "c-e45796d4",
+  "created_at": "2026-11-12T16:11:46.635315762Z",
+  "report": {
+    "title": "Checkbox state interference between todo lists separated by horizontal rules",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.26.1\n\n### Bug Description\n\nWhen creating multiple todo lists separated by horizontal rules (`---`), checking/unchecking items in one list incorrectly affects the state of items in the other list. The checkbox interaction seems to have index conflicts across separated sections.\n\n### Steps to Reproduce\n\nCreate a new memo with the following content:\n\n```markdown\n## test todo checkbox\n\n- [ ] todo 1-1\n- [ ] todo 1-2\n\n---\n\n- [ ] todo 2-1\n- [ ] todo 2-2\n```\nSave the memo\nClick on the checkbox of \"todo 1-2\" to mark it as completed\nObserve the state of items in the second list (after the ---)\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5635",
+    "repo": null,
+    "number": 5635
+  },
+  "app_url": "http://localhost:15330",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click on the memo editor input on the home page",
+      "Type the line '## test todo checkbox' and press Enter twice",
+      "Type '- [ ] todo 1-1' and press Enter",
+      "Type '- [ ] todo 1-2' and press Enter twice",
+      "Type '---' and press Enter twice",
+      "Type '- [ ] todo 2-1' and press Enter",
+      "Type '- [ ] todo 2-2'",
+      "Click the Save button to save the memo",
+      "Click the checkbox next to 'todo 1-2' in the saved memo to mark it as completed",
+      "Observe the checkboxes next to 'todo 2-1' and 'todo 2-2' in the second list after the horizontal rule"
+    ],
+    "expected": "After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked.",
+    "reported_actual": "Checking an item in the first list incorrectly changes the checked state of items in the second list (after the ---).",
+    "missing": [
+      "What exactly happens to the second list (which items get checked or unchecked)?",
+      "What is the expected behavior according to the reporter? (not stated)",
+      "assumed: the expected behavior is that only the clicked item changes state",
+      "assumed: the editor does not auto-continue list markers in a way that alters the typed content; if it does, the list prefix should not be typed again",
+      "assumed: '---' on its own line with blank lines around it renders as a horizontal rule"
+    ],
+    "confidence": 0.6,
+    "summary": "Checking a todo in one list changes items in another list separated by a horizontal rule",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15330/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5635]\n---\n\n# Checkbox state interference between todo lists separated by horizontal rules\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15330/.\nStay on localhost:15330 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click on the memo editor input on the home page\n2. Type the line '## test todo checkbox' and press Enter twice\n3. Type '- [ ] todo 1-1' and press Enter\n4. Type '- [ ] todo 1-2' and press Enter twice\n5. Type '---' and press Enter twice\n6. Type '- [ ] todo 2-1' and press Enter\n7. Type '- [ ] todo 2-2'\n8. Click the Save button to save the memo\n9. Click the checkbox next to 'todo 1-2' in the saved memo to mark it as completed\n10. Observe the checkboxes next to 'todo 2-1' and 'todo 2-2' in the second list after the horizontal rule\nThe reporter says the correct behavior is that After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked. Verify that After checking 'todo 1-2', only 'todo 1-2' appears checked; 'todo 1-1', 'todo 2-1' and 'todo 2-2' all remain unchecked.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:11:46.635569853Z",
+      "verdict": {
+        "kind": "needs_info",
+        "headline": "Kane saw a mismatch at the final check but judged it a problem with the steps or the expectation, not the app. The report may be missing detail.",
+        "stuck_at": "Each required type cleared prior lines, so the requested memo cannot be completed without retrying or repairing.",
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Each required type cleared prior lines, so the requested memo cannot be completed without retrying or repairing.",
+        "reason_code": "assertion_error.step_not_achievable",
+        "summary": "The run used separate type actions on the same editor after pressing Enter. Those actions replaced what was already in the editor instead of sending text at the current cursor position. The expected memo was therefore never created, and the checkbox behavior could not be checked.\nUpdate the automation to append keystrokes to the focused editor, or enter the full memo in one type action with the required line breaks, before evaluating checkbox behavior.",
+        "credits": 24.4459655,
+        "duration_s": 129.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M788F5RBNBN30YDDAX56S8N6/dashboard/share/US_AFIPIAQJ3Y8BORK2BLLU3I1CG9PNWHCEA5TY61Y8VS4RMFRLBNI0HC5ZJ91P0X9M?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": false,
+        "bug_family": "automation_bug",
+        "bug_title": "Memo entry action overwrites existing editor contents",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (8 steps): type \"Any thoughts...\"; press_key \"Any thoughts...\"; pres",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"## test todo checkbox\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              72.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-2\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "",
+            "label": "Waiting after memo editor behavior prevented the requested memo entry",
+            "status": "failed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The run used separate type actions on the same editor after pressing Enter. Those actions replaced what was already in the editor instead of sending text at the current cursor position. The expected memo was therefore never created, and the checkbox behavior could not be checked.",
+        "suggested_fix": "Update the automation to append keystrokes to the focused editor, or enter the full memo in one type action with the required line breaks, before evaluating checkbox behavior.",
+        "severity": "major",
+        "bug_confidence": 0.9
+      }
+    },
+    {
+      "kind": "reenact",
+      "label": "reenact (retry)",
+      "started_at": "2026-11-12T16:14:21.973094277Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "Entering the next requested line removed earlier memo content, so the required memo could not be created.",
+        "stuck_at": null,
+        "root_cause": "The memo editor discarded text that had already been entered when the next line was typed.",
+        "suggested_fix": "Fix the editor so typing after Enter appends a new line without removing text already entered.",
+        "severity": "major",
+        "confidence": 0.91
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "The editor retained only the last typed line, so the requested memo content cannot be completed without repair.",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo editor discarded text that had already been entered when the next line was typed.\nFix the editor so typing after Enter appends a new line without removing text already entered.\nevidence: objective_contradiction: The editor retained only the last typed line, so the requested memo content cannot be completed without repair.",
+        "credits": 24.625846,
+        "duration_s": 100.0,
+        "share_url": null,
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Memo editor replaces earlier lines during sequential entry",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/auth",
+            "status": "passed",
+            "file": "frames/retry-frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/retry-frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/retry-frame-03.jpg",
+            "annotated_file": "frames/retry-frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/retry-frame-04.jpg",
+            "annotated_file": "frames/retry-frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/retry-frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/retry-frame-06.jpg",
+            "annotated_file": "frames/retry-frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15330/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the sign-in form is gone",
+            "status": "passed",
+            "file": "frames/retry-frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/retry-frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15330/",
+            "status": "passed",
+            "file": "frames/retry-frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "wait",
+            "label": "queued plan (8 steps): type \"Any thoughts...\"; press_key \"Any thoughts...\"; pres",
+            "status": "passed",
+            "file": "frames/retry-frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Type \"## test todo checkbox\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-11.jpg",
+            "annotated_file": "frames/retry-frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/retry-frame-12.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/retry-frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-1\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-14.jpg",
+            "annotated_file": "frames/retry-frame-14-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              72.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/retry-frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "type",
+            "label": "Type \"- [ ] todo 1-2\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/retry-frame-16.jpg",
+            "annotated_file": "frames/retry-frame-16-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              48.0
+            ],
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/retry-frame-17.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "press_key",
+            "label": "Press Enter",
+            "status": "passed",
+            "file": "frames/retry-frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "",
+            "label": "Waiting after memo editor input behavior",
+            "status": "failed",
+            "file": "frames/retry-frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15330/"
+          }
+        ],
+        "strip_file": "retry-strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15330/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The memo editor discarded text that had already been entered when the next line was typed.",
+        "suggested_fix": "Fix the editor so typing after Enter appends a new line without removing text already entered.",
+        "severity": "major",
+        "bug_confidence": 0.91
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

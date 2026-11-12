@@ -1,0 +1,462 @@
+{
+  "id": "c-d7381365",
+  "created_at": "2026-11-12T16:02:55.879990056Z",
+  "report": {
+    "title": "Search filter persists after clicking Shortcuts even when search box is empty",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nLatest stable version (self-hosted)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\nThis issue can confuse users because after selecting a Shortcut, one would normally expect the previous search criteria to reset if the search input is empty. However, the old filter still influences results, creating misleading or unintended results.\n\n### Steps to Reproduce\n\n\n1. Go to the Memos application and perform a search using a keyword in the search box.\n2. Click on one of the Shortcuts items.\n3. Although the search box becomes empty after selecting the shortcut, the previous search filter still remains active, affecting the results displayed.\n\n### Expected Behavior\n\nAfter clicking a Shortcut, the old keyword search filter should be cleared if the search box is empty, and only the shortcut filter should take effect.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5462",
+    "repo": null,
+    "number": 5462
+  },
+  "app_url": "http://localhost:15322",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo containing the word 'apple' exists",
+      "a memo containing the word 'banana' exists",
+      "a shortcut that matches memos containing 'banana' exists"
+    ],
+    "steps": [
+      "Click the memo editor on the home page and type 'apple pie'",
+      "Click the Save button to save the memo",
+      "Click the memo editor and type 'banana bread'",
+      "Click the Save button to save the memo",
+      "In the sidebar, click the '+' button next to Shortcuts",
+      "Type 'Banana' in the shortcut title field and type 'content.contains(\"banana\")' in the filter field",
+      "Click Save in the shortcut dialog",
+      "Click the search box and type 'apple'",
+      "Press Enter to run the search",
+      "Click the 'Banana' item under Shortcuts"
+    ],
+    "expected": "After clicking the 'Banana' shortcut, the search box is empty and the memo 'banana bread' is visible in the list, because only the shortcut filter applies",
+    "reported_actual": "After clicking a Shortcut the search box becomes empty, but the previous keyword search filter is still applied and affects the displayed results",
+    "missing": [
+      "Which keyword was searched and which shortcut (with what filter) was clicked?",
+      "What memos existed and what results were shown versus expected?",
+      "assumed: the reporter has existing memos and shortcuts; the test creates memos 'apple pie' and 'banana bread' and a shortcut 'Banana' with filter content.contains(\"banana\")",
+      "assumed: the search is submitted by pressing Enter in the search box",
+      "assumed: the shortcut is created through the '+' next to Shortcuts in the sidebar"
+    ],
+    "confidence": 0.4,
+    "summary": "Old search keyword filter still applies after clicking a Shortcut, though the search box is empty",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15322/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5462]\n---\n\n# Search filter persists after clicking Shortcuts even when search box is empty\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15322/.\nStay on localhost:15322 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor on the home page and type 'apple pie'\n2. Click the Save button to save the memo\n3. Click the memo editor and type 'banana bread'\n4. Click the Save button to save the memo\n5. In the sidebar, click the '+' button next to Shortcuts\n6. Type 'Banana' in the shortcut title field and type 'content.contains(\"banana\")' in the filter field\n7. Click Save in the shortcut dialog\n8. Click the search box and type 'apple'\n9. Press Enter to run the search\n10. Click the 'Banana' item under Shortcuts\nThe reporter says the correct behavior is that After clicking the 'Banana' shortcut, the search box is empty and the memo 'banana bread' is visible in the list, because only the shortcut filter applies. Verify that After clicking the 'Banana' shortcut, the search box is empty and the memo 'banana bread' is visible in the list, because only the shortcut filter applies.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:02:55.880361630Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "Selecting the Banana shortcut did not clear the apple search, so the shortcut could not show banana bread as expected.",
+        "stuck_at": null,
+        "root_cause": "The shortcut and the existing search were applied together instead of the shortcut replacing the search. This left the page filtered by apple after Banana was selected.",
+        "suggested_fix": "Update shortcut selection so it clears any active content search before applying the shortcut filter. Add a regression check that selecting Banana after searching for apple empties the search box and shows banana bread.",
+        "severity": "major",
+        "confidence": 0.95
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Repeated direct, vision, double-click, and hovered clicks left apple pie visible and never displayed banana bread.",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The shortcut and the existing search were applied together instead of the shortcut replacing the search. This left the page filtered by apple after Banana was selected.\nUpdate shortcut selection so it clears any active content search before applying the shortcut filter. Add a regression check that selecting Banana after searching for apple empties the search box and shows banana bread.\nevidence: objective_contradiction: url: http://localhost:15322/?filter=contentSearch%3Aapple\nevidence: objective_contradiction: url: http://localhost:15322/?filter=contentSearch%3Aapple",
+        "credits": 59.75622,
+        "duration_s": 280.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M787YZRDT860MH053XWKWHSH/dashboard/share/US_85YSFYKBDLZBNCKB9PRHWJ0U3HH1KJ5K9WHBJFUB9TVZYP9QF4A5Q5BVSUC2OLPG?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Banana shortcut leaves the active content search in place",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15322/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15322/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "analyze",
+            "label": "the sign-in form is gone",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15322/",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "type",
+            "label": "Typing apple pie into the memo editor",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": "frames/frame-10-annotated.png",
+            "rect": [
+              817.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "click",
+            "label": "Clicking the Save button",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Typing banana bread in the memo editor",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the Save button to save the memo",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "",
+            "label": "Waiting after saving the second memo",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking the plus button next to Shortcuts in the sidebar",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              315.0,
+              317.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Title\"; type \"Filter\"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "type",
+            "label": "Type \"Banana\" into \"Title\"",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              774.0,
+              450.0,
+              372.0,
+              22.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "type",
+            "label": "Type \"content.contains(\"banana\")\" into \"Filter\"",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              774.0,
+              524.0,
+              372.0,
+              46.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "wait",
+            "label": "confirm the shortcut title and filter fields are filled in the Create S",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 20,
+            "kind": "click",
+            "label": "Clicking Save in the shortcut dialog",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": "frames/frame-20-annotated.png",
+            "rect": [
+              1112.0,
+              659.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 21,
+            "kind": "",
+            "label": "Waiting confirm the Banana shortcut is visible in the sidebar",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 22,
+            "kind": "type",
+            "label": "Typing apple into the search box",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": "frames/frame-22-annotated.png",
+            "rect": [
+              109.0,
+              29.0,
+              225.0,
+              20.0
+            ],
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 23,
+            "kind": "press_key",
+            "label": "press Enter to run the search",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/"
+          },
+          {
+            "ordinal": 24,
+            "kind": "click",
+            "label": "Clicking the Banana shortcut in the sidebar",
+            "status": "passed",
+            "file": "frames/frame-24.jpg",
+            "annotated_file": "frames/frame-24-annotated.png",
+            "rect": [
+              84.0,
+              341.0,
+              53.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          },
+          {
+            "ordinal": 25,
+            "kind": "click",
+            "label": "Clicking the Banana item in Shortcuts",
+            "status": "passed",
+            "file": "frames/frame-25.jpg",
+            "annotated_file": "frames/frame-25-annotated.png",
+            "rect": [
+              84.0,
+              341.0,
+              53.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          },
+          {
+            "ordinal": 26,
+            "kind": "click",
+            "label": "Click the 'Banana' item under Shortcuts",
+            "status": "passed",
+            "file": "frames/frame-26.jpg",
+            "annotated_file": "frames/frame-26-annotated.png",
+            "rect": null,
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          },
+          {
+            "ordinal": 27,
+            "kind": "click",
+            "label": "Clicking Banana under Shortcuts in the left sidebar",
+            "status": "passed",
+            "file": "frames/frame-27.jpg",
+            "annotated_file": "frames/frame-27-annotated.png",
+            "rect": [
+              84.0,
+              341.0,
+              53.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          },
+          {
+            "ordinal": 28,
+            "kind": "click",
+            "label": "Clicking the Banana item in the Shortcuts sidebar",
+            "status": "passed",
+            "file": "frames/frame-28.jpg",
+            "annotated_file": "frames/frame-28-annotated.png",
+            "rect": [
+              84.0,
+              341.0,
+              53.0,
+              24.0
+            ],
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          },
+          {
+            "ordinal": 29,
+            "kind": "",
+            "label": "Waiting after attempts to activate the Banana shortcut",
+            "status": "failed",
+            "file": "frames/frame-29.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15322/?filter=contentSearch%3Aapple"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": "The shortcut and the existing search were applied together instead of the shortcut replacing the search. This left the page filtered by apple after Banana was selected.",
+        "suggested_fix": "Update shortcut selection so it clears any active content search before applying the shortcut filter. Add a regression check that selecting Banana after searching for apple empties the search box and shows banana bread.",
+        "severity": "major",
+        "bug_confidence": 0.95
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

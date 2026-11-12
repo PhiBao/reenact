@@ -1,0 +1,395 @@
+{
+  "id": "c-838dc841",
+  "created_at": "2026-11-12T16:01:11.068767857Z",
+  "report": {
+    "title": "Memo detail page not refresh after editing and saving the content",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nDemo site (demo.usememos.com)\n\n### Memos Version\n\nv0.26.2\n\n### Bug Description\n\nOn the memo details page, after editing and saving the content, the page still displays the old content before editing.\n\n### Steps to Reproduce\n\n1. Copy memo link using \"Copy Link\" menu\n2. Visit memo detail page with the link\n3. Edit memo content\n4. Click save button\n\n### Expected Behavior\n\nThe memo detail page should show the new content after edit, but it shows the old content, you have to refresh browser to get latest content.\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5659",
+    "repo": null,
+    "number": 5659
+  },
+  "app_url": "http://localhost:15321",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo exists that the signed-in user can edit"
+    ],
+    "steps": [
+      "Create a new memo with the text 'original content' and save it",
+      "Open the menu of the new memo and click 'Copy Link'",
+      "Open the memo's detail page (the page for that single memo, as the copied link would open)",
+      "Click the edit option for the memo in its menu",
+      "Change the memo content to 'edited content'",
+      "Click the Save button"
+    ],
+    "expected": "After saving, the memo detail page shows the new content 'edited content' and no longer shows 'original content', without a browser refresh",
+    "reported_actual": "After saving the edit on the memo detail page, the page still shows the old content until the browser is refreshed",
+    "missing": [
+      "What exact memo content did the reporter use before and after editing?",
+      "Does the issue occur only when the detail page is reached via the copied link, or also by clicking the memo timestamp?",
+      "assumed: the memo content values 'original content' and 'edited content' are placeholders because the reporter gave none",
+      "assumed: the detail page is reached by clicking the memo's timestamp or navigating to the memo's own page, since the copied link cannot be read from the clipboard",
+      "assumed: the Edit option is in the memo's three-dot menu on the detail page"
+    ],
+    "confidence": 0.6,
+    "summary": "Memo detail page keeps showing old content after editing and saving until browser refresh",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15321/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5659]\n---\n\n# Memo detail page not refresh after editing and saving the content\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15321/.\nStay on localhost:15321 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Create a new memo with the text 'original content' and save it\n2. Open the menu of the new memo and click 'Copy Link'\n3. Open the memo's detail page (the page for that single memo, as the copied link would open)\n4. Click the edit option for the memo in its menu\n5. Change the memo content to 'edited content'\n6. Click the Save button\nThe reporter says the correct behavior is that After saving, the memo detail page shows the new content 'edited content' and no longer shows 'original content', without a browser refresh. Verify that After saving, the memo detail page shows the new content 'edited content' and no longer shows 'original content', without a browser refresh.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:01:11.069087708Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a new memo containing “original content” on localhost:15321.\nOpened the memo’s menu, selected Copy Link, and opened that memo’s individual detail page.\nUsed the memo’s edit option to replace the text with “edited content” and saved the change.\nThe memo detail page now shows “edited content” and no longer shows “original content,” without refreshing the page.",
+        "credits": 41.52547249999999,
+        "duration_s": 172.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M787VSANRFEG2941F8HT4SQF/dashboard/share/US_TPRSGT8BFPH9DSFGRSKXNXFRL5QUHOTNB8M6H8BOZ9HF1V8PDRKWFEFRSZDN3D06?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15321/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15321/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to finish loading",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15321/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Typing original content into memo composer",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              801.0,
+              37.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking Save in the memo composer",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              1392.0,
+              77.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Clicking the menu button of the new memo",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1423.0,
+              143.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 14,
+            "kind": "click",
+            "label": "Clicking Copy Link",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": "frames/frame-14-annotated.png",
+            "rect": [
+              1324.0,
+              237.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 15,
+            "kind": "click",
+            "label": "Clicking Copy Link",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": "frames/frame-15-annotated.png",
+            "rect": [
+              1447.0,
+              242.0,
+              119.0,
+              20.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 16,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Clicking open the memo’s detail page",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              801.0,
+              143.0,
+              510.0,
+              17.0
+            ],
+            "url": "http://localhost:15321/home"
+          },
+          {
+            "ordinal": 18,
+            "kind": "click",
+            "label": "Clicking the edit option for the memo in its menu",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": "frames/frame-18-annotated.png",
+            "rect": [
+              1207.0,
+              45.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 19,
+            "kind": "click",
+            "label": "Clicking the Edit option in the memo menu",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": "frames/frame-19-annotated.png",
+            "rect": [
+              1108.0,
+              107.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 20,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"textbox\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-20.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 21,
+            "kind": "type",
+            "label": "Type \"edited content\" into \"textbox\"",
+            "status": "passed",
+            "file": "frames/frame-21.jpg",
+            "annotated_file": "frames/frame-21-annotated.png",
+            "rect": [
+              521.0,
+              65.0,
+              702.0,
+              24.0
+            ],
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 22,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-22.jpg",
+            "annotated_file": "frames/frame-22-annotated.png",
+            "rect": [
+              1176.0,
+              105.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 23,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-23.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          },
+          {
+            "ordinal": 24,
+            "kind": "assert",
+            "label": "After saving, the memo detail page shows the new content 'edited content' and no",
+            "status": "passed",
+            "file": "frames/frame-24.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15321/memos/bycMjtXRP5Xr9yYALaFrg6"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15321/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}

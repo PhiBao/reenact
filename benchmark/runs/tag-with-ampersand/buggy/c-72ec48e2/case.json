@@ -36,8 +36,231 @@
     "signed_in": true
   },
   "test_md": "---\nmode: testing\nurl: http://localhost:15314/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5620]\n---\n\n# Tags with & in them are now broken (won't display correctly) and can no longher be created\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15314/.\nStay on localhost:15314 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page\n2. Type \"#science&tech\" into the editor\n3. Click the Save button to create the memo\n4. Look at the newly created memo in the memo list\nThe reporter says the correct behavior is that the saved memo shows a single tag \"#science&tech\" with the whole string, including \"&tech\", rendered as part of the tag. Verify that the saved memo shows a single tag \"#science&tech\" with the whole string, including \"&tech\", rendered as part of the tag.\n",
-  "runs": [],
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T15:53:01.638777906Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created a memo on the local home page with the text “#science&tech”.\nSaved the memo and viewed it in the memo list.\nConfirmed the new memo displays one complete tag, “#science&tech”, including “&tech” as part of the same tag.",
+        "credits": 27.6564375,
+        "duration_s": 112.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M787CVA5XVJDE8ZB3DA866SY/dashboard/share/US_KKO84IF614OORITLVALWACZ9MR9DBPDD8FUJKZLYJQ6ZU46T77W8QVUVS5HQUK2H?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15314/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15314/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to finish loading",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15314/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "type",
+            "label": "Typing #science&tech into the memo editor",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": "frames/frame-11-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "click",
+            "label": "Clicking the Save button to create the memo",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "wait",
+            "label": "Look at the newly created memo in the memo list",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "assert",
+            "label": "the saved memo shows a single tag \"#science&tech\" with the whole string, includi",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15314/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15314/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15314/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
   "fixes": [],
   "pr_url": null,
-  "state": "reenacting"
+  "state": "not_reproduced"
 }

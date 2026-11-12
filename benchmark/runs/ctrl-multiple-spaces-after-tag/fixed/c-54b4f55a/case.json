@@ -1,0 +1,314 @@
+{
+  "id": "c-54b4f55a",
+  "created_at": "2026-11-12T16:13:13.919029321Z",
+  "report": {
+    "title": "标签与内容之间有多个空格时，只保留了一个空格",
+    "body": "### Pre-submission Checklist\n\n- [x] I have searched the existing issues and this bug has not been reported yet\n- [x] I have tested this issue on the [demo site](https://demo.usememos.com) or the latest version\n\n### Where did you encounter this bug?\n\nDemo site (demo.usememos.com)\n\n### Memos Version\n\nv0.25.3\n\n### Bug Description\n\n标签与内容之间有多个空格时，只保留了一个空格\n\n### Steps to Reproduce\n\n1. 输入，发布\n```\n#tag content\n```\n2. 输入，标签与内容之间有多个空格，发布\n```\n#tag                        content\n```\n渲染结果多个空格消失了，不符合预期: \n<img width=\"803\" height=\"175\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/6ef7e025-c169-4d86-b718-81a86c6f7b64\" />\n\n### Expected Behavior\n\n期望输入与实际渲染一致\n\n### Screenshots & Additional Context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/5382",
+    "repo": null,
+    "number": 5382
+  },
+  "app_url": "http://localhost:15327",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type \"#tag content\" into the editor",
+      "Click the Save/Publish button to post the memo",
+      "Click the memo editor input again",
+      "Type \"#tag content\" (the text #tag, then 24 spaces, then content) into the editor",
+      "Click the Save/Publish button to post the memo"
+    ],
+    "expected": "The second memo renders \"#tag\" and \"content\" with the multiple spaces between them still visible, so the gap is wider than in the first memo's \"#tag content\".",
+    "reported_actual": "The second memo renders with only a single space between the tag and the content; the extra spaces disappear.",
+    "missing": [
+      "assumed: the number of spaces between #tag and content is 24, as in the report's code block",
+      "assumed: the rendered memo list on the home page is where the spacing is compared",
+      "Does the reporter expect the spaces to be preserved in the rendered view, or only in the stored raw text?"
+    ],
+    "confidence": 0.6,
+    "summary": "Multiple spaces between a tag and following content collapse to one space in the rendered memo",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15327/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-5382]\n---\n\n# 标签与内容之间有多个空格时，只保留了一个空格\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15327/.\nStay on localhost:15327 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page\n2. Type \"#tag content\" into the editor\n3. Click the Save/Publish button to post the memo\n4. Click the memo editor input again\n5. Type \"#tag content\" (the text #tag, then 24 spaces, then content) into the editor\n6. Click the Save/Publish button to post the memo\nThe reporter says the correct behavior is that The second memo renders \"#tag\" and \"content\" with the multiple spaces between them still visible, so the gap is wider than in the first memo's \"#tag content\". Verify that The second memo renders \"#tag\" and \"content\" with the multiple spaces between them still visible, so the gap is wider than in the first memo's \"#tag content\".\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:13:13.919373741Z",
+      "verdict": {
+        "kind": "reproduced",
+        "headline": "The saved second memo does not keep its wide gap between “#tag” and “content.”",
+        "stuck_at": null,
+        "root_cause": "The memo editor accepted the spaces, but the memo display reduced the run of spaces to a normal single-word gap after saving.",
+        "suggested_fix": "Update the memo rendering so that consecutive spaces in saved memo text remain visibly preserved, then add a check comparing a single-space memo with a multi-space memo.",
+        "severity": "major",
+        "confidence": 0.96
+      },
+      "run": {
+        "exit_code": 1,
+        "timed_out": false,
+        "status": "failed",
+        "reason": "Final verification failed: \"The second memo renders \"#tag\" and \"content\" with the multiple spaces between them still visible, so the gap is wider than in the first memo's \"#tag content\".\"",
+        "reason_code": "assertion_error.confirmed_product_bug",
+        "summary": "The memo editor accepted the spaces, but the memo display reduced the run of spaces to a normal single-word gap after saving.\nUpdate the memo rendering so that consecutive spaces in saved memo text remain visibly preserved, then add a check comparing a single-space memo with a multi-space memo.\nevidence: objective_contradiction: Final verification failed: \"The second memo renders \"#tag\" and \"content\" with the multiple spaces between them still vis",
+        "credits": 38.16623,
+        "duration_s": 155.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M788HVAT95W7YSWTN1PCF4F4/dashboard/share/US_RJVS9XCDP5EHGN64TSWQZE8K1YGID8ZSV7IM8XENXW1DJ04T3JJ0AFNJ85XSPWC9?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": "Reproduce the report",
+        "bug_confirmed": true,
+        "bug_family": "application_issue",
+        "bug_title": "Memo display collapses consecutive spaces",
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15327/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button in sign-in form",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15327/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15327/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"#tag content\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "wait",
+            "label": "wait briefly after posting the first memo",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "type",
+            "label": "Type \"#tag                        content\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              1408.0,
+              85.0,
+              34.0,
+              32.0
+            ],
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "analyze",
+            "label": "Checked the page",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "assert",
+            "label": "The second memo renders \"#tag\" and \"content\" with the multiple spaces between th",
+            "status": "failed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15327/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+            "Failed to initialize auth: [unauthenticated] rpc error: code = Unauthenticated desc = refresh token not found"
+          ],
+          "failed_requests": [
+            "401 POST http://localhost:15327/memos.api.v1.AuthService/GetCurrentUser",
+            "401 POST http://localhost:15327/memos.api.v1.AuthService/RefreshToken"
+          ]
+        },
+        "root_cause": "The memo editor accepted the spaces, but the memo display reduced the run of spaces to a normal single-word gap after saving.",
+        "suggested_fix": "Update the memo rendering so that consecutive spaces in saved memo text remain visibly preserved, then add a check comparing a single-space memo with a multi-space memo.",
+        "severity": "major",
+        "bug_confidence": 0.96
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "reproduced"
+}

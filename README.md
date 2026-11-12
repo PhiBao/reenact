@@ -142,7 +142,29 @@ Why Rust for the engine: it spawns and supervises a browser agent, parses untrus
 
 ## Benchmark
 
-BENCHMARK_SECTION
+Sixteen closed [Memos](https://github.com/usememos/memos) issues (12 bugs, 4 controls that are not bugs), each tied to the release that had the problem and the release that fixed it, run from pinned Docker images. Reenact compiles each report **once**, then runs the same plan against both releases. A correct result is *Reproduced* on the buggy release and *Not reproduced* on the fixed one; controls must be *Not reproduced* on both. Case list and notes: [`benchmark/cases.json`](benchmark/cases.json), [`benchmark/TARGET.md`](benchmark/TARGET.md). Per-run verdicts, Kane's reasons and the evidence strips are in [`benchmark/round1/`](benchmark/round1/) and [`benchmark/runs/`](benchmark/runs/) (`RESULTS.md`, `results.json`, one folder per run).
+
+| | Round 1 | Round 2 |
+|---|---|---|
+| Both releases judged correctly (of 16) | 7 | **8** |
+| Bugs reproduced on the buggy release (of 12) | 5 | **8** |
+| Bugs cleared on the fixed release (of 12) | 11 | 9 |
+| Bug reports wrongly *Reproduced* on the fixed release | 1 | **0** |
+| *Reproduced* verdicts on the 4 controls (8 runs) | 1 | 4 |
+
+Round 2 ran after two changes found in round 1: preconditions are no longer rendered into the test, and the scaffold tells Kane not to undo or work around unexpected behavior. Both are general, not per-case, but they were made after seeing round-1 results, so treat round 2 as tuned and expect lower numbers on unseen apps.
+
+What the numbers say:
+
+- **It finds bugs more often than it misses them, and it rarely accuses a fixed release.** No fixed release of a real bug was called *Reproduced* in round 2. When it says *Reproduced*, Kane's own investigation agreed it was an application defect.
+- **It is not a lie detector for "working as intended".** Two controls (HTML collapsing repeated spaces, and a checkbox report whose real bug is a different one) were *Reproduced* on both releases. Reenact observes behavior; it cannot know a maintainer's intent. This is why the comment states the expected behavior it tested and why a human decides.
+- **Run-to-run variance is real.** `tag-with-ampersand` was reproduced in round 1 and not in round 2, with the same report. Kane is an agent, and Reenact retries once on inconclusive results but does not hide the variance.
+- **Misses cluster in visual and rendering bugs** (currency text rendered as math, `tel:` link targets) where a screenshot check cannot see the difference, and in cases where Kane could not finish the steps (*Needs info*).
+- Several benchmark reports are deliberately noisy: a typo in the repro steps, a wrong version, a screenshot-only report. They are kept because real reports look like that.
+- Cost: about 35 Kane credits and 2 to 3 minutes per run.
+
+Reproduce a round: `reenact bench --parallel 3` (needs Docker, Kane CLI and an LLM key; pulls the Memos images).
+
 
 ## What building on Kane taught us
 

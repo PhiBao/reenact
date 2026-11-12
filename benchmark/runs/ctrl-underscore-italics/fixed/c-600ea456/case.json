@@ -1,0 +1,311 @@
+{
+  "id": "c-600ea456",
+  "created_at": "2026-11-12T16:07:35.846294312Z",
+  "report": {
+    "title": "Underscore character stripped out in memo, replaced with italics",
+    "body": "### Describe the bug\n\nExisting memos have underscore characters stripped out in a memo and replaced with italics on the adjoining word.\n\nin edit mode the underscores are still there.\n\n\n\n\n\n\n\n### Steps to reproduce\n\nSee above\n\n### The version of Memos you're using\n\n\nv0.25.0\n\n### Screenshots or additional context\n\n_No response_",
+    "source_url": "https://github.com/usememos/memos/issues/4926",
+    "repo": null,
+    "number": 4926
+  },
+  "app_url": "http://localhost:15325",
+  "app_label": "Memos, a self-hosted note-taking app",
+  "plan": {
+    "in_browser": true,
+    "start_path": "/",
+    "preconditions": [
+      "a memo exists whose text contains underscore characters that are part of words or surround words, e.g. snake_case style text"
+    ],
+    "steps": [
+      "Click the memo editor input on the home page",
+      "Type a memo containing underscores, such as: my_variable_name and other_word_here",
+      "Click the Save button to create the memo",
+      "Look at the rendered memo in the memo list",
+      "Click the edit option from the memo's menu to open edit mode",
+      "Look at the text in the editor"
+    ],
+    "expected": "the rendered memo shows the underscore characters literally (for example 'my_variable_name' with visible underscores) and no words are shown in italics",
+    "reported_actual": "In the rendered memo the underscore characters are stripped out and the adjoining word is shown in italics; in edit mode the underscores are still present",
+    "missing": [
+      "What exact memo text triggers the issue (the report gives no example content)?",
+      "Exact steps to reproduce; the report just says 'See above'",
+      "Are the affected memos pre-existing (imported/migrated) or created in the current version?",
+      "assumed: the example text 'my_variable_name and other_word_here' is representative of the reporter's content",
+      "assumed: creating a new memo with such text reproduces the behavior the same way as existing memos"
+    ],
+    "confidence": 0.3,
+    "summary": "Underscores in rendered memo are removed and adjacent word italicized, though edit mode shows them",
+    "signed_in": true
+  },
+  "test_md": "---\nmode: testing\nurl: http://localhost:15325/auth\nheadless: true\nmax_steps: 40\ntags: [reenact, issue-4926]\n---\n\n# Underscore character stripped out in memo, replaced with italics\n\n## Sign in\nSign in with username {{username}} and password {{password}}.\nVerify the sign-in form is gone and the memo app's main page is shown.\n\n## Reproduce the report\nOpen http://localhost:15325/.\nStay on localhost:15325 for the whole run and do not open any other website.\nDo each step once, in order. If the app behaves unexpectedly, do not undo, retry, repair or work around it: the behavior itself is what is being checked. Check the result right after the last step.\nSteps:\n1. Click the memo editor input on the home page\n2. Type a memo containing underscores, such as: my_variable_name and other_word_here\n3. Click the Save button to create the memo\n4. Look at the rendered memo in the memo list\n5. Click the edit option from the memo's menu to open edit mode\n6. Look at the text in the editor\nThe reporter says the correct behavior is that the rendered memo shows the underscore characters literally (for example 'my_variable_name' with visible underscores) and no words are shown in italics. Verify that the rendered memo shows the underscore characters literally (for example 'my_variable_name' with visible underscores) and no words are shown in italics.\n",
+  "runs": [
+    {
+      "kind": "reenact",
+      "label": "reenact",
+      "started_at": "2026-11-12T16:07:35.846538826Z",
+      "verdict": {
+        "kind": "not_reproduced",
+        "headline": "Kane followed the reported steps and the expected behavior held on this version.",
+        "stuck_at": null,
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "confidence": null
+      },
+      "run": {
+        "exit_code": 0,
+        "timed_out": false,
+        "status": "passed",
+        "reason": "Objective completed",
+        "reason_code": "success.complete",
+        "summary": "Created and saved a memo on the localhost home page containing underscore-separated text, including “my_variable_name” and “other_word_here.”\nViewed the saved memo and confirmed that its underscores were displayed literally, with no words shown in italics.\nOpened the memo’s edit option and viewed its text in the editor.",
+        "credits": 32.781705,
+        "duration_s": 149.0,
+        "share_url": "https://test-manager.lambdatest.com/projects/01M77QT4WTQTBAVV7FBBZRHAW1/test-cases/01M7887GVAQKRXWDNSZMVD1P9J/dashboard/share/US_UPSP5020OFLW3ZACMD8CJDNQBAWB8FGCCLY1AGS0YCXW0J2KH6ZVMUIDAC2OMOO7?type=summary&agentView=true&fqdn=summary-page",
+        "failed_step_heading": null,
+        "bug_confirmed": null,
+        "bug_family": null,
+        "bug_title": null,
+        "frames": [
+          {
+            "ordinal": 1,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15325/auth",
+            "status": "passed",
+            "file": "frames/frame-01.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 2,
+            "kind": "wait",
+            "label": "queued plan (3 steps): type \"Username\"; type \"Password\"; click \"Sign in\"",
+            "status": "passed",
+            "file": "frames/frame-02.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 3,
+            "kind": "type",
+            "label": "Type \"{{global.username}}\" into \"Username\"",
+            "status": "passed",
+            "file": "frames/frame-03.jpg",
+            "annotated_file": "frames/frame-03-annotated.png",
+            "rect": [
+              813.0,
+              467.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 4,
+            "kind": "type",
+            "label": "Type \"{{secrets.user.password}}\" into \"Password\"",
+            "status": "passed",
+            "file": "frames/frame-04.jpg",
+            "annotated_file": "frames/frame-04-annotated.png",
+            "rect": [
+              813.0,
+              555.0,
+              294.0,
+              30.0
+            ],
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 5,
+            "kind": "",
+            "label": "",
+            "status": "passed",
+            "file": "frames/frame-05.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 6,
+            "kind": "click",
+            "label": "Clicking Sign in button",
+            "status": "passed",
+            "file": "frames/frame-06.jpg",
+            "annotated_file": "frames/frame-06-annotated.png",
+            "rect": [
+              812.0,
+              614.0,
+              296.0,
+              40.0
+            ],
+            "url": "http://localhost:15325/auth"
+          },
+          {
+            "ordinal": 7,
+            "kind": "wait",
+            "label": "wait for the memo app main page to load",
+            "status": "passed",
+            "file": "frames/frame-07.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 8,
+            "kind": "analyze",
+            "label": "the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-08.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 9,
+            "kind": "assert",
+            "label": "the sign-in form is gone and the memo app's main page is shown",
+            "status": "passed",
+            "file": "frames/frame-09.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 10,
+            "kind": "navigate",
+            "label": "Navigate to http://localhost:15325/",
+            "status": "passed",
+            "file": "frames/frame-10.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 11,
+            "kind": "wait",
+            "label": "queued plan (2 steps): type \"Any thoughts...\"; click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-11.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 12,
+            "kind": "type",
+            "label": "Type \"my_variable_name and other_word_here\" into \"Any thoughts...\"",
+            "status": "passed",
+            "file": "frames/frame-12.jpg",
+            "annotated_file": "frames/frame-12-annotated.png",
+            "rect": [
+              817.0,
+              41.0,
+              638.0,
+              24.0
+            ],
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 13,
+            "kind": "click",
+            "label": "Click \"Save\"",
+            "status": "passed",
+            "file": "frames/frame-13.jpg",
+            "annotated_file": "frames/frame-13-annotated.png",
+            "rect": [
+              1384.0,
+              73.0,
+              62.0,
+              32.0
+            ],
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 14,
+            "kind": "wait",
+            "label": "confirm the memo creation has settled",
+            "status": "passed",
+            "file": "frames/frame-14.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 15,
+            "kind": "wait",
+            "label": "look at the rendered memo in the memo list",
+            "status": "passed",
+            "file": "frames/frame-15.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 16,
+            "kind": "click",
+            "label": "Clicking the memo menu",
+            "status": "passed",
+            "file": "frames/frame-16.jpg",
+            "annotated_file": "frames/frame-16-annotated.png",
+            "rect": [
+              1439.0,
+              139.0,
+              16.0,
+              16.0
+            ],
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 17,
+            "kind": "click",
+            "label": "Clicking Edit in the memo menu",
+            "status": "passed",
+            "file": "frames/frame-17.jpg",
+            "annotated_file": "frames/frame-17-annotated.png",
+            "rect": [
+              1340.0,
+              201.0,
+              102.0,
+              20.0
+            ],
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 18,
+            "kind": "analyze",
+            "label": "no words are shown in italics",
+            "status": "passed",
+            "file": "frames/frame-18.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          },
+          {
+            "ordinal": 19,
+            "kind": "assert",
+            "label": "the rendered memo shows the underscore characters literally (for example 'my_var",
+            "status": "passed",
+            "file": "frames/frame-19.jpg",
+            "annotated_file": null,
+            "rect": null,
+            "url": "http://localhost:15325/"
+          }
+        ],
+        "strip_file": "strip.png",
+        "signals": {
+          "console_errors": [],
+          "failed_requests": []
+        },
+        "root_cause": null,
+        "suggested_fix": null,
+        "severity": null,
+        "bug_confidence": null
+      }
+    }
+  ],
+  "fixes": [],
+  "pr_url": null,
+  "state": "not_reproduced"
+}
