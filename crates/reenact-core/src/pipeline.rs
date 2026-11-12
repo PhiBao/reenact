@@ -229,8 +229,25 @@ pub async fn reenact_with_plan(
 ) -> Result<(Case, PathBuf)> {
     let id = ctx.case_id.clone().unwrap_or_else(new_case_id);
     let dir = case_dir(base, &id);
-    let _ = std::fs::remove_dir_all(&dir);
     std::fs::create_dir_all(&dir)?;
+    // Re-running a case never erases what happened before: earlier runs and fix
+    // attempts stay in the file, and new frames get a fresh prefix.
+    let previous = load_case(&dir).ok();
+    let episodes = previous
+        .as_ref()
+        .map(|c| {
+            c.runs
+                .iter()
+                .filter(|r| r.kind == RunKind::Reenact && r.label == "reenact")
+                .count()
+        })
+        .unwrap_or(0);
+    let base_prefix = if episodes == 0 {
+        String::new()
+    } else {
+        format!("r{episodes}-")
+    };
+    let (prev_runs, prev_fixes) = previous.map(|c| (c.runs, c.fixes)).unwrap_or_default();
     let mut case = Case {
         id: id.clone(),
         created_at: chrono::Utc::now(),
@@ -239,8 +256,8 @@ pub async fn reenact_with_plan(
         app_label: (!ctx.cfg.description.is_empty()).then(|| ctx.cfg.description.clone()),
         plan: Some(plan.clone()),
         test_md: None,
-        runs: vec![],
-        fixes: vec![],
+        runs: prev_runs,
+        fixes: prev_fixes,
         pr_url: None,
         state: CaseState::Compiling,
     };
@@ -281,7 +298,15 @@ pub async fn reenact_with_plan(
     case.state = CaseState::Reenacting;
     save_case(&dir, &case)?;
 
-    let (first, _) = run_and_record(ctx, &dir, &test_md, RunKind::Reenact, "reenact", "").await?;
+    let (first, _) = run_and_record(
+        ctx,
+        &dir,
+        &test_md,
+        RunKind::Reenact,
+        "reenact",
+        &base_prefix,
+    )
+    .await?;
     let mut records = vec![first];
     // Browser agents are not perfectly repeatable. One retry for results that
     // say little (infrastructure trouble, or Kane could not finish the steps).
@@ -323,16 +348,19 @@ fn conclusiveness(k: VerdictKind) -> u8 {
 
 /// Re-run a case's saved test against the current app (after a fix).
 pub async fn verify(ctx: &Ctx, dir: &Path, label: &str) -> Result<RunRecord> {
+    verify_as(ctx, dir, label, RunKind::VerifyFix).await
+}
+
+/// Re-run a case's saved test as `kind` (a confirmation of the bug, or a fix check).
+pub async fn verify_as(ctx: &Ctx, dir: &Path, label: &str, kind: RunKind) -> Result<RunRecord> {
     let mut case = load_case(dir)?;
     let md = case.test_md.clone().context("case has no saved test")?;
-    let n = case
-        .runs
-        .iter()
-        .filter(|r| r.kind == RunKind::VerifyFix)
-        .count()
-        + 1;
-    let prefix = format!("fix{n}-");
-    let (rec, _) = run_and_record(ctx, dir, &md, RunKind::VerifyFix, label, &prefix).await?;
+    let n = case.runs.iter().filter(|r| r.kind == kind).count() + 1;
+    let prefix = match kind {
+        RunKind::Confirm => format!("confirm{n}-"),
+        _ => format!("fix{n}-"),
+    };
+    let (rec, _) = run_and_record(ctx, dir, &md, kind, label, &prefix).await?;
     case.runs.push(rec.clone());
     save_case(dir, &case)?;
     Ok(rec)

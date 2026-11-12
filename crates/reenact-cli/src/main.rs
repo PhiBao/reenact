@@ -64,6 +64,11 @@ enum Cmd {
         #[arg(long)]
         case_url: Option<String>,
     },
+    /// Recompose the evidence strips of an existing case folder with the current layout.
+    Restrip {
+        #[arg(long)]
+        case: PathBuf,
+    },
     /// Publish images, upload to the case-file server and comment, for an existing case folder.
     Ship {
         #[arg(long)]
@@ -179,6 +184,19 @@ async fn main() -> Result<()> {
                     }
                 )
             );
+        }
+        Cmd::Restrip { case } => {
+            let mut c = pipeline::load_case(&case)?;
+            for r in &mut c.runs {
+                let Some(name) = r.run.strip_file.clone() else { continue };
+                let shown: Vec<Frame> = r.run.frames.clone();
+                if shown.len() < 2 {
+                    continue;
+                }
+                reenact_core::strip::compose_strip(&case, &shown, r.verdict.kind, (1920, 1080), &case.join(&name))?;
+                eprintln!("recomposed {name}");
+            }
+            pipeline::save_case(&case, &c)?;
         }
         Cmd::Ship { case, ship } => ship::ship(&case, &ship).await?,
         Cmd::Fix(a) => fix::run(a).await?,

@@ -33,7 +33,7 @@ export interface RunSummary {
 }
 
 export interface RunRecord {
-  kind: 'reenact' | 'verify_fix';
+  kind: 'reenact' | 'confirm' | 'verify_fix';
   label: string;
   started_at: string;
   verdict: Verdict;
@@ -47,6 +47,8 @@ export interface FixAttempt {
   applied: boolean;
   outcome: VerdictKind | null;
   note: string;
+  regressions?: string[];
+  suite_checked?: number;
 }
 
 export interface Plan {

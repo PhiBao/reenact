@@ -6,8 +6,9 @@ use anyhow::Result;
 use clap::Args;
 use reenact_core::kane::{self, RunOpts};
 use reenact_core::model::VerdictKind;
+use reenact_core::pipeline::Ctx;
 use reenact_core::verdict::judge;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 #[derive(Args)]
@@ -18,27 +19,37 @@ pub struct SuiteArgs {
     dir: PathBuf,
 }
 
-pub async fn run(a: SuiteArgs) -> Result<()> {
-    let a = SuiteArgs {
-        dir: std::fs::canonicalize(&a.dir)?,
-        ..a
-    };
-    let ctx = crate::make_ctx(&a.config)?;
-    let mut tests: Vec<PathBuf> = std::fs::read_dir(&a.dir)?
+#[derive(Debug, Clone)]
+pub struct SuiteRow {
+    pub name: String,
+    pub kind: VerdictKind,
+    pub detail: String,
+}
+
+impl SuiteRow {
+    pub fn label(&self) -> &'static str {
+        match self.kind {
+            VerdictKind::NotReproduced => "holds",
+            VerdictKind::Reproduced => "REGRESSED",
+            VerdictKind::NeedsInfo => "unsure",
+            VerdictKind::Inconclusive => "inconclusive",
+        }
+    }
+}
+
+/// Run every `*_test.md` in `dir` (except `exclude`) live, one after another.
+pub async fn run_dir(ctx: &Ctx, dir: &Path, exclude: Option<&str>) -> Result<Vec<SuiteRow>> {
+    let dir = std::fs::canonicalize(dir)?;
+    let mut tests: Vec<PathBuf> = std::fs::read_dir(&dir)?
         .flatten()
         .map(|e| e.path())
         .filter(|p| {
             p.file_name()
                 .and_then(|n| n.to_str())
-                .is_some_and(|n| n.ends_with("_test.md"))
+                .is_some_and(|n| n.ends_with("_test.md") && Some(n) != exclude)
         })
         .collect();
     tests.sort();
-    anyhow::ensure!(
-        !tests.is_empty(),
-        "no *_test.md files in {}",
-        a.dir.display()
-    );
 
     let creds = match &ctx.cfg.login {
         Some(l) => vec![
@@ -56,14 +67,13 @@ pub async fn run(a: SuiteArgs) -> Result<()> {
         None => vec![],
     };
 
-    let (mut regressed, mut inconclusive) = (0, 0);
-    println!("| Test | Result | Detail |\n|---|---|---|");
+    let mut rows = Vec::new();
     for t in &tests {
         let name = t.file_name().unwrap().to_string_lossy().to_string();
         let out = kane::run_testmd(
             &RunOpts {
                 kane_bin: &ctx.kane_bin,
-                dir: &a.dir,
+                dir: &dir,
                 test_file: t,
                 timeout: Duration::from_secs(ctx.cfg.timeout_s),
                 variables: creds.clone(),
@@ -73,24 +83,38 @@ pub async fn run(a: SuiteArgs) -> Result<()> {
         )
         .await?;
         let v = judge(&out, None, ctx.cfg.login.is_some());
-        let label = match v.kind {
-            VerdictKind::NotReproduced => "holds",
-            VerdictKind::Reproduced => {
-                regressed += 1;
-                "REGRESSED"
-            }
-            VerdictKind::NeedsInfo => "unsure",
-            VerdictKind::Inconclusive => {
-                inconclusive += 1;
-                "inconclusive"
-            }
-        };
-        println!("| {name} | {label} | {} |", v.headline.replace('|', "\\|"));
+        rows.push(SuiteRow {
+            name,
+            kind: v.kind,
+            detail: v.headline,
+        });
     }
-    if regressed > 0 {
+    Ok(rows)
+}
+
+pub async fn run(a: SuiteArgs) -> Result<()> {
+    let ctx = crate::make_ctx(&a.config)?;
+    anyhow::ensure!(
+        std::fs::read_dir(&a.dir)?
+            .flatten()
+            .any(|e| e.file_name().to_string_lossy().ends_with("_test.md")),
+        "no *_test.md files in {}",
+        a.dir.display()
+    );
+    let rows = run_dir(&ctx, &a.dir, None).await?;
+    println!("| Test | Result | Detail |\n|---|---|---|");
+    for r in &rows {
+        println!(
+            "| {} | {} | {} |",
+            r.name,
+            r.label(),
+            r.detail.replace('|', "\\|")
+        );
+    }
+    if rows.iter().any(|r| r.kind == VerdictKind::Reproduced) {
         std::process::exit(1);
     }
-    if inconclusive > 0 {
+    if rows.iter().any(|r| r.kind == VerdictKind::Inconclusive) {
         std::process::exit(2);
     }
     Ok(())

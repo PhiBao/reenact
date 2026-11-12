@@ -32,6 +32,7 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
         .iter()
         .rev()
         .find(|r| r.kind == RunKind::VerifyFix);
+    let confirm = case.runs.iter().rev().find(|r| r.kind == RunKind::Confirm);
 
     let Some(rec) = last_repro else {
         out.push_str("**Reenact** is reading this report.\n");
@@ -85,6 +86,18 @@ pub fn render_comment(case: &Case, links: &Links) -> String {
             }
             if let Some(sev) = &v.severity {
                 out.push_str(&format!("Severity: {sev}. "));
+            }
+            match confirm {
+                Some(c) if c.verdict.kind == VerdictKind::Reproduced => {
+                    out.push_str("Confirmed on a second independent run (2 of 2). ");
+                }
+                Some(c) => {
+                    out.push_str(&format!(
+                        "A second run said **{}**, so this may be flaky and no fix was attempted. ",
+                        c.verdict.kind.label()
+                    ));
+                }
+                None => {}
             }
             out.push_str("Maintainers: comment `/reenact fix` to have an agent attempt a fix that this same run must verify.\n\n");
         }

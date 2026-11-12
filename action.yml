@@ -13,8 +13,28 @@ inputs:
     description: Path to .reenact.yml
     default: .reenact.yml
   start-command:
-    description: Command that starts the app under test (it receives PORT from app_url).
-    required: true
+    description: >-
+      Command that starts the app under test (it receives PORT from app_url). Leave empty to test an
+      app that is already running at app_url (a preview or staging deployment). Required for `fix`.
+    default: ""
+  prepare-command:
+    description: Run once before the app starts in `fix` mode (install dependencies, build).
+    default: ""
+  app-env:
+    description: Newline-separated KEY=VALUE pairs the app under test needs. It gets no other environment.
+    default: ""
+  fix-agent:
+    description: "`builtin` (LLM search/replace) or `command` (a coding agent, see fix-agent-command)."
+    default: builtin
+  fix-agent-command:
+    description: Shell command for fix-agent=command. The task arrives on stdin, for example `codex exec --full-auto -`.
+    default: ""
+  fix-agent-env:
+    description: Space-separated names of secrets the agent command may read (they must exist in the job environment).
+    default: ""
+  fix-scope:
+    description: Space-separated path prefixes a fix may change. Empty means any source file.
+    default: ""
   github-token:
     description: Token with issues, pull-requests and contents write access.
     required: true
@@ -73,6 +93,7 @@ runs:
         echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
     - name: Start the app under test
+      if: inputs.start-command != '' && inputs.mode != 'fix'
       shell: bash
       env:
         START: ${{ inputs.start-command }}
@@ -90,6 +111,12 @@ runs:
         MODE: ${{ inputs.mode }}
         CONFIG: ${{ inputs.config }}
         START: ${{ inputs.start-command }}
+        PREPARE: ${{ inputs.prepare-command }}
+        APP_ENV: ${{ inputs.app-env }}
+        FIX_AGENT: ${{ inputs.fix-agent }}
+        FIX_AGENT_CMD: ${{ inputs.fix-agent-command }}
+        FIX_AGENT_ENV: ${{ inputs.fix-agent-env }}
+        FIX_SCOPE: ${{ inputs.fix-scope }}
         BRANCH: ${{ inputs.evidence-branch }}
         GH_TOKEN: ${{ inputs.github-token }}
         REENACT_LLM_API_KEY: ${{ inputs.llm-api-key }}
@@ -114,8 +141,15 @@ runs:
             git clone --quiet --depth 1 --branch "$BRANCH" "https://github.com/$REPO.git" "$RUNNER_TEMP/evidence"
             mkdir -p .reenact/cases
             cp -r "$RUNNER_TEMP/evidence/issue-$ISSUE_NUMBER" .reenact/cases/
-            reenact fix --config "$CONFIG" --case ".reenact/cases/issue-$ISSUE_NUMBER" --repo . \
-              --start-cmd "$START" --pr --publish-branch "$BRANCH" --post
+            [ -n "$START" ] || { echo "fix mode needs start-command"; exit 2; }
+            # The fix loop starts the app itself, with a scrubbed environment.
+            ARGS=(--config "$CONFIG" --case ".reenact/cases/issue-$ISSUE_NUMBER" --repo . --start-cmd "$START" --pr --publish-branch "$BRANCH" --post --agent "$FIX_AGENT")
+            [ -n "$PREPARE" ] && ARGS+=(--prepare-cmd "$PREPARE")
+            [ -n "$FIX_AGENT_CMD" ] && ARGS+=(--agent-cmd "$FIX_AGENT_CMD")
+            for k in $FIX_AGENT_ENV; do ARGS+=(--agent-env "$k"); done
+            for s in $FIX_SCOPE; do ARGS+=(--scope "$s"); done
+            while IFS= read -r kv; do [ -n "$kv" ] && ARGS+=(--app-env "$kv"); done <<< "$APP_ENV"
+            reenact fix "${ARGS[@]}"
             ;;
           suite)
             reenact suite --config "$CONFIG"

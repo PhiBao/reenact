@@ -8,7 +8,7 @@
   --green: #1f7a4d;
   --amber: #b7791f;
   --serif: 'Instrument Serif', 'Times New Roman', serif;
-  --sans: 'Geist Variable', system-ui, sans-serif;
+  --sans: 'Geist Variable', system-ui, 'Noto Sans CJK SC', 'PingFang SC', 'Hiragino Sans', 'Microsoft YaHei', sans-serif;
   --mono: 'Geist Mono Variable', ui-monospace, monospace;
   --measure: 68ch;
   --gutter: clamp(20px, 4vw, 56px);

@@ -141,6 +141,8 @@ pub struct RunSummary {
 #[serde(rename_all = "snake_case")]
 pub enum RunKind {
     Reenact,
+    /// A second, independent reproduction on the unmodified app, run before any fix is attempted.
+    Confirm,
     VerifyFix,
 }
 
@@ -161,6 +163,12 @@ pub struct FixAttempt {
     pub applied: bool,
     pub outcome: Option<VerdictKind>,
     pub note: String,
+    /// Earlier saved tests this attempt broke (it is rejected if any).
+    #[serde(default)]
+    pub regressions: Vec<String>,
+    /// How many earlier saved tests were re-run against this attempt.
+    #[serde(default)]
+    pub suite_checked: u32,
 }
 
 /// The unit that is stored, uploaded and rendered: one report and everything

@@ -1,9 +1,26 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { caseFile, getCase } from '../api';
-import type { CaseFile, RunRecord } from '../types';
+import { VERDICT_LABEL, type CaseFile, type RunRecord } from '../types';
 import { Stamp } from '../components/Stamp';
 import { Compare } from '../components/Compare';
+
+/** Issue templates are mostly boilerplate. Show the parts that describe the bug. */
+export function compactReport(body: string): string {
+  const cleaned = body.replace(/<img[^>]*>/gi, '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\r/g, '');
+  const parts = cleaned.split(/^###\s+/m);
+  if (parts.length < 3) return cleaned.trim();
+  const skip = /(checklist|check before|pre-submission|where did you|version|deployment|client env|additional context|screenshots?)/i;
+  const kept = parts
+    .slice(1)
+    .map((p) => {
+      const nl = p.indexOf('\n');
+      return { head: p.slice(0, nl < 0 ? p.length : nl).trim(), text: nl < 0 ? '' : p.slice(nl + 1).trim() };
+    })
+    .filter((x) => !skip.test(x.head) && x.text && x.text !== '_No response_');
+  if (!kept.length) return cleaned.trim();
+  return kept.map((x) => (kept.length > 1 ? `${x.head}\n${x.text}` : x.text)).join('\n\n');
+}
 
 function Steps({ run }: { run: RunRecord }) {
   const frames = run.run.frames.filter((f) => f.kind !== 'navigate' && f.kind !== 'wait' && f.label);
@@ -45,6 +62,7 @@ export function CasePage() {
   const v = repro.verdict;
   const hasStrip = repro.run.frames.length > 0;
   const fixed = fix?.verdict.kind === 'not_reproduced';
+  const confirm = [...c.runs].reverse().find((r) => r.kind === 'confirm');
 
   return (
     <article className="case">
@@ -63,7 +81,7 @@ export function CasePage() {
 
       <section className="claim" aria-labelledby="claim-h">
         <h2 id="claim-h">The claim</h2>
-        <blockquote>{c.report.body.length > 900 ? c.report.body.slice(0, 900) + '…' : c.report.body}</blockquote>
+        <blockquote>{(() => { const b = compactReport(c.report.body); return b.length > 900 ? b.slice(0, 900) + '…' : b; })()}</blockquote>
         {c.plan && c.plan.expected && (
           <p className="expect">
             <span>Expected, as Reenact read it</span>
@@ -105,6 +123,16 @@ export function CasePage() {
             <>
               <dt>Severity</dt>
               <dd>{v.severity}</dd>
+            </>
+          )}
+          {confirm && (
+            <>
+              <dt>Second run</dt>
+              <dd>
+                {confirm.verdict.kind === 'reproduced'
+                  ? 'Reproduced again on an independent run (2 of 2) before any code was changed.'
+                  : `Said "${VERDICT_LABEL[confirm.verdict.kind]}", so no fix was attempted.`}
+              </dd>
             </>
           )}
           <dt>Cost</dt>
@@ -165,6 +193,26 @@ export function CasePage() {
                 <p className="attempt-note">
                   {a.files.length > 0 && <code>{a.files.join(', ')}</code>} {a.note}
                 </p>
+                {(a.suite_checked ?? 0) > 0 && (a.regressions?.length ?? 0) === 0 && (
+                  <p className="attempt-note">{a.suite_checked} earlier saved test(s) re-run live and still hold.</p>
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {c.runs.length > 1 && (
+        <section className="history" aria-labelledby="h-h">
+          <h2 id="h-h">Run history</h2>
+          <ol className="doing">
+            {c.runs.map((r, i) => (
+              <li key={i}>
+                <span className="n">{String(i + 1).padStart(2, '0')}</span>
+                <span className="what">
+                  {r.label} · {VERDICT_LABEL[r.verdict.kind]} · {new Date(r.started_at).toLocaleString()}
+                </span>
+                <span className="res">{r.run.credits.toFixed(0)} cr</span>
               </li>
             ))}
           </ol>

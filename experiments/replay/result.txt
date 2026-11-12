@@ -1,0 +1,11 @@
+== 1. author on FIXED app
+status=passed | reason=Objective completed | total variable seen by the run=$10.00 | replay_decisions=0 author_decisions=1
+./run.sh: line 22: 530651 Killed                     PORT=$PORT nohup node server.js > /dev/null 2>&1
+== 2a. replay on BUGGY app
+status=passed | reason=replay completed | total variable seen by the run=$10.00 | replay_decisions=1 author_decisions=0
+== 2b. replay on BUGGY app (again)
+status=passed | reason=replay completed | total variable seen by the run=$10.00 | replay_decisions=1 author_decisions=0
+== 3. live agent on BUGGY app (--author)
+status=failed | reason=Final verification failed: "the Total shows $10.00" | total variable seen by the run=$30.00 | replay_decisions=1 author_decisions=0
+./run.sh: line 22: 533205 Killed                     PORT=$PORT nohup node server.js > /dev/null 2>&1
+page total on the buggy app after a coupon with two items: $30.00 (see demo/shop/public/app.js)
