@@ -223,7 +223,7 @@ These findings changed the design. They are useful to anyone wiring Kane into an
 3. **Preconditions become checkpoints.** Writing "make sure a memo exists" into a test makes Kane check it *before* the steps that create it, and fail. Reenact never renders preconditions.
 4. **Kane repairs what it was asked to observe.** On the "Remove deletes the wrong item" report, Kane noticed the wrong item vanish, restored it, removed the right one and passed. The scaffold now says: do each step once, do not undo or work around anything unexpected, check right after the last step.
 5. **A missing page looks like a confirmed bug.** On a reporter's follow-up, the compiler guessed `/cart`, Kane got a 404, and its triage called that a confirmed product bug. Reenact now checks guessed start pages and refuses *Reproduced* when no user action happened.
-6. **Process groups.** Killing the `kane-cli` child leaves Chrome running. Each run leads its own group and is killed as a group, as GuardianKane's author also found.
+6. **Kane leaves its browser behind.** Chrome is started in a new session, so killing the `kane-cli` process group does not reach it. After a plain headless run, ten Chrome processes were still running (and they pile up over a benchmark until runs start failing with blank pages and "Target crashed"). Each run is killed as a group, and orphaned `--user-data-dir=/tmp/kane-clean-*` browsers are reaped afterwards, only those whose parent is gone, so concurrent runs are untouched.
 
 ## Kane in the build loop
 
